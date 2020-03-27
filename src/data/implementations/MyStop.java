@@ -7,6 +7,8 @@ public class MyStop implements Stop {
     Street street;
     Coordinate coord;
 
+    public static Stop CreateStop(String id, Coordinate coord) { return new MyStop(id, coord); }
+
     public MyStop(String id, Coordinate coord) {
         this.id = id;
         this.coord = coord;

@@ -11,6 +11,8 @@ public class MyLine implements Line {
     private List<Street> streets = new ArrayList<>();
     private List<Stop> stops = new ArrayList<>();
 
+    public static Line CreateLine(String id) { return new MyLine(id); }
+
     public MyLine(String id) {
         this.id = id;
     }
