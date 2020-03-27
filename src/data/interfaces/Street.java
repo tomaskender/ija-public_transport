@@ -1,9 +1,15 @@
 package data.interfaces;
 
 import java.util.List;
+import data.implementations.MyStreet;
 
 public interface Street {
+    static Street CreateStreet(String id, Coordinate... coordinates) { return MyStreet.CreateStreet(id, coordinates); }
+    String getId();
     List<Coordinate> getStreetPoints();
     boolean Follows(Street s);
-    void AddStopToStreet(Stop s);
+    boolean AddStopToStreet(Stop s);
+    List<Stop> getStops();
+    Coordinate getBegin();
+    Coordinate getEnd();
 }
