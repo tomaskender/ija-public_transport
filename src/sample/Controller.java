@@ -9,6 +9,7 @@ public class Controller {
     public Pane mapPane;
     public Button pauseButton;
 
+
     public void handlePauseButtonAction(ActionEvent actionEvent) {
         isPaused = !isPaused;
         if(isPaused)
@@ -17,3 +18,4 @@ public class Controller {
             pauseButton.setText("Pause");
     }
 }
+
