@@ -1,14 +1,15 @@
 package data.implementations;
 
+import data.enums.StreetState;
 import data.interfaces.*;
 
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MyStreet implements Street {
     private String id;
+    private StreetState state;
     private List<Stop> stops = new ArrayList<>();
     private List<Coordinate> coords = new ArrayList<>();
 
@@ -70,5 +71,10 @@ public class MyStreet implements Street {
                 this.getBegin().equals(s.getEnd()) ||
                 this.getEnd().equals(s.getBegin()) ||
                 this.getEnd().equals(s.getEnd());
+    }
+
+    @Override
+    public void SetStreetState(StreetState state) {
+        this.state = state;
     }
 }

@@ -1,6 +1,8 @@
 package data.interfaces;
 
 import java.util.List;
+
+import data.enums.StreetState;
 import data.implementations.MyStreet;
 
 public interface Street {
@@ -12,4 +14,5 @@ public interface Street {
     List<Stop> getStops();
     Coordinate getBegin();
     Coordinate getEnd();
+    void SetStreetState(StreetState state);
 }
