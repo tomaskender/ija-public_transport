@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <root>
     <def_stops>
-        <def_stop cord_X="0" cord_Y="250">S1</def_stop>
-        <def_stop cord_X="0" cord_Y="100">S2</def_stop>
-        <def_stop cord_X="100" cord_Y="100">S3</def_stop>
-        <def_stop cord_X="150" cord_Y="100">S4</def_stop>
-        <def_stop cord_X="150" cord_Y="0">S5</def_stop>
-        <def_stop cord_X="300" cord_Y="0">S6</def_stop>
-        <def_stop cord_X="300" cord_Y="150">S7</def_stop>
-        <def_stop cord_X="300" cord_Y="250">S8</def_stop>
-        <def_stop cord_X="100" cord_Y="250">S9</def_stop>
-        <def_stop cord_X="50" cord_Y="250">S10</def_stop>
-        <def_stop cord_X="50" cord_Y="350">S11</def_stop>
-        <def_stop cord_X="250" cord_Y="350">S12</def_stop>
-        <def_stop cord_X="350" cord_Y="350">S13</def_stop>
-        <def_stop cord_X="650" cord_Y="350">S14</def_stop>
-        <def_stop cord_X="500" cord_Y="250">S15</def_stop>
+        <def_stop cord_X="0" cord_Y="250" street="ST1">S1</def_stop>
+        <def_stop cord_X="0" cord_Y="100" street="ST1">S2</def_stop>
+        <def_stop cord_X="100" cord_Y="100" street="ST2">S3</def_stop>
+        <def_stop cord_X="150" cord_Y="100" street="ST2">S4</def_stop>
+        <def_stop cord_X="150" cord_Y="0" street="ST4">S5</def_stop>
+        <def_stop cord_X="300" cord_Y="0" street="ST5">S6</def_stop>
+        <def_stop cord_X="300" cord_Y="150" street="ST5">S7</def_stop>
+        <def_stop cord_X="300" cord_Y="250" street="ST6">S8</def_stop>
+        <def_stop cord_X="100" cord_Y="250" street="ST6">S9</def_stop>
+        <def_stop cord_X="50" cord_Y="250" street="ST6">S10</def_stop>
+        <def_stop cord_X="50" cord_Y="350" street="ST8">S11</def_stop>
+        <def_stop cord_X="250" cord_Y="350" street="ST8">S12</def_stop>
+        <def_stop cord_X="350" cord_Y="350" street="ST8">S13</def_stop>
+        <def_stop cord_X="650" cord_Y="350" street="ST8">S14</def_stop>
+        <def_stop cord_X="500" cord_Y="250" street="ST6">S15</def_stop>
     </def_stops>
     <streets>
         <street begin="0 250" end="0 100">ST1</street>
@@ -29,88 +29,88 @@
     </streets>
     <link route="ST1 ST2 ST3 ST4 ST5 ST6">L1
         <links>
-            <link start="09:00"/>
-            <link start="10:00"/>
-            <link start="11:00"/>
-            <link start="12:00"/>
-            <link start="13:00"/>
-            <link start="14:00"/>
-            <link start="15:00"/>
-            <link start="16:00"/>
-            <link start="17:00"/>
-            <link start="18:00"/>
-            <link start="19:00"/>
+            <link_t start="09:00"/>
+            <link_t start="10:00"/>
+            <link_t start="11:00"/>
+            <link_t start="12:00"/>
+            <link_t start="13:00"/>
+            <link_t start="14:00"/>
+            <link_t start="15:00"/>
+            <link_t start="16:00"/>
+            <link_t start="17:00"/>
+            <link_t start="18:00"/>
+            <link_t start="19:00"/>
         </links>
         <stops>
-            <stop time="0" street="ST1">S1</stop>
-            <stop time="3" street="ST1">S2</stop>
-            <stop time="2" street="ST2">S3</stop>
-            <stop time="1" street="ST2">S4</stop>
-            <stop time="2" street="ST4">S5</stop>
-            <stop time="3" street="ST5">S6</stop>
-            <stop time="3" street="ST5">S7</stop>
-            <stop time="2" street="ST6">S8</stop>
-            <stop time="4" street="ST6">S15</stop>
+            <stop time="0">S1</stop>
+            <stop time="3">S2</stop>
+            <stop time="2">S3</stop>
+            <stop time="1">S4</stop>
+            <stop time="2">S5</stop>
+            <stop time="3">S6</stop>
+            <stop time="3">S7</stop>
+            <stop time="2">S8</stop>
+            <stop time="4">S15</stop>
         </stops>
     </link>
     <link route="ST7 ST8">L2
         <links>
-            <link start="08:00"/>
-            <link start="09:15"/>
-            <link start="10:30"/>
-            <link start="11:45"/>
-            <link start="13:00"/>
-            <link start="14:15"/>
-            <link start="15:30"/>
-            <link start="16:45"/>
-            <link start="18:00"/>
-            <link start="19:15"/>
-            <link start="20:30"/>
+            <link_t start="08:00"/>
+            <link_t start="09:15"/>
+            <link_t start="10:30"/>
+            <link_t start="11:45"/>
+            <link_t start="13:00"/>
+            <link_t start="14:15"/>
+            <link_t start="15:30"/>
+            <link_t start="16:45"/>
+            <link_t start="18:00"/>
+            <link_t start="19:15"/>
+            <link_t start="20:30"/>
         </links>
         <stops>
-            <stop time="0" street="ST6">S10</stop>
-            <stop time="2" street="ST8">S11</stop>
-            <stop time="4" street="ST8">S12</stop>
-            <stop time="2" street="ST8">S13</stop>
-            <stop time="6" street="ST8">S14</stop>
+            <stop time="0">S10</stop>
+            <stop time="2">S11</stop>
+            <stop time="4">S12</stop>
+            <stop time="2">S13</stop>
+            <stop time="6">S14</stop>
         </stops>
     </link>
     <link route="ST6">L3
         <links>
-            <link start="07:00"/>
-            <link start="07:30"/>
-            <link start="08:00"/>
-            <link start="08:30"/>
-            <link start="09:00"/>
-            <link start="09:30"/>
-            <link start="10:00"/>
-            <link start="10:30"/>
-            <link start="11:00"/>
-            <link start="11:30"/>
-            <link start="12:00"/>
-            <link start="12:30"/>
-            <link start="13:00"/>
-            <link start="13:30"/>
-            <link start="14:00"/>
-            <link start="14:30"/>
-            <link start="15:00"/>
-            <link start="15:30"/>
-            <link start="16:00"/>
-            <link start="16:30"/>
-            <link start="17:00"/>
-            <link start="17:30"/>
-            <link start="18:00"/>
-            <link start="18:30"/>
-            <link start="19:00"/>
-            <link start="19:30"/>
-            <link start="20:00"/>
+            <link_t start="07:00"/>
+            <link_t start="07:30"/>
+            <link_t start="08:00"/>
+            <link_t start="08:30"/>
+            <link_t start="09:00"/>
+            <link_t start="09:30"/>
+            <link_t start="10:00"/>
+            <link_t start="10:30"/>
+            <link_t start="11:00"/>
+            <link_t start="11:30"/>
+            <link_t start="12:00"/>
+            <link_t start="12:30"/>
+            <link_t start="13:00"/>
+            <link_t start="13:30"/>
+            <link_t start="14:00"/>
+            <link_t start="14:30"/>
+            <link_t start="15:00"/>
+            <link_t start="15:30"/>
+            <link_t start="16:00"/>
+            <link_t start="16:30"/>
+            <link_t start="17:00"/>
+            <link_t start="17:30"/>
+            <link_t start="18:00"/>
+            <link_t start="18:30"/>
+            <link_t start="19:00"/>
+            <link_t start="19:30"/>
+            <link_t start="20:00"/>
         </links>
         <stops>
-            <stop time="0" street="ST1">S1</stop>
-            <stop time="1" street="ST6">S10</stop>
-            <stop time="1" street="ST6">S9</stop>
-            <stop time="2" street="ST6">S8</stop>
-            <stop time="4" street="ST6">S15</stop>
+            <stop time="0">S1</stop>
+            <stop time="1">S10</stop>
+            <stop time="1">S9</stop>
+            <stop time="2">S8</stop>
+            <stop time="4">S15</stop>
     </stops>
     </link>
 </root>
