@@ -61,7 +61,6 @@ public class MyStreet implements Street {
 
         if(!stops.contains(stop))
             stops.add(stop);
-        stop.SetStreet(this);
         return true;
     }
 
