@@ -6,9 +6,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import data.implementations.CONFIG;
+import data.implementations.MyLine;
 import data.implementations.MyStop;
 import data.implementations.MyStreet;
 import data.interfaces.Coordinate;
+import data.interfaces.Line;
 import data.interfaces.Stop;
 import data.interfaces.Street;
 import org.w3c.dom.Document;
@@ -92,15 +94,14 @@ public class XMLParser {
                         }
                     }
                     attribs.add(link_timesList);
-                    List<List> links_stops = new ArrayList<>();
+                    List<Map> links_stops = new ArrayList<>();
                     NodeList link_stops = element.getElementsByTagName("stop");
                     for(int k = 0; k < link_stops.getLength(); k++){
                         Node node1 = link_stops.item(k);
                         if(node1.getNodeType() == node1.ELEMENT_NODE){
                             Element link_stop = (Element) node1;
-                            List<String> stop = new ArrayList<>();
-                            stop.add(link_stop.getTextContent());
-                            stop.add(link_stop.getAttribute("time"));
+                            Map<String, String> stop = new HashMap<>();
+                            stop.put(link_stop.getTextContent(),link_stop.getAttribute("time"));
                             links_stops.add(stop);
                         }
                     }
@@ -111,26 +112,34 @@ public class XMLParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for(String key : streets.keySet()){
-            Coordinate[] coords = new Coordinate[streets.get(key).size()];
-            CONFIG.streets.put(key,MyStreet.CreateStreet(key, coords));
+        for(String street_key : streets.keySet()){
+            CONFIG.streets.put(street_key,MyStreet.CreateStreet(street_key, (Coordinate) streets.get(street_key).get(0), (Coordinate) streets.get(street_key).get(1)));
         }
         for(String stop_key : stops.keySet()){
             Stop stop = MyStop.CreateStop(stop_key, stops.get(stop_key));
-            CONFIG.stops.add(stop);
+            CONFIG.stops.put(stop_key, stop);
             for(String street_key : stops_on_streets.keySet()){
                 if(stop_key.equals(street_key)){
-                   // Street street = CONFIG.streets.get(stops_on_streets.get(street_key));
-                   // stop.SetStreet(street);
+                   Street street = CONFIG.streets.get(stops_on_streets.get(street_key));
+                   stop.SetStreet(street);
                 }
             }
+        }
+        for(String line_key : links.keySet()){
+            Line line = MyLine.CreateLine(line_key);
+            List<Map<String, Object>> line_stops = (List<Map<String, Object>>) links.get(line_key).get(2);
+            for(Map<String, Object> map : line_stops){
+                for(String line_stop_key : map.keySet()){
+                    line.AddStop(CONFIG.stops.get(line_stop_key));
+                }
+            }
+            CONFIG.lines.put(line_key, line);
         }
         System.out.print(CONFIG.streets);
         System.out.print("\n");
         System.out.print(CONFIG.stops);
         System.out.print("\n");
-        System.out.print(links);
+        System.out.print(CONFIG.lines);
         System.out.print("\n");
-        System.out.print(stops_on_streets);
     }
 }
