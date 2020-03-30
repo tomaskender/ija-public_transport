@@ -24,10 +24,12 @@ import java.util.*;
 public class XMLParser {
 
     public static void main(String[] args) {
-        Map<String, Coordinate> stops = new HashMap<>();
-        Map<String, List> streets = new HashMap<>();
-        Map<String, List> links = new HashMap<>();
-        Map<String, String> stops_on_streets = new HashMap<>();
+        Map<String, Coordinate> stops = new TreeMap<>();
+        Map<String, List> streets = new TreeMap<>();
+        Map<String, List> links = new TreeMap<>();
+        Map<String, String> stops_on_streets = new TreeMap<>();
+        Map<String, Map<String, String>> line_stops = new TreeMap<>();
+
         try {
             InputStream input = XMLParser.class.getResourceAsStream("source.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -94,24 +96,24 @@ public class XMLParser {
                         }
                     }
                     attribs.add(link_timesList);
-                    List<Map> links_stops = new ArrayList<>();
                     NodeList link_stops = element.getElementsByTagName("stop");
+                    Map<String, String> stop = new TreeMap<>();
                     for(int k = 0; k < link_stops.getLength(); k++){
                         Node node1 = link_stops.item(k);
                         if(node1.getNodeType() == node1.ELEMENT_NODE){
                             Element link_stop = (Element) node1;
-                            Map<String, String> stop = new HashMap<>();
                             stop.put(link_stop.getTextContent(),link_stop.getAttribute("time"));
-                            links_stops.add(stop);
                         }
                     }
-                    attribs.add(links_stops);
+                    line_stops.put(element.getTextContent().split("\\s+")[0], stop);
                     links.put(element.getTextContent().split("\\s+")[0], attribs);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.print(streets.get("ST1").get(0));
+        System.out.print("\n");
         for(String street_key : streets.keySet()){
             CONFIG.streets.put(street_key,MyStreet.CreateStreet(street_key, (Coordinate) streets.get(street_key).get(0), (Coordinate) streets.get(street_key).get(1)));
         }
@@ -125,16 +127,15 @@ public class XMLParser {
                 }
             }
         }
-        for(String line_key : links.keySet()){
+        for(String line_key : line_stops.keySet()){
             Line line = MyLine.CreateLine(line_key);
-            List<Map<String, Object>> line_stops = (List<Map<String, Object>>) links.get(line_key).get(2);
-            for(Map<String, Object> map : line_stops){
-                for(String line_stop_key : map.keySet()){
-                    line.AddStop(CONFIG.stops.get(line_stop_key));
-                }
+            Map<String, String> stop = line_stops.get(line_key);
+            for(String line_stop : stop.keySet()){
+                line.AddStop(CONFIG.stops.get(line_stop));
             }
             CONFIG.lines.put(line_key, line);
         }
+
         System.out.print(CONFIG.streets);
         System.out.print("\n");
         System.out.print(CONFIG.stops);
