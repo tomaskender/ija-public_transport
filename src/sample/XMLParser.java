@@ -112,8 +112,7 @@ public class XMLParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.print(streets.get("ST1").get(0));
-        System.out.print("\n");
+
         for(String street_key : streets.keySet()){
             CONFIG.streets.put(street_key,MyStreet.CreateStreet(street_key, (Coordinate) streets.get(street_key).get(0), (Coordinate) streets.get(street_key).get(1)));
         }
@@ -127,8 +126,13 @@ public class XMLParser {
                 }
             }
         }
+
         for(String line_key : line_stops.keySet()){
             Line line = MyLine.CreateLine(line_key);
+            List route = (List)links.get(line_key).get(0);
+            for(Object street : route){
+                line.AddTraversalStreet(CONFIG.streets.get(street));
+            }
             Map<String, String> stop = line_stops.get(line_key);
             for(String line_stop : stop.keySet()){
                 line.AddStop(CONFIG.stops.get(line_stop));
