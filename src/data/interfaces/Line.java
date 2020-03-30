@@ -10,5 +10,6 @@ public interface Line {
     boolean AddTraversalStreet(Street s);
     boolean AddStop(Stop s);
     boolean AddVehicleToLine(Vehicle v);
+    void ConstructRoute();
     List<AbstractMap.SimpleImmutableEntry<Street,Stop>> getRoute();
 }

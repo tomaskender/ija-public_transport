@@ -2,6 +2,7 @@ package data.implementations;
 
 import data.enums.StreetState;
 import data.interfaces.*;
+import utils.Math2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,10 +47,7 @@ public class MyStreet implements Street {
                 Coordinate p1 = coords.get(i);
                 Coordinate p2 = coords.get(i - 1);
                 Coordinate pStop = stop.getCoordinate();
-                double lineLen = Math.hypot(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-                double distanceFromP1 = Math.hypot(p1.getX() - pStop.getX(), p1.getY() - pStop.getY());
-                double distanceFromP2 = Math.hypot(p2.getX() - pStop.getX(), p2.getY() - pStop.getY());
-                if (lineLen+0.05 > distanceFromP1 + distanceFromP2 && lineLen-0.05 < distanceFromP1 + distanceFromP2) {
+                if (Math2D.isLocatedBetweenPoints(pStop, p1, p2)) {
                     isOnStreet = true;
                     break;
                 }
