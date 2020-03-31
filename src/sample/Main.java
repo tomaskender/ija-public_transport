@@ -1,10 +1,16 @@
 package sample;
 
+import data.implementations.CONFIG;
+import data.interfaces.Vehicle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
 
@@ -14,6 +20,18 @@ public class Main extends Application {
         primaryStage.setTitle("Public Transport Tracker");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
+
+
+        // moving vehicles on map
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                for(Map.Entry<String, Vehicle> v: CONFIG.vehicles.entrySet()) {
+                    v.getValue().Tick(CONFIG.delta);
+                }
+            }
+        }, 0, CONFIG.delta*1000);
     }
 
 
