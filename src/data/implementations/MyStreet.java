@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MyStreet implements Street {
     private String id;
-    private StreetState state;
+    private StreetState state = StreetState.CLOSED;
     private List<Stop> stops = new ArrayList<>();
     private List<Coordinate> coords = new ArrayList<>();
 
@@ -74,4 +74,7 @@ public class MyStreet implements Street {
     public void SetStreetState(StreetState state) {
         this.state = state;
     }
+
+    @Override
+    public double getStreetStateModifier() { return state.getModifier(); }
 }

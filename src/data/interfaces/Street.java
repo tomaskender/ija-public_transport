@@ -15,4 +15,5 @@ public interface Street {
     Coordinate getBegin();
     Coordinate getEnd();
     void SetStreetState(StreetState state);
+    double getStreetStateModifier();
 }
