@@ -134,7 +134,7 @@ public class XMLParser {
             }
             Map<String, String> stop = line_stops.get(line_key);
             for(String line_stop : stop.keySet()){
-                line.AddStop(CONFIG.stops.get(line_stop));
+                line.AddStop(CONFIG.stops.get(line_stop), Integer.parseInt(stop.get(line_stop)));
             }
             CONFIG.lines.put(line_key, line);
             for(Object vehicle_time : times){
