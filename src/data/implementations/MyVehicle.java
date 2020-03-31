@@ -22,7 +22,9 @@ public class MyVehicle implements Vehicle {
     public static Vehicle CreateVehicle(Line line, LocalTime start) {
         if(line != null && start != null) {
             Vehicle v = new MyVehicle(line, start);
-            return line.AddVehicleToLine(v) ? v : null;
+            if(!line.AddVehicleToLine(v))
+                return null;
+            return v;
         } else {
             return null;
         }
@@ -114,5 +116,10 @@ public class MyVehicle implements Vehicle {
         }
 
         return null;
+    }
+
+    @Override
+    public void AddRoute(Route route) {
+        routes.add(route);
     }
 }

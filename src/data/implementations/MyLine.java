@@ -1,17 +1,17 @@
 package data.implementations;
 
 import data.interfaces.*;
+import javafx.util.Pair;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyLine implements Line {
     private String id;
     private List<Street> streets = new ArrayList<>();
-    private List<Stop> stops = new ArrayList<>();
+    private List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops = new ArrayList<>();
     private List<Vehicle> vehicles = new ArrayList<>();
-
-    private List<Coordinate> route = new ArrayList<>();
 
     public static Line CreateLine(String id) { return new MyLine(id); }
 
@@ -20,13 +20,13 @@ public class MyLine implements Line {
     }
 
     @Override
-    public boolean AddStop(Stop stop) {
+    public boolean AddStop(Stop stop, int delta) {
         // is the street neighboring any existing streets?
         if(AddTraversalStreet(stop.getStreet()) == false)
             return false;
         if(stop.getStreet().AddStopToStreet(stop) == false)
             return false;
-        stops.add(stop);
+        stops.add(new AbstractMap.SimpleImmutableEntry<>(stop,delta));
         return true;
     }
 
@@ -62,6 +62,11 @@ public class MyLine implements Line {
         }
         if(!alreadyContainsThisVehicle) {
             vehicles.add(v);
+            for(int i=0; i<stops.size()-1;i++) {
+                Route route = new MyRoute();
+                route.ConstructRoute(streets, stops.get(i).getKey(), stops.get(i+1).getKey(), stops.get(i+1).getValue());
+                v.AddRoute(route);
+            }
             return true;
         } else {
             return false;

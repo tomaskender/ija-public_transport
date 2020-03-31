@@ -11,4 +11,5 @@ public interface Vehicle {
     LocalTime getStart();
     void Tick(long delta);
     VehicleState getState();
+    void AddRoute(Route route);
 }
