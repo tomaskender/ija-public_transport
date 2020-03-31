@@ -22,11 +22,11 @@ import java.util.*;
 public class XMLParser {
 
     public static void main(String[] args) {
-        Map<String, Coordinate> stops = new TreeMap<>();
-        Map<String, List> streets = new TreeMap<>();
-        Map<String, List> links = new TreeMap<>();
-        Map<String, String> stops_on_streets = new TreeMap<>();
-        Map<String, Map<String, String>> line_stops = new TreeMap<>();
+        Map<String, Coordinate> stops = new LinkedHashMap<>();
+        Map<String, List> streets = new LinkedHashMap<>();
+        Map<String, List> links = new LinkedHashMap<>();
+        Map<String, String> stops_on_streets = new LinkedHashMap<>();
+        Map<String, Map<String, String>> line_stops = new LinkedHashMap<>();
 
         try {
             InputStream input = XMLParser.class.getResourceAsStream("source.xml");
@@ -95,7 +95,7 @@ public class XMLParser {
                     }
                     attribs.add(link_timesList);
                     NodeList link_stops = element.getElementsByTagName("stop");
-                    Map<String, String> stop = new TreeMap<>();
+                    Map<String, String> stop = new LinkedHashMap<>();
                     for(int k = 0; k < link_stops.getLength(); k++){
                         Node node1 = link_stops.item(k);
                         if(node1.getNodeType() == node1.ELEMENT_NODE){
