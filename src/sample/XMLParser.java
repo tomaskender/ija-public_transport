@@ -5,10 +5,7 @@ import javax.security.auth.login.Configuration;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
-import data.implementations.CONFIG;
-import data.implementations.MyLine;
-import data.implementations.MyStop;
-import data.implementations.MyStreet;
+import data.implementations.*;
 import data.interfaces.Coordinate;
 import data.interfaces.Line;
 import data.interfaces.Stop;
@@ -19,6 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import java.sql.Array;
+import java.time.LocalTime;
 import java.util.*;
 
 public class XMLParser {
@@ -130,6 +128,7 @@ public class XMLParser {
         for(String line_key : line_stops.keySet()){
             Line line = MyLine.CreateLine(line_key);
             List route = (List)links.get(line_key).get(0);
+            List times = (List)links.get(line_key).get(1);
             for(Object street : route){
                 line.AddTraversalStreet(CONFIG.streets.get(street));
             }
@@ -138,6 +137,9 @@ public class XMLParser {
                 line.AddStop(CONFIG.stops.get(line_stop));
             }
             CONFIG.lines.put(line_key, line);
+            for(Object vehicle_time : times){
+                CONFIG.vehicles.put(line_key + "_" + vehicle_time.toString(), MyVehicle.CreateVehicle(CONFIG.lines.get(line_key), LocalTime.parse(vehicle_time.toString())));
+            }
         }
 
         System.out.print(CONFIG.streets);
@@ -145,6 +147,8 @@ public class XMLParser {
         System.out.print(CONFIG.stops);
         System.out.print("\n");
         System.out.print(CONFIG.lines);
+        System.out.print("\n");
+        System.out.print(CONFIG.vehicles);
         System.out.print("\n");
     }
 }
