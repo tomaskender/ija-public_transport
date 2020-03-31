@@ -53,7 +53,7 @@
             <stop time="4">S15</stop>
         </stops>
     </link>
-    <link route="ST7 ST8">L2
+    <link route="ST1 ST7 ST8">L2
         <links>
             <link_t start="08:00"/>
             <link_t start="09:15"/>
