@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,11 +28,12 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(CONFIG.DELTA, ChronoUnit.SECONDS);
                 for(Map.Entry<String, Vehicle> v: CONFIG.vehicles.entrySet()) {
-                    v.getValue().Tick(CONFIG.delta);
+                    v.getValue().Tick(CONFIG.DELTA);
                 }
             }
-        }, 0, CONFIG.delta*1000);
+        }, 0, 1000);
     }
 
 
