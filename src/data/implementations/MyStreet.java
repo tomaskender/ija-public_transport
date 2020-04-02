@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MyStreet implements Street {
     private String id;
-    private StreetState state = StreetState.CLOSED;
+    private StreetState state = StreetState.LOW;
     private List<Stop> stops = new ArrayList<>();
     private List<Coordinate> coords = new ArrayList<>();
 

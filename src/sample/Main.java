@@ -3,6 +3,7 @@ package sample;
 import data.implementations.CONFIG;
 import data.interfaces.Vehicle;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -36,6 +37,7 @@ public class Main extends Application {
         primaryStage.show();
 
         Controller controller = loader.getController();
+        CONFIG.controller = controller;
         controller.LoadStreets();
         controller.LoadStops();
         // moving vehicles on map
@@ -43,10 +45,18 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(CONFIG.DELTA, ChronoUnit.SECONDS);
-                for(Map.Entry<String, Vehicle> v: CONFIG.vehicles.entrySet()) {
-                    v.getValue().Tick(CONFIG.DELTA);
-                }
+                new Thread() {
+                    public void run() {
+                        CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(CONFIG.DELTA, ChronoUnit.SECONDS);
+                        Platform.runLater(new Runnable() {
+                            public void run() {
+                                for(Map.Entry<String, Vehicle> v: CONFIG.vehicles.entrySet()) {
+                                    v.getValue().Tick(CONFIG.DELTA);
+                                }
+                            }
+                        });
+                    }
+                }.start();
             }
         }, 0, 1000);
     }
