@@ -17,8 +17,8 @@ public class MyRoute implements Route {
     double deltaTime;
 
     @Override
-    public boolean ConstructRoute(List<Street> streets, Stop firstStop, Stop secondStop, int deltaTime) {
-        this.deltaTime = deltaTime;
+    public boolean ConstructRoute(List<Street> streets, Stop firstStop, Stop secondStop, int deltaTimeInMins) {
+        this.deltaTime = deltaTimeInMins*60;
 
         List<AbstractMap.SimpleImmutableEntry<Street,Coordinate>> points = new ArrayList<>();
 
