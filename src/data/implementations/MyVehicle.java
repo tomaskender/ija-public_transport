@@ -70,13 +70,15 @@ public class MyVehicle implements Vehicle {
                     routes.remove(0);
                     if(routes.isEmpty()) {
                         SetState(VehicleState.INACTIVE);
-                        CONFIG.controller.RemoveVehicle(this);
                     } else {
                         SetState(VehicleState.STOPPED);
                         progressTowardsNextStop = 0.0;
                     }
                 }
-                CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
+                if(!routes.isEmpty())
+                    CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
+                else
+                    CONFIG.controller.RemoveVehicle(this);
                 break;
             case STOPPED:
                 stopTime += delta;

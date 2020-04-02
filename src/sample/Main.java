@@ -58,7 +58,7 @@ public class Main extends Application {
                     }
                 }.start();
             }
-        }, 0, 1000);
+        }, 0, (long)(CONFIG.SIM_DELTA*1000));
     }
 
 
