@@ -85,9 +85,10 @@ public class MyRoute implements Route {
                  street_i++) {
 
                 List<Coordinate> traversalStreetPoints = streets.get(street_i).getStreetPoints();
+                Coordinate lastTraversalStreetPoint = traversalStreetPoints.get(traversalStreetPoints.size()-1);
                 Street prevStreet = streets.get(street_i - 1);
-                if (traversalStreetPoints.contains(prevStreet.getBegin()) ||
-                        traversalStreetPoints.contains(prevStreet.getEnd())) {
+                if (lastTraversalStreetPoint == prevStreet.getBegin() ||
+                        lastTraversalStreetPoint == prevStreet.getEnd()) {
                     Collections.reverse(traversalStreetPoints);
                 }
                 //step 2b) add traversal street points
