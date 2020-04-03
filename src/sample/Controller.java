@@ -97,9 +97,9 @@ public class Controller {
     }
 
     @FXML
-    public void TickTime() {
-        CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(CONFIG.DELTA, ChronoUnit.SECONDS);
-        timeLabel.setText(CONFIG.CURRENT_TIME.toString());
+    public void TickTime(long deltaInMillis) {
+        CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(deltaInMillis, ChronoUnit.MILLIS);
+        timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
     }
 
     @FXML

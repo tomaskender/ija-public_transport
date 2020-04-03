@@ -41,9 +41,10 @@ public class Main extends Application {
                         if(!controller.isPaused) {
                             Platform.runLater(new Runnable() {
                                 public void run() {
-                                    controller.TickTime();
+                                    long deltaInMillis = (long)(CONFIG.DELTA*CONFIG.SIM_DELTA*1000);
+                                    controller.TickTime(deltaInMillis);
                                     for (Map.Entry<String, Vehicle> v : CONFIG.vehicles.entrySet()) {
-                                        v.getValue().Tick(CONFIG.DELTA);
+                                        v.getValue().Tick(deltaInMillis);
                                     }
                                 }
                             });

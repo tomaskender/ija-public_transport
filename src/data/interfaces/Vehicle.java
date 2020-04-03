@@ -9,7 +9,7 @@ public interface Vehicle {
     static Vehicle CreateVehicle(Line line, LocalTime start) { return MyVehicle.CreateVehicle(line, start); }
     Line getLine();
     LocalTime getStart();
-    void Tick(long delta);
+    void Tick(long deltaInMillis);
     VehicleState getState();
     void AddRoute(Route route);
 }

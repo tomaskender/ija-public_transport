@@ -56,16 +56,17 @@ public class MyVehicle implements Vehicle {
     }
 
     @Override
-    public void Tick(long delta) {
+    public void Tick(long deltaInMillis) {
         switch (state) {
             case INACTIVE:
-                if(CONFIG.CURRENT_TIME.compareTo(start) >= 0 && CONFIG.CURRENT_TIME.compareTo(start.plus(delta, ChronoUnit.SECONDS)) < 0)
+                if(CONFIG.CURRENT_TIME.compareTo(start) >= 0 && CONFIG.CURRENT_TIME.compareTo(start.plus(deltaInMillis, ChronoUnit.MILLIS)) < 0)
                     SetState(VehicleState.MOVING);
                 break;
             case MOVING:
                 Route currRoute = routes.get(0);
                 double streetModifier = currRoute.getRoute().get(0).getKey().getStreetStateModifier();
-                progressTowardsNextStop += delta * streetModifier / currRoute.getExpectedDeltaTime();
+                double deltaInSecs = (double)deltaInMillis/1000;
+                progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
                     routes.remove(0);
                     if(routes.isEmpty()) {
@@ -81,7 +82,7 @@ public class MyVehicle implements Vehicle {
                     CONFIG.controller.RemoveVehicle(this);
                 break;
             case STOPPED:
-                stopTime += delta;
+                stopTime += (double)deltaInMillis/1000;
                 if (stopTime >= CONFIG.EXPECTED_STOP_TIME) {
                     stopTime = 0;
                     SetState(VehicleState.MOVING);
