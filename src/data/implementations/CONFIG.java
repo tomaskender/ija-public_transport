@@ -13,7 +13,7 @@ public class CONFIG {
     public static double EXPECTED_STOP_TIME = 60; // in seconds
     public static LocalTime CURRENT_TIME = LocalTime.parse("05:59:56");
     public static int DELTA = 60; // in seconds
-    public static final double SIM_DELTA = 1; // update vehicle state every x seconds
+    public static final double SIM_DELTA = 0.05; // update vehicle state every x seconds
 
     //------------------Don't mess with this---------------------------
     public static Map<String, Street> streets = new LinkedHashMap<>();
