@@ -5,14 +5,21 @@ import data.interfaces.Coordinate;
 import data.interfaces.Stop;
 import data.interfaces.Street;
 import data.interfaces.Vehicle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,16 +27,32 @@ import java.util.Map;
 public class Controller {
     public Button pauseButton;
     public TextField timeLabel;
+    public Slider simSpeedSlider;
+    public Label simSpeedLabel;
     @FXML
     AnchorPane field;
 
 
     private Map<Vehicle,Circle> vehicles = new HashMap<>();
     public boolean isPaused = true;
+    boolean initTimeHasBeenSet = false;
 
     @FXML
     public void initialize() {
         timeLabel.setText(CONFIG.CURRENT_TIME.toString());
+        UpdateSimSpeedLabel();
+        simSpeedSlider.setValue(CONFIG.DELTA);
+
+        simSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(
+                    ObservableValue<? extends Number> observableValue,
+                    Number oldValue,
+                    Number newValue) {
+                CONFIG.DELTA = newValue.intValue();
+                UpdateSimSpeedLabel();
+            }
+        });
     }
 
     @FXML
@@ -80,12 +103,29 @@ public class Controller {
     }
 
     @FXML
+    private void UpdateSimSpeedLabel() {
+        simSpeedLabel.setText("sim speed: "+CONFIG.DELTA+":1");
+    }
+
+    @FXML
     void onPauseClicked(ActionEvent actionEvent) {
+        if(!initTimeHasBeenSet) {
+            try {
+                CONFIG.CURRENT_TIME =  LocalTime.parse(timeLabel.getText(), DateTimeFormatter.ofPattern("H:m"));
+                timeLabel.setDisable(true);
+                initTimeHasBeenSet = true;
+            } catch(DateTimeParseException e) {
+                timeLabel.setText("H:m");
+                return;
+            }
+        }
+
         isPaused = !isPaused;
-        if(isPaused)
+        if(isPaused) {
             pauseButton.setText("▶");
-        else
+        } else {
             pauseButton.setText("⏸");
+        }
     }
 }
 

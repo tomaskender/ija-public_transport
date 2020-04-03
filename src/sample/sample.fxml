@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -11,7 +13,9 @@
       <AnchorPane prefHeight="400.0" prefWidth="150.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="106.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" text="▶" />
-            <TextField fx:id="timeLabel" alignment="CENTER" disable="true" layoutX="14.0" layoutY="23.0" prefHeight="26.0" prefWidth="89.0" text="00:00" />
+            <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="26.0" prefWidth="89.0" text="00:00" />
+            <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="120.0" min="1.0" prefHeight="18.0" prefWidth="117.0" value="1.0" />
+            <Label fx:id="simSpeedLabel" alignment="CENTER_RIGHT" layoutX="13.0" layoutY="81.0" prefHeight="30.0" prefWidth="119.0" text="sim speed: xxx:1" />
          </children>
       </AnchorPane>
    </right>
