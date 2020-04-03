@@ -61,7 +61,7 @@ public class Controller {
             c.setCenterX(pos.getX());
             c.setCenterY(pos.getY());
             c.setRadius(10);
-            c.setFill(Color.GREEN);
+            c.setFill(Color.color(Math.random(), Math.random(), Math.random()));
             field.getChildren().add(c);
             vehicles.put(v, c);
         }
