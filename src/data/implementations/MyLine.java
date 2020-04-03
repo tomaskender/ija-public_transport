@@ -1,7 +1,7 @@
 package data.implementations;
 
 import data.interfaces.*;
-import javafx.util.Pair;
+import javafx.scene.paint.Color;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -12,11 +12,13 @@ public class MyLine implements Line {
     private List<Street> streets = new ArrayList<>();
     private List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops = new ArrayList<>();
     private List<Vehicle> vehicles = new ArrayList<>();
+    private Color mapColor;
 
     public static Line CreateLine(String id) { return new MyLine(id); }
 
     public MyLine(String id) {
         this.id = id;
+        this.mapColor = Color.color(Math.random(), Math.random(), Math.random());
     }
 
     @Override
@@ -72,4 +74,7 @@ public class MyLine implements Line {
             return false;
         }
     }
+
+    @Override
+    public Color getMapColor() { return mapColor; }
 }
