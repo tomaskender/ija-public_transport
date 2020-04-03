@@ -141,14 +141,5 @@ public class XMLParser {
                 CONFIG.vehicles.put(line_key + "_" + vehicle_time.toString(), MyVehicle.CreateVehicle(CONFIG.lines.get(line_key), LocalTime.parse(vehicle_time.toString())));
             }
         }
-
-        System.out.print(CONFIG.streets);
-        System.out.print("\n");
-        System.out.print(CONFIG.stops);
-        System.out.print("\n");
-        System.out.print(CONFIG.lines);
-        System.out.print("\n");
-        System.out.print(CONFIG.vehicles);
-        System.out.print("\n");
     }
 }
