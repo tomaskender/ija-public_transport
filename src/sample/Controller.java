@@ -5,22 +5,17 @@ import data.interfaces.Coordinate;
 import data.interfaces.Stop;
 import data.interfaces.Street;
 import data.interfaces.Vehicle;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class Controller {
     public Button pauseButton;
@@ -30,7 +25,12 @@ public class Controller {
 
 
     private Map<Vehicle,Circle> vehicles = new HashMap<>();
-    boolean isPaused = true;
+    public boolean isPaused = true;
+
+    @FXML
+    public void initialize() {
+        timeLabel.setText(CONFIG.CURRENT_TIME.toString());
+    }
 
     @FXML
     public void LoadStreets(){
@@ -74,8 +74,9 @@ public class Controller {
     }
 
     @FXML
-    public void initialize() {
-        timeLabel.textProperty().bind(new SimpleObjectProperty<>(CONFIG.CURRENT_TIME).asString());
+    public void TickTime() {
+        CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(CONFIG.DELTA, ChronoUnit.SECONDS);
+        timeLabel.setText(CONFIG.CURRENT_TIME.toString());
     }
 
     @FXML

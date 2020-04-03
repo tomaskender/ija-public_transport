@@ -6,23 +6,14 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.List;
-import java.util.ArrayList;
 
 public class Main extends Application {
     @FXML
@@ -47,14 +38,16 @@ public class Main extends Application {
             public void run() {
                 new Thread() {
                     public void run() {
-                        CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(CONFIG.DELTA, ChronoUnit.SECONDS);
-                        Platform.runLater(new Runnable() {
-                            public void run() {
-                                for(Map.Entry<String, Vehicle> v: CONFIG.vehicles.entrySet()) {
-                                    v.getValue().Tick(CONFIG.DELTA);
+                        if(!controller.isPaused) {
+                            Platform.runLater(new Runnable() {
+                                public void run() {
+                                    controller.TickTime();
+                                    for (Map.Entry<String, Vehicle> v : CONFIG.vehicles.entrySet()) {
+                                        v.getValue().Tick(CONFIG.DELTA);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }.start();
             }
