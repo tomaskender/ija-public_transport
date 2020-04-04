@@ -14,7 +14,7 @@
          <children>
             <Button fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="123.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="27.0" prefWidth="32.0" text="▶" />
             <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="27.0" prefWidth="107.0" text="00:00" />
-            <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="120.0" min="1.0" prefHeight="18.0" prefWidth="141.0" value="1.0" />
+            <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" value="1.0" />
             <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" />
          </children>
       </AnchorPane>

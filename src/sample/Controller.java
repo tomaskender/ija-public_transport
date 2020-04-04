@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -16,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -57,20 +59,22 @@ public class Controller {
 
     @FXML
     public void LoadStreets(){
-        for (Street street : CONFIG.streets.values()){
-            field.getChildren().add(new Line(street.getBegin().getX(),street.getBegin().getY(),street.getEnd().getX(),street.getEnd().getY()));
-
+        for (String street : CONFIG.streets.keySet()){
+            field.getChildren().add(new Line(CONFIG.streets.get(street).getBegin().getX(),CONFIG.streets.get(street).getBegin().getY(),CONFIG.streets.get(street).getEnd().getX(),CONFIG.streets.get(street).getEnd().getY()));
         }
     }
 
     @FXML
     public void LoadStops(){
-        for (Stop stop : CONFIG.stops.values()){
+        for (String stop : CONFIG.stops.keySet()){
             Circle circle = new Circle();
-            circle.setCenterX(stop.getCoordinate().getX());
-            circle.setCenterY(stop.getCoordinate().getY());
+            Text text = new Text(stop);
+            circle.setCenterX(CONFIG.stops.get(stop).getCoordinate().getX());
+            circle.setCenterY(CONFIG.stops.get(stop).getCoordinate().getY());
             circle.setRadius(5);
-            field.getChildren().add(circle);
+            text.setX(CONFIG.stops.get(stop).getCoordinate().getX() + 5);
+            text.setY(CONFIG.stops.get(stop).getCoordinate().getY() - 10);
+            field.getChildren().addAll(circle, text);
         }
     }
 
