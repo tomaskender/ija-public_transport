@@ -76,5 +76,5 @@ public class MyStreet implements Street {
     }
 
     @Override
-    public double getStreetStateModifier() { return state.getModifier(); }
+    public StreetState getStreetState() { return state; }
 }

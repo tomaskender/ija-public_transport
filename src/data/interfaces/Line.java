@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 
 public interface Line {
     static Line CreateLine(String id) { return MyLine.CreateLine(id); }
+    String getId();
     boolean AddTraversalStreet(Street s);
     boolean AddStop(Stop s, int delta);
     boolean AddVehicleToLine(Vehicle v);

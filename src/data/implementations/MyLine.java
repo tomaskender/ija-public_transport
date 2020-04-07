@@ -22,6 +22,9 @@ public class MyLine implements Line {
     }
 
     @Override
+    public String getId() { return id; }
+
+    @Override
     public boolean AddStop(Stop stop, int delta) {
         // is the street neighboring any existing streets?
         if(AddTraversalStreet(stop.getStreet()) == false)

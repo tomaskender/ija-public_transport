@@ -3,8 +3,7 @@ package data.enums;
 public enum StreetState {
     LOW (1),
     MEDIUM (0.75),
-    HIGH (0.5),
-    CLOSED (0);
+    HIGH (0.5);
 
     private double factor;
 

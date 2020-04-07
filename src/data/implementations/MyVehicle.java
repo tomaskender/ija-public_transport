@@ -17,7 +17,6 @@ public class MyVehicle implements Vehicle {
     double stopTime=0;
     VehicleState state;
     List<Route> routes = new ArrayList<>();
-    // TODO vehicle object (for setting position on the map)
 
     public static Vehicle CreateVehicle(Line line, LocalTime start) {
         if(line != null && start != null) {
@@ -64,7 +63,7 @@ public class MyVehicle implements Vehicle {
                 break;
             case MOVING:
                 Route currRoute = routes.get(0);
-                double streetModifier = currRoute.getRoute().get(0).getKey().getStreetStateModifier();
+                double streetModifier = currRoute.getRoute().get(0).getKey().getStreetState().getModifier();
                 double deltaInSecs = (double)deltaInMillis/1000;
                 progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
