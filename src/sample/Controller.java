@@ -1,6 +1,7 @@
 package sample;
 
 import data.enums.StreetState;
+import data.enums.VehicleState;
 import data.implementations.CONFIG;
 import data.interfaces.*;
 import javafx.beans.value.ChangeListener;
@@ -17,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import sun.awt.ConstrainableGraphics;
@@ -45,13 +47,13 @@ public class Controller {
     private Map<Vehicle,Circle> vehicles = new HashMap<>();
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
-    Pair<Street,Line> highlightedStreet = null;
-    Pair<Vehicle, Circle> highlightedVehicle = null;
+    List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
 
     @FXML
     public void initialize() {
         timeLabel.setText(CONFIG.CURRENT_TIME.toString());
         UpdateSimSpeedLabel();
+        UpdateHighlightedVehicle();
         simSpeedSlider.setValue(CONFIG.DELTA);
 
         simSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -70,9 +72,9 @@ public class Controller {
         streetBusinessSelector.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if(highlightedStreet != null) {
+                if(highlightedObjects.size() > 0) {
                     String newState = streetBusinessSelector.getItems().get((Integer) number2).toString();
-                    highlightedStreet.getKey().SetStreetState(StreetState.valueOf(newState));
+                    ((Street)(highlightedObjects.get(highlightedObjects.size()-1).getValue())).SetStreetState(StreetState.valueOf(newState));
                 }
             }
         });
@@ -90,14 +92,9 @@ public class Controller {
             streetObj.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(highlightedStreet != null) {
-                        highlightedStreet.getValue().setStroke(Color.BLACK);
-                    }
-                    streetObj.setStroke(Color.ORANGE);
-                    highlightedStreet = null;
+                    HighlightObject(streetObj, CONFIG.streets.get(street), true);
                     streetBusinessSelector.setValue(CONFIG.streets.get(street).getStreetState().toString());
                     streetBusinessSelector.setDisable(false);
-                    highlightedStreet = new Pair<>(CONFIG.streets.get(street),streetObj);
                 }
             });
             field.getChildren().add(streetObj);
@@ -132,14 +129,7 @@ public class Controller {
             c.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(highlightedVehicle != null) {
-                        highlightedVehicle.getValue().setFill(highlightedVehicle.getKey().getLine().getMapColor());
-                        highlightedVehicle.getValue().setStroke(highlightedVehicle.getKey().getLine().getMapColor());
-                        highlightedVehicle.getValue().setStrokeWidth(1);
-                    }
-                    c.setStroke(Color.BLACK);
-                    c.setStrokeWidth(5);
-                    highlightedVehicle = new Pair<>(v,c);
+                    HighlightObject(c, v, true);
 
                     String line = v.getLine().getId();
                     data.interfaces.Line lines = CONFIG.lines.get(line);
@@ -147,7 +137,7 @@ public class Controller {
 
                     int old_offset_x = 100;
                     final int y_pos = 70;
-                    List<Route> line_route = highlightedVehicle.getKey().getRoutes();
+                    List<Route> line_route = v.getRoutes();
                     List<Coordinate> coords = new ArrayList<>();
                     for(Route list_streets : line_route){
                         for(AbstractMap.SimpleImmutableEntry<Street, Coordinate> list_all_streets : list_streets.getRoute()){
@@ -159,7 +149,7 @@ public class Controller {
                     for(Coordinate coordinate : coords){
                         Line streetObj = new Line(old_x, old_y, coordinate.getX(), coordinate.getY());
                         streetObj.setStrokeWidth(5);
-                        streetObj.setStroke(highlightedVehicle.getKey().getLine().getMapColor());
+                        streetObj.setStroke(v.getLine().getMapColor());
                         field.getChildren().add(streetObj);
                         old_x = coordinate.getX();
                         old_y = coordinate.getY();
@@ -168,21 +158,20 @@ public class Controller {
                     // replace drawn path
                     highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
                     for(AbstractMap.SimpleImmutableEntry<Stop, Integer> stop : stops_on_lines){
-                        Integer x_pos = old_offset_x + stop.getValue()*30;
+                        int x_pos = old_offset_x + stop.getValue()*30;
                         Line route1  = new Line(old_offset_x + 5, y_pos, x_pos, y_pos);
                         Circle circle = new Circle();
                         Text text = new Text(stop.getKey().getId());
                         circle.setCenterX(x_pos);
                         circle.setCenterY(y_pos);
                         circle.setRadius(5);
-                        circle.setFill(highlightedVehicle.getKey().getLine().getMapColor());
-                        route1.setStroke(highlightedVehicle.getKey().getLine().getMapColor());
+                        circle.setFill(v.getLine().getMapColor());
+                        route1.setStroke(v.getLine().getMapColor());
                         text.setX(x_pos - 7.5);
                         text.setY(y_pos - 10);
                         highlightedBusPath.getChildren().addAll(route1, circle, text);
                         old_offset_x = x_pos;
                     }
-                    UpdateHighlightedVehicle();
                 }
             });
             field.getChildren().add(c);
@@ -194,8 +183,7 @@ public class Controller {
     public void RemoveVehicle(Vehicle v) {
         field.getChildren().remove(vehicles.get(v));
         vehicles.remove(v);
-        if(highlightedVehicle != null && highlightedVehicle.getKey() == v)
-            highlightedVehicle = null;
+        //TODO remove from highlightedObjects
     }
 
     @FXML
@@ -207,13 +195,14 @@ public class Controller {
     }
 
     private void UpdateHighlightedVehicle() {
-        if(highlightedVehicle != null) {
-            busLineId.setText("Line " + highlightedVehicle.getKey().getLine().getId());
-            busState.setText(highlightedVehicle.getKey().getState().toString());
+        if(!highlightedObjects.isEmpty() && highlightedObjects.get(highlightedObjects.size()-1).getValue() instanceof Vehicle) {
+            int lastIndex = highlightedObjects.size()-1;
+            busLineId.setText("Line " + ((Vehicle)(highlightedObjects.get(lastIndex).getValue())).getLine().getId());
+            busState.setText(((Vehicle)(highlightedObjects.get(lastIndex).getValue())).getState().toString());
             //TODO add list of stops
         } else {
             busLineId.setText("No line");
-            busState.setText("INACTIVE");
+            busState.setText(VehicleState.INACTIVE.toString());
         }
     }
 
@@ -243,6 +232,29 @@ public class Controller {
             Image pause = new Image(getClass().getResourceAsStream("./media/pause.png"));
             pauseButton.setGraphic(new ImageView(pause));
         }
+    }
+
+    private void HighlightObject(Shape shape, GUIMapElement element, boolean exclusiveHighlightion) {
+        if(exclusiveHighlightion || (!highlightedObjects.isEmpty() && element.getClass() != highlightedObjects.get(0).getValue().getClass())) {
+            for (Pair<Shape, GUIMapElement> s:highlightedObjects) {
+                s.getKey().setFill(s.getValue().getNormalColor());
+                s.getKey().setStroke(s.getValue().getNormalColor());
+                if(s.getKey() instanceof Circle)
+                    s.getKey().setStrokeWidth(1);
+            }
+            highlightedObjects.removeAll(highlightedObjects);
+        }
+
+        highlightedObjects.add(new Pair<Shape, GUIMapElement>(shape, element));
+
+        if(shape instanceof Line) {
+            shape.setStroke(element.getHighlightedColor());
+        } else if(shape instanceof Circle) {
+            shape.setFill(element.getHighlightedColor());
+            shape.setStrokeWidth(5);
+        }
+
+        UpdateHighlightedVehicle();
     }
 }
 

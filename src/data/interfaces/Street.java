@@ -5,7 +5,7 @@ import java.util.List;
 import data.enums.StreetState;
 import data.implementations.MyStreet;
 
-public interface Street {
+public interface Street extends GUIMapElement {
     static Street CreateStreet(String id, Coordinate... coordinates) { return MyStreet.CreateStreet(id, coordinates); }
     String getId();
     List<Coordinate> getStreetPoints();

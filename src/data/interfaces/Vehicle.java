@@ -6,7 +6,7 @@ import java.util.List;
 import data.enums.VehicleState;
 import data.implementations.MyVehicle;
 
-public interface Vehicle {
+public interface Vehicle extends GUIMapElement {
     static Vehicle CreateVehicle(Line line, LocalTime start) { return MyVehicle.CreateVehicle(line, start); }
     Line getLine();
     LocalTime getStart();

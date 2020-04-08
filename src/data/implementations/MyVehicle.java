@@ -2,6 +2,7 @@ package data.implementations;
 
 import data.interfaces.*;
 import data.enums.VehicleState;
+import javafx.scene.paint.Color;
 import utils.Math2D;
 
 import java.time.LocalTime;
@@ -10,7 +11,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyVehicle implements Vehicle {
+public class MyVehicle implements Vehicle, GUIMapElement {
     Line line;
     LocalTime start;
     double progressTowardsNextStop;
@@ -128,4 +129,10 @@ public class MyVehicle implements Vehicle {
 
     @Override
     public List<Route> getRoutes() { return routes; }
+
+    @Override
+    public Color getNormalColor() { return getLine().getMapColor(); }
+
+    @Override
+    public Color getHighlightedColor() { return Color.ORANGE; }
 }

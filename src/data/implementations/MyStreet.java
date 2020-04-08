@@ -2,13 +2,14 @@ package data.implementations;
 
 import data.enums.StreetState;
 import data.interfaces.*;
+import javafx.scene.paint.Color;
 import utils.Math2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MyStreet implements Street {
+public class MyStreet implements Street, GUIMapElement {
     private String id;
     private StreetState state = StreetState.LOW;
     private List<Stop> stops = new ArrayList<>();
@@ -77,4 +78,10 @@ public class MyStreet implements Street {
 
     @Override
     public StreetState getStreetState() { return state; }
+
+    @Override
+    public Color getNormalColor() { return Color.BLACK; }
+
+    @Override
+    public Color getHighlightedColor() { return Color.ORANGE; }
 }
