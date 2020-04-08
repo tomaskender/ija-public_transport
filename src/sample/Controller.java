@@ -2,10 +2,7 @@ package sample;
 
 import data.enums.StreetState;
 import data.implementations.CONFIG;
-import data.interfaces.Coordinate;
-import data.interfaces.Stop;
-import data.interfaces.Street;
-import data.interfaces.Vehicle;
+import data.interfaces.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -28,10 +25,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Controller {
     public Button pauseButton;
@@ -107,7 +101,6 @@ public class Controller {
                 }
             });
             field.getChildren().add(streetObj);
-
         }
     }
 
@@ -154,6 +147,23 @@ public class Controller {
 
                     int old_offset_x = 100;
                     final int y_pos = 70;
+                    List<Route> line_route = highlightedVehicle.getKey().getRoutes();
+                    List<Coordinate> coords = new ArrayList<>();
+                    for(Route list_streets : line_route){
+                        for(AbstractMap.SimpleImmutableEntry<Street, Coordinate> list_all_streets : list_streets.getRoute()){
+                            coords.add(list_all_streets.getValue());
+                        }
+                    }
+                    int old_x = coords.get(0).getX();
+                    int old_y = coords.get(0).getY();
+                    for(Coordinate coordinate : coords){
+                        Line streetObj = new Line(old_x, old_y, coordinate.getX(), coordinate.getY());
+                        streetObj.setStrokeWidth(5);
+                        streetObj.setStroke(highlightedVehicle.getKey().getLine().getMapColor());
+                        field.getChildren().add(streetObj);
+                        old_x = coordinate.getX();
+                        old_y = coordinate.getY();
+                    }
 
                     // replace drawn path
                     highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
