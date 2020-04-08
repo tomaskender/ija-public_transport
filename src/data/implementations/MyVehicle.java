@@ -68,23 +68,22 @@ public class MyVehicle implements Vehicle {
                 progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
                     routes.remove(0);
-                    if(routes.isEmpty()) {
-                        SetState(VehicleState.INACTIVE);
-                    } else {
-                        SetState(VehicleState.STOPPED);
-                        progressTowardsNextStop = 0.0;
-                    }
+                    SetState(VehicleState.STOPPED);
+                    progressTowardsNextStop = 0.0;
                 }
                 if(!routes.isEmpty())
                     CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
-                else
-                    CONFIG.controller.RemoveVehicle(this);
                 break;
             case STOPPED:
                 stopTime += (double)deltaInMillis/1000;
                 if (stopTime >= CONFIG.EXPECTED_STOP_TIME) {
                     stopTime = 0;
-                    SetState(VehicleState.MOVING);
+                    if(!routes.isEmpty()) {
+                        SetState(VehicleState.MOVING);
+                    } else {
+                        SetState(VehicleState.INACTIVE);
+                        CONFIG.controller.RemoveVehicle(this);
+                    }
                 }
                 break;
         }

@@ -174,7 +174,7 @@ public class Controller {
     public void RemoveVehicle(Vehicle v) {
         field.getChildren().remove(vehicles.get(v));
         vehicles.remove(v);
-        if(highlightedVehicle.getKey() == v)
+        if(highlightedVehicle != null && highlightedVehicle.getKey() == v)
             highlightedVehicle = null;
     }
 
