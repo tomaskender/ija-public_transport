@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -38,6 +39,7 @@ public class Controller {
 
     public Label busLineId;
     public Label busState;
+    public Pane highlightedBusPath;
 
     public ChoiceBox streetBusinessSelector;
     @FXML
@@ -143,24 +145,30 @@ public class Controller {
                     c.setStroke(Color.BLACK);
                     c.setStrokeWidth(5);
                     highlightedVehicle = new Pair<>(v,c);
-                    String line = highlightedVehicle.getKey().getLine().getId();
+
+                    String line = v.getLine().getId();
                     data.interfaces.Line lines = CONFIG.lines.get(line);
                     List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops_on_lines = lines.getStops();
-                    Integer old_value = 0;
+
+                    int old_offset_x = 100;
+                    final int y_pos = 70;
+
+                    // replace drawn path
+                    highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
                     for(AbstractMap.SimpleImmutableEntry<Stop, Integer> stop : stops_on_lines){
-                        Integer x_pos = old_value + stop.getValue()*30;
-                        Line route1  = new Line(old_value + 5, 500, x_pos, 500);
+                        Integer x_pos = old_offset_x + stop.getValue()*30;
+                        Line route1  = new Line(old_offset_x + 5, y_pos, x_pos, y_pos);
                         Circle circle = new Circle();
                         Text text = new Text(stop.getKey().getId());
                         circle.setCenterX(x_pos);
-                        circle.setCenterY(500);
+                        circle.setCenterY(y_pos);
                         circle.setRadius(5);
                         circle.setFill(highlightedVehicle.getKey().getLine().getMapColor());
                         route1.setStroke(highlightedVehicle.getKey().getLine().getMapColor());
                         text.setX(x_pos - 7.5);
-                        text.setY(500 - 10);
-                        field.getChildren().addAll(route1, circle, text);
-                        old_value = x_pos;
+                        text.setY(y_pos - 10);
+                        highlightedBusPath.getChildren().addAll(route1, circle, text);
+                        old_offset_x = x_pos;
                     }
                     UpdateHighlightedVehicle();
                 }
