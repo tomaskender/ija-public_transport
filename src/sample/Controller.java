@@ -12,6 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -225,9 +227,11 @@ public class Controller {
 
         isPaused = !isPaused;
         if(isPaused) {
-            pauseButton.setText("▶");
+            Image pause = new Image(getClass().getResourceAsStream("./media/play.png"));
+            pauseButton.setGraphic(new ImageView(pause));
         } else {
-            pauseButton.setText("⏸");
+            Image pause = new Image(getClass().getResourceAsStream("./media/pause.png"));
+            pauseButton.setGraphic(new ImageView(pause));
         }
     }
 }
