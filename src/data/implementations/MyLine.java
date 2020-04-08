@@ -35,6 +35,8 @@ public class MyLine implements Line {
         return true;
     }
 
+    public List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> getStops() { return stops;}
+
     @Override
     public boolean AddTraversalStreet(Street street) {
         boolean follows = false;

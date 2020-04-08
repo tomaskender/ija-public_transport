@@ -19,12 +19,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
+import sun.awt.ConstrainableGraphics;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Controller {
@@ -140,6 +143,25 @@ public class Controller {
                     c.setStroke(Color.BLACK);
                     c.setStrokeWidth(5);
                     highlightedVehicle = new Pair<>(v,c);
+                    String line = highlightedVehicle.getKey().getLine().getId();
+                    data.interfaces.Line lines = CONFIG.lines.get(line);
+                    List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops_on_lines = lines.getStops();
+                    Integer old_value = 0;
+                    for(AbstractMap.SimpleImmutableEntry<Stop, Integer> stop : stops_on_lines){
+                        Integer x_pos = old_value + stop.getValue()*30;
+                        Line route1  = new Line(0, 500, x_pos, 500);
+                        Circle circle = new Circle();
+                        Text text = new Text(stop.getKey().getId());
+                        circle.setCenterX(x_pos);
+                        circle.setCenterY(500);
+                        circle.setRadius(5);
+                        circle.setFill(highlightedVehicle.getKey().getLine().getMapColor());
+                        route1.setFill(highlightedVehicle.getKey().getLine().getMapColor());
+                        text.setX(x_pos - 7.5);
+                        text.setY(500 - 10);
+                        field.getChildren().addAll(route1, circle, text);
+                        old_value = x_pos;
+                    }
                     UpdateHighlightedVehicle();
                 }
             });

@@ -25,6 +25,8 @@ public class MyStop implements Stop {
         s.AddStopToStreet(this);
     }
 
+    public String getId(){return id;}
+
     @Override
     public Coordinate getCoordinate() {
         return coord;
