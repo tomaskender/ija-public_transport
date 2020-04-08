@@ -149,7 +149,7 @@ public class Controller {
                     Integer old_value = 0;
                     for(AbstractMap.SimpleImmutableEntry<Stop, Integer> stop : stops_on_lines){
                         Integer x_pos = old_value + stop.getValue()*30;
-                        Line route1  = new Line(0, 500, x_pos, 500);
+                        Line route1  = new Line(old_value + 5, 500, x_pos, 500);
                         Circle circle = new Circle();
                         Text text = new Text(stop.getKey().getId());
                         circle.setCenterX(x_pos);
