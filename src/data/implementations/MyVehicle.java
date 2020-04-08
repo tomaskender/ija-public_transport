@@ -17,6 +17,7 @@ public class MyVehicle implements Vehicle {
     double stopTime=0;
     VehicleState state;
     List<Route> routes = new ArrayList<>();
+    int currRouteIndex = 0;
 
     public static Vehicle CreateVehicle(Line line, LocalTime start) {
         if(line != null && start != null) {
@@ -62,23 +63,23 @@ public class MyVehicle implements Vehicle {
                     SetState(VehicleState.MOVING);
                 break;
             case MOVING:
-                Route currRoute = routes.get(0);
+                Route currRoute = routes.get(currRouteIndex);
                 double streetModifier = currRoute.getRoute().get(0).getKey().getStreetState().getModifier();
                 double deltaInSecs = (double)deltaInMillis/1000;
                 progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
-                    routes.remove(0);
+                    currRouteIndex++;
                     SetState(VehicleState.STOPPED);
                     progressTowardsNextStop = 0.0;
                 }
-                if(!routes.isEmpty())
+                if(currRouteIndex < routes.size())
                     CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
                 break;
             case STOPPED:
                 stopTime += (double)deltaInMillis/1000;
                 if (stopTime >= CONFIG.EXPECTED_STOP_TIME) {
                     stopTime = 0;
-                    if(!routes.isEmpty()) {
+                    if(currRouteIndex < routes.size()) {
                         SetState(VehicleState.MOVING);
                     } else {
                         SetState(VehicleState.INACTIVE);
@@ -90,7 +91,7 @@ public class MyVehicle implements Vehicle {
     }
 
     private Coordinate getPosition(double progressToNextStop) {
-        List<AbstractMap.SimpleImmutableEntry<Street,Coordinate>> coords = routes.get(0).getRoute();
+        List<AbstractMap.SimpleImmutableEntry<Street,Coordinate>> coords = routes.get(currRouteIndex).getRoute();
         // get total route length
         double totalDistance = 0;
         for(int i=0; i<coords.size()-1;i++) {
@@ -124,4 +125,7 @@ public class MyVehicle implements Vehicle {
     public void AddRoute(Route route) {
         routes.add(route);
     }
+
+    @Override
+    public List<Route> getRoutes() { return routes; }
 }
