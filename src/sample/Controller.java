@@ -156,7 +156,7 @@ public class Controller {
                         circle.setCenterY(500);
                         circle.setRadius(5);
                         circle.setFill(highlightedVehicle.getKey().getLine().getMapColor());
-                        route1.setFill(highlightedVehicle.getKey().getLine().getMapColor());
+                        route1.setStroke(highlightedVehicle.getKey().getLine().getMapColor());
                         text.setX(x_pos - 7.5);
                         text.setY(500 - 10);
                         field.getChildren().addAll(route1, circle, text);

@@ -4,12 +4,14 @@ import data.implementations.CONFIG;
 import data.interfaces.Vehicle;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.Map;
 import java.util.Timer;
@@ -53,6 +55,13 @@ public class Main extends Application {
                 }.start();
             }
         }, 0, (long)(CONFIG.SIM_DELTA*1000));
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
 
