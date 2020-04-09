@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -163,6 +164,12 @@ public class Controller {
                         Line route1  = new Line(old_offset_x + 5, y_pos, x_pos, y_pos);
                         Circle circle = new Circle();
                         Text text = new Text(stop.getKey().getId());
+                        if(stop.getValue() != 0){
+                            Text time = new Text(String.valueOf(stop.getValue()));
+                            time.setY(y_pos + 15);
+                            time.setX(((old_offset_x+x_pos)/2.0)-5);
+                            highlightedBusPath.getChildren().add(time);
+                        }
                         circle.setCenterX(x_pos);
                         circle.setCenterY(y_pos);
                         circle.setRadius(5);

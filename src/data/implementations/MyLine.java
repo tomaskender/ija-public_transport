@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MyLine implements Line {
@@ -18,7 +19,7 @@ public class MyLine implements Line {
 
     public MyLine(String id) {
         this.id = id;
-        this.mapColor = Color.color(Math.random(), Math.random(), Math.random());
+        this.mapColor = mapColors.remove(0);
     }
 
     @Override
