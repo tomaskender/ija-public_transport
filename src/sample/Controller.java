@@ -352,8 +352,10 @@ public class Controller {
             } else {
                 s.getKey().setFill(s.getValue().getNormalColor());
                 s.getKey().setStroke(s.getValue().getNormalColor());
-                if (s.getKey() instanceof Circle)
+                if (s.getKey() instanceof Circle) {
                     s.getKey().setStrokeWidth(1);
+                    highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
+                }
             }
         }
         streetBusinessSelector.setDisable(true);
