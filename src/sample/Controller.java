@@ -168,7 +168,7 @@ public class Controller {
                     List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops_on_lines = lines.getStops();
 
                     int old_offset_x = 100;
-                    final int y_pos = 70;
+                    final int y_pos = 40;
                     List<Route> line_route = v.getRoutes();
                     List<Coordinate> coords = new ArrayList<>();
                     for(Route list_streets : line_route){
@@ -264,7 +264,6 @@ public class Controller {
         if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() instanceof Vehicle) {
             busLineId.setText("Line " + ((Vehicle)(highlightedObjects.get(0).getValue())).getLine().getId());
             busState.setText(((Vehicle)(highlightedObjects.get(0).getValue())).getState().toString());
-            //TODO add list of stops
         } else {
             busLineId.setText("No line");
             busState.setText(VehicleState.INACTIVE.toString());
@@ -289,6 +288,10 @@ public class Controller {
             }
         }
 
+        if(isPaused && isInClosureMode) {
+            onCloseStreetClicked(null);
+        }
+
         isPaused = !isPaused;
         if(isPaused) {
             Image pause = new Image(getClass().getResourceAsStream("./media/play.png"));
@@ -304,6 +307,10 @@ public class Controller {
         isInClosureMode = !isInClosureMode;
 
         if(isInClosureMode) {
+            if(isPaused==false) {
+                onPauseClicked(null);
+            }
+
             closeStreetButton.setText("Cancel");
         } else {
             closeStreetButton.setText("Close Street");

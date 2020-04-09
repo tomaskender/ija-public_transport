@@ -19,13 +19,11 @@
    <right>
       <AnchorPane prefHeight="550.0" prefWidth="169.0" BorderPane.alignment="CENTER">
          <children>
-            <TitledPane animated="false" layoutY="120.0" prefHeight="181.0" prefWidth="202.0" text="Highlighted Bus">
+            <TitledPane animated="false" layoutY="120.0" prefHeight="181.0" prefWidth="202.0" text="Alternative Routes">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="busLineId" text="Line LX" />
-                        <ListView fx:id="busStopList" layoutY="21.0" prefHeight="134.0" prefWidth="200.0" />
-                        <Label fx:id="busState" alignment="CENTER_RIGHT" layoutX="126.0" layoutY="2.0" prefHeight="14.0" prefWidth="67.0" text="MOVING" />
+                        <ListView fx:id="busStopList" />
                      </children>
                   </AnchorPane>
               </content>
@@ -47,7 +45,7 @@
       </AnchorPane>
    </right>
    <center>
-      <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER" >
         <items>
             <ScrollPane fx:id="content" prefHeight="200.0" prefWidth="200.0">
                <content>
@@ -58,7 +56,13 @@
                   </AnchorPane>
                </content>
             </ScrollPane>
-            <Pane fx:id="highlightedBusPath" maxHeight="200.0" prefHeight="200.0" prefWidth="200.0" />
+            <Pane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0">
+               <children>
+                  <Label fx:id="busLineId" layoutX="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="252.0" text="Line LX" />
+                  <Label fx:id="busState" layoutX="70.0" prefHeight="20.0" prefWidth="73.0" text="MOVING" />
+               </children>
+            </Pane>
+            <Pane fx:id="highlightedBusPath" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" />
         </items>
       </SplitPane>
    </center>
