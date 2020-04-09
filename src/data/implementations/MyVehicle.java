@@ -134,5 +134,5 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     public Color getNormalColor() { return getLine().getMapColor(); }
 
     @Override
-    public Color getHighlightedColor() { return Color.ORANGE; }
+    public Color getHighlightedColor() { return getLine().getMapColor(); }
 }

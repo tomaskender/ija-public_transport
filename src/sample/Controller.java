@@ -3,6 +3,7 @@ package sample;
 import data.enums.StreetState;
 import data.enums.VehicleState;
 import data.implementations.CONFIG;
+import data.implementations.GUIVehiclePath;
 import data.interfaces.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,7 +22,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-import sun.awt.ConstrainableGraphics;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +72,7 @@ public class Controller {
         streetBusinessSelector.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if(highlightedObjects.size() > 0) {
+                if(!highlightedObjects.isEmpty()) {
                     String newState = streetBusinessSelector.getItems().get((Integer) number2).toString();
                     ((Street)(highlightedObjects.get(highlightedObjects.size()-1).getValue())).SetStreetState(StreetState.valueOf(newState));
                 }
@@ -94,7 +94,6 @@ public class Controller {
                 public void handle(MouseEvent mouseEvent) {
                     HighlightObject(streetObj, CONFIG.streets.get(street), true);
                     streetBusinessSelector.setValue(CONFIG.streets.get(street).getStreetState().toString());
-                    streetBusinessSelector.setDisable(false);
                 }
             });
             field.getChildren().add(streetObj);
@@ -150,9 +149,11 @@ public class Controller {
                         Line streetObj = new Line(old_x, old_y, coordinate.getX(), coordinate.getY());
                         streetObj.setStrokeWidth(5);
                         streetObj.setStroke(v.getLine().getMapColor());
+                        streetObj.setMouseTransparent(true);
                         field.getChildren().add(streetObj);
                         old_x = coordinate.getX();
                         old_y = coordinate.getY();
+                        HighlightObject(streetObj, new GUIVehiclePath(v.getLine().getMapColor()), false);
                     }
 
                     // replace drawn path
@@ -181,9 +182,11 @@ public class Controller {
 
     @FXML
     public void RemoveVehicle(Vehicle v) {
+        if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() == v)
+            ClearHighlights();
+
         field.getChildren().remove(vehicles.get(v));
         vehicles.remove(v);
-        //TODO remove from highlightedObjects
     }
 
     @FXML
@@ -195,10 +198,9 @@ public class Controller {
     }
 
     private void UpdateHighlightedVehicle() {
-        if(!highlightedObjects.isEmpty() && highlightedObjects.get(highlightedObjects.size()-1).getValue() instanceof Vehicle) {
-            int lastIndex = highlightedObjects.size()-1;
-            busLineId.setText("Line " + ((Vehicle)(highlightedObjects.get(lastIndex).getValue())).getLine().getId());
-            busState.setText(((Vehicle)(highlightedObjects.get(lastIndex).getValue())).getState().toString());
+        if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() instanceof Vehicle) {
+            busLineId.setText("Line " + ((Vehicle)(highlightedObjects.get(0).getValue())).getLine().getId());
+            busState.setText(((Vehicle)(highlightedObjects.get(0).getValue())).getState().toString());
             //TODO add list of stops
         } else {
             busLineId.setText("No line");
@@ -235,26 +237,39 @@ public class Controller {
     }
 
     private void HighlightObject(Shape shape, GUIMapElement element, boolean exclusiveHighlightion) {
-        if(exclusiveHighlightion || (!highlightedObjects.isEmpty() && element.getClass() != highlightedObjects.get(0).getValue().getClass())) {
-            for (Pair<Shape, GUIMapElement> s:highlightedObjects) {
-                s.getKey().setFill(s.getValue().getNormalColor());
-                s.getKey().setStroke(s.getValue().getNormalColor());
-                if(s.getKey() instanceof Circle)
-                    s.getKey().setStrokeWidth(1);
-            }
-            highlightedObjects.removeAll(highlightedObjects);
+        if(exclusiveHighlightion /*|| (!highlightedObjects.isEmpty() && element.getClass() != highlightedObjects.get(highlightedObjects.size()-1).getValue().getClass())*/) {
+            ClearHighlights();
         }
 
         highlightedObjects.add(new Pair<Shape, GUIMapElement>(shape, element));
 
         if(shape instanceof Line) {
+            if(element instanceof Street)
+                streetBusinessSelector.setDisable(false);
+            
             shape.setStroke(element.getHighlightedColor());
         } else if(shape instanceof Circle) {
             shape.setFill(element.getHighlightedColor());
+            shape.setStroke(Color.BLACK);
             shape.setStrokeWidth(5);
         }
 
         UpdateHighlightedVehicle();
+    }
+
+    private void ClearHighlights() {
+        for (Pair<Shape, GUIMapElement> s : highlightedObjects) {
+            if (s.getValue() instanceof GUIVehiclePath) {
+                field.getChildren().remove(s.getKey());
+            } else {
+                s.getKey().setFill(s.getValue().getNormalColor());
+                s.getKey().setStroke(s.getValue().getNormalColor());
+                if (s.getKey() instanceof Circle)
+                    s.getKey().setStrokeWidth(1);
+            }
+        }
+        streetBusinessSelector.setDisable(true);
+        highlightedObjects.removeAll(highlightedObjects);
     }
 }
 
