@@ -19,7 +19,11 @@ public class MyLine implements Line {
 
     public MyLine(String id) {
         this.id = id;
-        this.mapColor = mapColors.remove(0);
+        try {
+            this.mapColor = mapColors.remove(0);
+        } catch (Exception e){
+            this.mapColor = Color.color(Math.random(), Math.random(), Math.random());
+        }
     }
 
     @Override
