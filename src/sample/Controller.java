@@ -173,6 +173,8 @@ public class Controller {
                         highlightedBusPath.getChildren().addAll(route1, circle, text);
                         old_offset_x = x_pos;
                     }
+
+                    c.toFront();
                 }
             });
             field.getChildren().add(c);
