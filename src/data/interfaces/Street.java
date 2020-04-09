@@ -16,4 +16,6 @@ public interface Street extends GUIMapElement {
     Coordinate getEnd();
     void SetStreetState(StreetState state);
     StreetState getStreetState();
+    boolean isClosed();
+    void SetClosed(boolean isClosed);
 }

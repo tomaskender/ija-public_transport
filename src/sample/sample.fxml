@@ -42,7 +42,7 @@
             <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" value="1.0" />
             <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" />
             <ChoiceBox fx:id="streetBusinessSelector" disable="true" layoutX="15.0" layoutY="475.0" prefHeight="24.0" prefWidth="174.0" />
-            <Button fx:id="closeStreetButton" layoutX="14.0" layoutY="507.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="176.0" text="Close Street" />
+            <Button fx:id="closeStreetButton" layoutX="14.0" layoutY="507.0" mnemonicParsing="false" onAction="#onCloseStreetClicked" prefHeight="32.0" prefWidth="176.0" text="Close Street" />
          </children>
       </AnchorPane>
    </right>
