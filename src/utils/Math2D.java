@@ -13,4 +13,34 @@ public class Math2D {
     public static double getDistanceBetweenPoints(Coordinate p1, Coordinate p2) {
         return Math.hypot(p1.getX() - p2.getX(), p1.getY() - p2.getY());
     }
+
+    public static Coordinate getClosestPointOnSegment(Coordinate s1, Coordinate s2, Coordinate sp)
+    {
+        int s1X = s1.getX(), s2X = s2.getX(), spX  = sp.getX();
+        int s1Y = s1.getY(), s2Y = s2.getY(), spY  = sp.getY();
+
+        double xDelta = s2X - s1X;
+        double yDelta = s2Y - s1Y;
+
+        if ((xDelta == 0) && (yDelta == 0))
+        {
+            return s1;
+        }
+
+        double u = ((spX - s1X) * xDelta + (spY - s1Y) * yDelta) / (xDelta * xDelta + yDelta * yDelta);
+
+        final Coordinate closestPoint;
+        if (u < 0)
+        {
+            return s1;
+        }
+        else if (u > 1)
+        {
+            return s2;
+        }
+        else
+        {
+            return Coordinate.CreateCoordinate((int) Math.round(s1X + u * xDelta), (int) Math.round(s1Y + u * yDelta));
+        }
+    }
 }

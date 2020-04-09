@@ -12,10 +12,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -23,12 +27,16 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
+import utils.Math2D;
 
+import java.awt.*;
+import java.rmi.UnexpectedException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
 
 public class Controller {
     public Button pauseButton;
@@ -41,6 +49,7 @@ public class Controller {
     public Pane highlightedBusPath;
 
     public ChoiceBox streetBusinessSelector;
+    public Button closeStreetButton;
     @FXML
     AnchorPane field;
 
@@ -48,6 +57,8 @@ public class Controller {
     private Map<Vehicle,Circle> vehicles = new HashMap<>();
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
+    boolean isInClosureMode = false;
+    Street currHoveredStreet = null;
     List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
 
     @FXML
@@ -83,18 +94,40 @@ public class Controller {
 
     @FXML
     public void LoadStreets(){
-        for (String street : CONFIG.streets.keySet()){
-            Line streetObj = new Line(CONFIG.streets.get(street).getBegin().getX(),
-                                    CONFIG.streets.get(street).getBegin().getY(),
-                                    CONFIG.streets.get(street).getEnd().getX(),
-                                    CONFIG.streets.get(street).getEnd().getY());
+        for (Street street : CONFIG.streets.values()){
+            Line streetObj = new Line(street.getBegin().getX(),
+                                    street.getBegin().getY(),
+                                    street.getEnd().getX(),
+                                    street.getEnd().getY());
             streetObj.setStrokeWidth(5);
 
             streetObj.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    HighlightObject(streetObj, CONFIG.streets.get(street), true);
-                    streetBusinessSelector.setValue(CONFIG.streets.get(street).getStreetState().toString());
+                    if(isInClosureMode) {
+                        ClearHighlights();
+                        street.SetClosed(!street.isClosed());
+                        streetObj.setStroke(street.getNormalColor());
+                    } else {
+                        if(!street.isClosed()) {
+                            HighlightObject(streetObj, street, true);
+                            streetBusinessSelector.setValue(street.getStreetState().toString());
+                        }
+                    }
+                }
+            });
+            streetObj.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    currHoveredStreet = street;
+                }
+            });
+            streetObj.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(currHoveredStreet == street) {
+                        currHoveredStreet = null;
+                    }
                 }
             });
             field.getChildren().add(streetObj);
@@ -136,7 +169,7 @@ public class Controller {
                     List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops_on_lines = lines.getStops();
 
                     int old_offset_x = 100;
-                    final int y_pos = 70;
+                    final int y_pos = 40;
                     List<Route> line_route = v.getRoutes();
                     List<Coordinate> coords = new ArrayList<>();
                     for(Route list_streets : line_route){
@@ -204,13 +237,40 @@ public class Controller {
         timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
 
         UpdateHighlightedVehicle();
+
+        if(isInClosureMode && currHoveredStreet != null) {
+            try {
+                HandleClosure();
+            } catch(Exception e) {
+
+            }
+        }
+    }
+
+    private void HandleClosure() throws UnexpectedException {
+        Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+        Coordinate currMousePosition = Coordinate.CreateCoordinate(mouseLocation.x, mouseLocation.y);
+
+        Coordinate closestPoint = null;
+        for(int i=0; i<currHoveredStreet.getStreetPoints().size()-1; i++) {
+            Coordinate p = Math2D.getClosestPointOnSegment(currHoveredStreet.getStreetPoints().get(i),
+                    currHoveredStreet.getStreetPoints().get(i+1),
+                    currMousePosition);
+            if(closestPoint == null || Math2D.getDistanceBetweenPoints(currMousePosition, p) < Math2D.getDistanceBetweenPoints(currMousePosition, closestPoint))
+                closestPoint = p;
+        }
+
+        if(closestPoint == null) {
+            throw new UnexpectedException("Closure point was not found on selected street");
+        } else {
+            //TODO move X
+        }
     }
 
     private void UpdateHighlightedVehicle() {
         if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() instanceof Vehicle) {
             busLineId.setText("Line " + ((Vehicle)(highlightedObjects.get(0).getValue())).getLine().getId());
             busState.setText(((Vehicle)(highlightedObjects.get(0).getValue())).getState().toString());
-            //TODO add list of stops
         } else {
             busLineId.setText("No line");
             busState.setText(VehicleState.INACTIVE.toString());
@@ -235,6 +295,10 @@ public class Controller {
             }
         }
 
+        if(isPaused && isInClosureMode) {
+            onCloseStreetClicked(null);
+        }
+
         isPaused = !isPaused;
         if(isPaused) {
             Image pause = new Image(getClass().getResourceAsStream("./media/play.png"));
@@ -242,6 +306,21 @@ public class Controller {
         } else {
             Image pause = new Image(getClass().getResourceAsStream("./media/pause.png"));
             pauseButton.setGraphic(new ImageView(pause));
+        }
+    }
+
+    @FXML
+    void onCloseStreetClicked(ActionEvent actionEvent) {
+        isInClosureMode = !isInClosureMode;
+
+        if(isInClosureMode) {
+            if(isPaused==false) {
+                onPauseClicked(null);
+            }
+
+            closeStreetButton.setText("Cancel");
+        } else {
+            closeStreetButton.setText("Close Street");
         }
     }
 
