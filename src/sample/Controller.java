@@ -3,10 +3,12 @@ package sample;
 import data.enums.StreetState;
 import data.enums.VehicleState;
 import data.implementations.CONFIG;
+import data.implementations.ChangePath;
 import data.implementations.GUIVehiclePath;
 import data.interfaces.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -45,7 +47,7 @@ public class Controller {
     public Slider simSpeedSlider;
     public Label simSpeedLabel;
 
-    public ListView altRouteSelector;
+    public ListView<ChangePath> altRouteSelector;
 
     public Label busLineId;
     public Label busState;
@@ -110,6 +112,15 @@ public class Controller {
                     mousePlaceStopMarker.setCenterX(p.getX());
                     mousePlaceStopMarker.setCenterY(p.getY());
                 }
+            }
+        });
+
+        altRouteSelector.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ChangePath>() {
+
+            @Override
+            public void changed(ObservableValue<? extends ChangePath> observable, ChangePath oldValue, ChangePath newValue) {
+                // Your action here
+                System.out.println("Selected item: " + newValue);
             }
         });
     }
@@ -268,18 +279,18 @@ public class Controller {
     }
 
     private Coordinate getClosurePoint(Street currHoveredStreet, int mouseX, int mouseY) {
-        Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
         Coordinate currMousePosition = Coordinate.CreateCoordinate(mouseX, mouseY);
 
         Coordinate closestPoint = null;
-        for(int i=0; i<currHoveredStreet.getStreetPoints().size()-1; i++) {
-            Coordinate p = Math2D.getClosestPointOnSegment(currHoveredStreet.getStreetPoints().get(i),
-                    currHoveredStreet.getStreetPoints().get(i+1),
-                    currMousePosition);
-            if(closestPoint == null || Math2D.getDistanceBetweenPoints(currMousePosition, p) < Math2D.getDistanceBetweenPoints(currMousePosition, closestPoint))
-                closestPoint = p;
+        if(currHoveredStreet != null) {
+            for (int i = 0; i < currHoveredStreet.getStreetPoints().size() - 1; i++) {
+                Coordinate p = Math2D.getClosestPointOnSegment(currHoveredStreet.getStreetPoints().get(i),
+                        currHoveredStreet.getStreetPoints().get(i + 1),
+                        currMousePosition);
+                if (closestPoint == null || Math2D.getDistanceBetweenPoints(currMousePosition, p) < Math2D.getDistanceBetweenPoints(currMousePosition, closestPoint))
+                    closestPoint = p;
+            }
         }
-
         return closestPoint;
     }
 
@@ -306,8 +317,17 @@ public class Controller {
         for (Vehicle v:CONFIG.vehicles.values()) {
             Coordinate lastPoint = v.getLastRoutePointBeforeCoordinate(currHoveredStreet, p);
             if(lastPoint != null) {
-                if(!altRouteSelector.getItems().contains(v.getLine().getId()))
-                    altRouteSelector.getItems().add(v.getLine().getId());
+                Route lastRoute = v.getRoutes().get(v.getRoutes().size()-1);
+                Coordinate lastPos = lastRoute.getRoute().get(lastRoute.getRoute().size()-1).getValue();
+
+                ChangePath path = new ChangePath(v.getLine(), lastPoint, lastPos);
+                path.AddVehicle(v);
+
+                int index = altRouteSelector.getItems().indexOf(path);
+                if(index != -1)
+                    altRouteSelector.getItems().get(index).AddVehicle(v);
+                else
+                    altRouteSelector.getItems().add(path);
             }
         }
     }
