@@ -14,4 +14,5 @@ public interface Vehicle extends GUIMapElement {
     VehicleState getState();
     void AddRoute(Route route);
     List<Route> getRoutes();
+    Coordinate getLastRoutePointBeforeCoordinate(Street street, Coordinate coord);
 }

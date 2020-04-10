@@ -27,6 +27,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
+import sun.security.ssl.Debug;
 import utils.Math2D;
 
 import java.awt.*;
@@ -44,6 +45,8 @@ public class Controller {
     public Slider simSpeedSlider;
     public Label simSpeedLabel;
 
+    public ListView altRouteSelector;
+
     public Label busLineId;
     public Label busState;
     public Pane highlightedBusPath;
@@ -58,7 +61,6 @@ public class Controller {
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
     boolean isInClosureMode = false;
-    Street currHoveredStreet = null;
     List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
 
     @FXML
@@ -106,27 +108,12 @@ public class Controller {
                 public void handle(MouseEvent mouseEvent) {
                     if(isInClosureMode) {
                         ClearHighlights();
-                        street.SetClosed(!street.isClosed());
-                        streetObj.setStroke(street.getNormalColor());
+                        onStreetClosed(street, getClosurePoint(street, (int)mouseEvent.getX(), (int)mouseEvent.getY()));
                     } else {
                         if(!street.isClosed()) {
                             HighlightObject(streetObj, street, true);
                             streetBusinessSelector.setValue(street.getStreetState().toString());
                         }
-                    }
-                }
-            });
-            streetObj.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    currHoveredStreet = street;
-                }
-            });
-            streetObj.setOnMouseExited(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if(currHoveredStreet == street) {
-                        currHoveredStreet = null;
                     }
                 }
             });
@@ -237,19 +224,11 @@ public class Controller {
         timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
 
         UpdateHighlightedVehicle();
-
-        if(isInClosureMode && currHoveredStreet != null) {
-            try {
-                HandleClosure();
-            } catch(Exception e) {
-
-            }
-        }
     }
 
-    private void HandleClosure() throws UnexpectedException {
+    private Coordinate getClosurePoint(Street currHoveredStreet, int mouseX, int mouseY) {
         Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-        Coordinate currMousePosition = Coordinate.CreateCoordinate(mouseLocation.x, mouseLocation.y);
+        Coordinate currMousePosition = Coordinate.CreateCoordinate(mouseX, mouseY);
 
         Coordinate closestPoint = null;
         for(int i=0; i<currHoveredStreet.getStreetPoints().size()-1; i++) {
@@ -260,10 +239,34 @@ public class Controller {
                 closestPoint = p;
         }
 
-        if(closestPoint == null) {
-            throw new UnexpectedException("Closure point was not found on selected street");
-        } else {
-            //TODO move X
+        return closestPoint;
+    }
+
+    private void onStreetClosed(Street street, Coordinate closedAt) {
+        street.SetClosed(!street.isClosed());
+
+        // create stop
+        Circle c = new Circle();
+        c.setCenterX(closedAt.getX());
+        c.setCenterY(closedAt.getY());
+        c.setFill(Color.RED);
+        c.setRadius(10);
+        c.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isInClosureMode) {
+                    field.getChildren().remove(c);
+                }
+            }
+        });
+        field.getChildren().add(c);
+
+        for (Vehicle v:CONFIG.vehicles.values()) {
+            Coordinate lastPoint = v.getLastRoutePointBeforeCoordinate(street, closedAt);
+            if(lastPoint != null) {
+                if(!altRouteSelector.getItems().contains(v.getLine().getId()))
+                    altRouteSelector.getItems().add(v.getLine().getId());
+            }
         }
     }
 
@@ -296,6 +299,8 @@ public class Controller {
         }
 
         if(isPaused && isInClosureMode) {
+            if(!altRouteSelector.getItems().isEmpty()) return;
+            
             onCloseStreetClicked(null);
         }
 
