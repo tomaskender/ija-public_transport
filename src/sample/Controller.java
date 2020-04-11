@@ -153,10 +153,8 @@ public class Controller {
                 public void handle(MouseEvent mouseEvent) {
                     switch (state) {
                         case NORMAL:
-                            if(!street.isClosed()) {
-                                HighlightObject(streetObj, street, true);
-                                streetBusinessSelector.setValue(street.getStreetState().toString());
-                            }
+                            HighlightObject(streetObj, street, true);
+                            streetBusinessSelector.setValue(street.getStreetState().toString());
                             break;
                         case CLOSING_STREETS:
                             ClearHighlights();
@@ -340,8 +338,6 @@ public class Controller {
     }
 
     private void onStreetClosed() {
-        currHoveredStreet.SetClosed(!currHoveredStreet.isClosed());
-
         // create closure
         Circle c = new Circle();
         Coordinate p = Coordinate.CreateCoordinate((int)mousePlaceStopMarker.getCenterX(), (int)mousePlaceStopMarker.getCenterY());
@@ -353,10 +349,12 @@ public class Controller {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(state == GUIState.CLOSING_STREETS) {
+                    currHoveredStreet.RemoveClosurePoint(p);
                     field.getChildren().remove(c);
                 }
             }
         });
+        currHoveredStreet.AddClosurePoint(p);
         field.getChildren().add(c);
 
         for (Vehicle v:CONFIG.vehicles.values()) {

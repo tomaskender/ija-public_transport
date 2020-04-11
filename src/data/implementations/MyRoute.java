@@ -20,112 +20,67 @@ public class MyRoute implements Route {
     public boolean ConstructRoute(List<Street> streets, Stop firstStop, Stop secondStop, int deltaTimeInMins) {
         this.deltaTime = deltaTimeInMins*60;
 
-        // algorithm for stops on same street
-        if (firstStop.getStreet() == secondStop.getStreet()) {
-            List<Coordinate> streetPoints = firstStop.getStreet().getStreetPoints();
-            boolean hasFoundStop1 = false, hasFoundStop2 = false;
-            for (int i = 0; i < streetPoints.size() - 1; i++) {
-                if (hasFoundStop1 || hasFoundStop2) {
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(firstStop.getStreet(),streetPoints.get(i)));
+        //algorithm for stops at different streets
+        route = new ArrayList<>();
+
+        route.add(new AbstractMap.SimpleImmutableEntry<>(firstStop.getStreet(), firstStop.getCoordinate()));
+        for(int street_i=streets.indexOf(firstStop.getStreet()); street_i<streets.size(); street_i++) {
+            Street currStreet = streets.get(street_i);
+
+            if(Math2D.isLocatedBetweenPoints(secondStop.getCoordinate(),
+                    currStreet.getBegin(),
+                    currStreet.getEnd())) {
+                boolean noClosurePointInWay = true;
+
+                for(Coordinate closurePoint: currStreet.getClosurePoints()) {
+                    if(!Math2D.isLocatedBetweenPoints(closurePoint, route.get(route.size()-1).getValue(), secondStop.getCoordinate()))
+                        noClosurePointInWay = false;
                 }
 
-                if (Math2D.isLocatedBetweenPoints(firstStop.getCoordinate(), streetPoints.get(i), streetPoints.get(i + 1))) {
-                    if (hasFoundStop2) {
-                        //if stop2 was found first, then it means we are going from end of street to its start
-                        Collections.reverse(route);
-                        break;
-                    } else {
-                        hasFoundStop1 = true;
-                    }
-                }
-                if (Math2D.isLocatedBetweenPoints(secondStop.getCoordinate(), streetPoints.get(i), streetPoints.get(i + 1))) {
-                    if (hasFoundStop1) {
-                        break;
-                    } else {
-                        hasFoundStop2 = true;
-                    }
-                }
-            }
-            // finally add the stops themselves
-            route.add(0, new AbstractMap.SimpleImmutableEntry<>(firstStop.getStreet(),firstStop.getCoordinate()));
-            route.add(new AbstractMap.SimpleImmutableEntry<>(secondStop.getStreet(),secondStop.getCoordinate()));
-        } else {
-            //algorithm for stops at different streets
-
-            //step 1 add points from first stop to end of street
-            //step 1a) find out the location of stop on street
-            List<Coordinate> firstStreetPoints = firstStop.getStreet().getStreetPoints();
-            for (int i = 0; i < firstStreetPoints.size() - 1; i++) {
-                if (Math2D.isLocatedBetweenPoints(firstStop.getCoordinate(), firstStreetPoints.get(i), firstStreetPoints.get(i + 1))) {
-                    //step 1b) find out which end of the street to go to
-                    int nextStreetIndex = streets.indexOf(firstStop.getStreet()) + 1;
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(firstStop.getStreet(),firstStop.getCoordinate()));
-                    List<Coordinate> pointsToAdd;
-                    if (streets.get(nextStreetIndex).getStreetPoints().contains(firstStop.getStreet().getBegin())) {
-                        pointsToAdd = firstStreetPoints.subList(0, i);
-                        Collections.reverse(pointsToAdd);
-                    } else {
-                        pointsToAdd = firstStreetPoints.subList(i + 1, firstStreetPoints.size() - 1);
-                    }
-
-                    // 1c) assign all street points in the way
-                    for(Coordinate coord:pointsToAdd)
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(firstStop.getStreet(), coord));
-                    break;
+                if(noClosurePointInWay) {
+                    route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, secondStop.getCoordinate()));
+                    return true;
                 }
             }
 
-            //step 2a) find traversal street points
-            //TODO first stops street not found in streets => return false
-            for (int street_i = streets.indexOf(firstStop.getStreet()) + 1;
-                 street_i != streets.indexOf(secondStop.getStreet()) && street_i < streets.size();
-                 street_i++) {
-
-                List<Coordinate> traversalStreetPoints = streets.get(street_i).getStreetPoints();
-
-                if(street_i == streets.size()-1 && streets.get(street_i) != secondStop.getStreet()) {
-                    // route to destination is not finished
-                    for (Coordinate coord:traversalStreetPoints)
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(streets.get(street_i), coord));
-                    return false;
+            if(street_i+1 < streets.size()){
+                Street nextStreet = streets.get(street_i+1);
+                if(Math2D.isLocatedBetweenPoints(currStreet.getBegin(),
+                        nextStreet.getBegin(),
+                        nextStreet.getEnd())) {
+                    // |------
+                    route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, currStreet.getBegin()));
+                    route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, currStreet.getBegin()));
+                } else if(Math2D.isLocatedBetweenPoints(currStreet.getEnd(),
+                        nextStreet.getBegin(),
+                        nextStreet.getEnd())) {
+                    // ------|
+                    route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, currStreet.getEnd()));
+                    route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, currStreet.getEnd()));
                 } else {
-                    Coordinate lastTraversalStreetPoint = traversalStreetPoints.get(traversalStreetPoints.size() - 1);
-                    Street prevStreet = streets.get(street_i - 1);
-                    if (lastTraversalStreetPoint == prevStreet.getBegin() ||
-                            lastTraversalStreetPoint == prevStreet.getEnd()) {
-                        Collections.reverse(traversalStreetPoints);
-                    }
-                    //step 2b) add traversal street points
-                    for (Coordinate coord : traversalStreetPoints)
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(streets.get(street_i), coord));
-                }
-            }
-
-            //step 3 add points from start of street to second stop
-            //step 3a) find out the location of stop on street
-            List<Coordinate> secondStreetPoints = secondStop.getStreet().getStreetPoints();
-            for (int i = 0; i < secondStreetPoints.size() - 1; i++) {
-                if (Math2D.isLocatedBetweenPoints(secondStop.getCoordinate(), secondStreetPoints.get(i), secondStreetPoints.get(i + 1))) {
-                    //step 3b) find out which end of the street to go from
-                    int prevStreetIndex = streets.indexOf(secondStop.getStreet()) - 1;
-                    List<Coordinate> pointsToAdd;
-                    if (streets.get(prevStreetIndex).getStreetPoints().contains(secondStop.getStreet().getBegin())) {
-                        pointsToAdd = secondStreetPoints.subList(0, i);
+                    // ---|---
+                    if(Math2D.isLocatedBetweenPoints(nextStreet.getBegin(),
+                            currStreet.getBegin(),
+                            currStreet.getEnd())) {
+                        route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, nextStreet.getBegin()));
+                        route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, nextStreet.getBegin()));
+                    } else if(Math2D.isLocatedBetweenPoints(nextStreet.getEnd(),
+                            currStreet.getBegin(),
+                            currStreet.getEnd())) {
+                        route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, nextStreet.getEnd()));
+                        route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, nextStreet.getEnd()));
                     } else {
-                        pointsToAdd = secondStreetPoints.subList(i + 1, secondStreetPoints.size() - 1);
-                        Collections.reverse(pointsToAdd);
+                        break;
                     }
-
-                    //step 3c) assign all street points in the way
-                    for (Coordinate coord:pointsToAdd) {
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(secondStop.getStreet(), coord));
-                    }
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(secondStop.getStreet(), secondStop.getCoordinate()));
-                    break;
                 }
+            } else {
+                // street list does not contain full path to second stop
+                route.add(new AbstractMap.SimpleImmutableEntry<>(streets.get(street_i), currStreet.getBegin()));
+                route.add(new AbstractMap.SimpleImmutableEntry<>(streets.get(street_i), currStreet.getEnd()));
+                break;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

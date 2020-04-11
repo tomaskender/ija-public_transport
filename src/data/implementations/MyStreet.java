@@ -81,6 +81,9 @@ public class MyStreet implements Street, GUIMapElement {
     public StreetState getStreetState() { return state; }
 
     @Override
+    public List<Coordinate> getClosurePoints() { return closurePoints; }
+
+    @Override
     public void AddClosurePoint(Coordinate point) {
         closurePoints.add(point);
     }

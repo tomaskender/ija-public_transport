@@ -14,8 +14,11 @@ public interface Street extends GUIMapElement {
     List<Stop> getStops();
     Coordinate getBegin();
     Coordinate getEnd();
+
     void SetStreetState(StreetState state);
     StreetState getStreetState();
+
+    List<Coordinate> getClosurePoints();
     void AddClosurePoint(Coordinate point);
     void RemoveClosurePoint(Coordinate point);
 }
