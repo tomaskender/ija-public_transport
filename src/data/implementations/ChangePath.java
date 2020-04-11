@@ -2,6 +2,7 @@ package data.implementations;
 
 import data.interfaces.Coordinate;
 import data.interfaces.Line;
+import data.interfaces.Stop;
 import data.interfaces.Vehicle;
 
 import java.util.ArrayList;
@@ -10,20 +11,20 @@ import java.util.List;
 public class ChangePath {
     private Line line;
     private List<Vehicle> subscribedVehicles = new ArrayList<>();
-    private Coordinate beginning;
-    private Coordinate end;
+    private Stop beginning;
+    private Stop end;
 
-    public ChangePath(Line line, Coordinate beginning, Coordinate end) {
+    public ChangePath(Line line, Stop beginning, Stop end) {
         this.line = line;
         this.beginning = beginning;
         this.end = end;
     }
 
-    public Coordinate getBeginning() {
+    public Stop getBeginning() {
         return beginning;
     }
 
-    public Coordinate getEnd() {
+    public Stop getEnd() {
         return end;
     }
 

@@ -31,4 +31,18 @@ public class MyStop implements Stop {
     public Coordinate getCoordinate() {
         return coord;
     }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Stop) {
+            return getId().equals(((Stop) o).getId()) && getCoordinate().equals(((Stop) o).getCoordinate());
+        } else {
+            return false;
+        }
+    }
 }

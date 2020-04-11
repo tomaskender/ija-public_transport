@@ -1,6 +1,7 @@
 package data.interfaces;
 
 import java.time.LocalTime;
+import java.util.AbstractMap;
 import java.util.List;
 
 import data.enums.VehicleState;
@@ -14,5 +15,5 @@ public interface Vehicle extends GUIMapElement {
     VehicleState getState();
     void AddRoute(Route route);
     List<Route> getRoutes();
-    Coordinate getLastRoutePointBeforeCoordinate(Street street, Coordinate coord);
+    AbstractMap.SimpleImmutableEntry<Street,Coordinate> getLastRoutePointBeforeCoordinate(Street street, Coordinate coord);
 }

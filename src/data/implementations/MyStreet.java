@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MyStreet implements Street, GUIMapElement {
     private String id;
-    private boolean isClosed = false;
+    private List<Coordinate> closurePoints = new ArrayList<>();
     private StreetState state = StreetState.LOW;
     private List<Stop> stops = new ArrayList<>();
     private List<Coordinate> coords = new ArrayList<>();
@@ -81,22 +81,18 @@ public class MyStreet implements Street, GUIMapElement {
     public StreetState getStreetState() { return state; }
 
     @Override
-    public boolean isClosed() {
-        return isClosed;
+    public void AddClosurePoint(Coordinate point) {
+        closurePoints.add(point);
     }
 
     @Override
-    public void SetClosed(boolean isClosed) {
-        this.isClosed = isClosed;
-
-        if(this.isClosed) {
-            // fix path of affected lines
-        }
+    public void RemoveClosurePoint(Coordinate point) {
+        closurePoints.remove(point);
     }
 
     @Override
     public Color getNormalColor() {
-        return isClosed ? Color.GREY : Color.BLACK;
+        return closurePoints.isEmpty() ? Color.BLACK : Color.GREY;
     }
 
     @Override

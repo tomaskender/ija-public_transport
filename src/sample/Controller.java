@@ -1,10 +1,12 @@
 package sample;
 
+import data.enums.GUIState;
 import data.enums.StreetState;
 import data.enums.VehicleState;
 import data.implementations.CONFIG;
 import data.implementations.ChangePath;
 import data.implementations.GUIVehiclePath;
+import data.implementations.MyRoute;
 import data.interfaces.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,6 +14,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -30,6 +33,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import sun.security.ssl.Debug;
+import sun.security.util.ArrayUtil;
 import utils.Math2D;
 
 import java.awt.*;
@@ -40,6 +44,8 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Controller {
     public Button pauseButton;
@@ -58,14 +64,15 @@ public class Controller {
     @FXML
     AnchorPane field;
 
+    GUIState state = GUIState.NORMAL;
 
     private Map<Vehicle,Circle> vehicles = new HashMap<>();
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
-    boolean isInClosureMode = false;
     Street currHoveredStreet = null;
     Circle mousePlaceStopMarker;
     List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
+    Route selectedRoute = new MyRoute();
 
     @FXML
     public void initialize() {
@@ -107,7 +114,7 @@ public class Controller {
         field.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isInClosureMode && currHoveredStreet != null) {
+                if(state == GUIState.CLOSING_STREETS && currHoveredStreet != null) {
                     Coordinate p = getClosurePoint(currHoveredStreet, (int)mouseEvent.getX(), (int)mouseEvent.getY());
                     mousePlaceStopMarker.setCenterX(p.getX());
                     mousePlaceStopMarker.setCenterY(p.getY());
@@ -119,8 +126,15 @@ public class Controller {
 
             @Override
             public void changed(ObservableValue<? extends ChangePath> observable, ChangePath oldValue, ChangePath newValue) {
-                // Your action here
-                System.out.println("Selected item: " + newValue);
+                ClearHighlights();
+                Circle beg = new Circle(newValue.getBeginning().getCoordinate().getX(), newValue.getBeginning().getCoordinate().getY(), 10, Color.GREEN);
+                field.getChildren().add(beg);
+
+                Circle end = new Circle(newValue.getEnd().getCoordinate().getX(), newValue.getEnd().getCoordinate().getY(), 10, Color.GREEN);
+                field.getChildren().add(end);
+                SelectRoute(selectedRoute, newValue.getBeginning().getStreet());
+                state = GUIState.ALT_ROUTE_SELECTION;
+                closeStreetButton.setDisable(true);
             }
         });
     }
@@ -137,14 +151,26 @@ public class Controller {
             streetObj.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(isInClosureMode) {
-                        ClearHighlights();
-                        onStreetClosed();
-                    } else {
-                        if(!street.isClosed()) {
-                            HighlightObject(streetObj, street, true);
-                            streetBusinessSelector.setValue(street.getStreetState().toString());
-                        }
+                    switch (state) {
+                        case NORMAL:
+                            if(!street.isClosed()) {
+                                HighlightObject(streetObj, street, true);
+                                streetBusinessSelector.setValue(street.getStreetState().toString());
+                            }
+                            break;
+                        case CLOSING_STREETS:
+                            ClearHighlights();
+                            onStreetClosed();
+                            break;
+                        case ALT_ROUTE_SELECTION:
+                            if(!highlightedObjects.isEmpty() && highlightedObjects.get(highlightedObjects.size()-1).getKey().contains(new Point2D(mouseEvent.getX(), mouseEvent.getY()))) {
+                                // remove if it's already highlighted
+                                ClearHighlight(highlightedObjects.get(highlightedObjects.size()-1));
+                            } else {
+                                // otherwise highlight it
+                                SelectRoute(selectedRoute, street);
+                            }
+
                     }
                 }
             });
@@ -152,7 +178,7 @@ public class Controller {
             streetObj.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(isInClosureMode) {
+                    if(state == GUIState.CLOSING_STREETS) {
                         currHoveredStreet = street;
                         mousePlaceStopMarker.setVisible(true);
                     }
@@ -169,6 +195,25 @@ public class Controller {
                 }
             });
             field.getChildren().add(streetObj);
+        }
+    }
+
+    private void SelectRoute(Route r, Street street) {
+        if(r.ConstructRoute(Stream.concat(r.getRoute().stream().map(e -> e.getKey()).collect(Collectors.toList()).stream(), Arrays.asList(street).stream()).collect(Collectors.toList()),
+                altRouteSelector.getSelectionModel().getSelectedItem().getBeginning(),
+                altRouteSelector.getSelectionModel().getSelectedItem().getEnd(),
+                0)) {
+            //succeeded, remove vehicle from alt route list
+        }
+        ClearHighlights();
+        List<AbstractMap.SimpleImmutableEntry<Street, Coordinate>> route = r.getRoute();
+        for(int i=0;i<route.size()-1; i++) {
+            Coordinate c1 = route.get(i).getValue();
+            Coordinate c2 = route.get(i+1).getValue();
+            Line altRoute = new Line(c1.getX(), c1.getY(), c2.getX(), c2.getY());
+            altRoute.setStrokeWidth(2);
+            field.getChildren().add(altRoute);
+            HighlightObject(altRoute, new GUIVehiclePath(Color.GREEN), false);
         }
     }
 
@@ -297,7 +342,7 @@ public class Controller {
     private void onStreetClosed() {
         currHoveredStreet.SetClosed(!currHoveredStreet.isClosed());
 
-        // create stop
+        // create closure
         Circle c = new Circle();
         Coordinate p = Coordinate.CreateCoordinate((int)mousePlaceStopMarker.getCenterX(), (int)mousePlaceStopMarker.getCenterY());
         c.setCenterX(p.getX());
@@ -307,7 +352,7 @@ public class Controller {
         c.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isInClosureMode) {
+                if(state == GUIState.CLOSING_STREETS) {
                     field.getChildren().remove(c);
                 }
             }
@@ -315,12 +360,16 @@ public class Controller {
         field.getChildren().add(c);
 
         for (Vehicle v:CONFIG.vehicles.values()) {
-            Coordinate lastPoint = v.getLastRoutePointBeforeCoordinate(currHoveredStreet, p);
-            if(lastPoint != null) {
+            AbstractMap.SimpleImmutableEntry<Street,Coordinate> e = v.getLastRoutePointBeforeCoordinate(currHoveredStreet, p);
+            if(e != null) {
+                Stop lastPoint = Stop.CreateStop("last point", e.getValue());
+                lastPoint.SetStreet(e.getKey());
                 Route lastRoute = v.getRoutes().get(v.getRoutes().size()-1);
                 Coordinate lastPos = lastRoute.getRoute().get(lastRoute.getRoute().size()-1).getValue();
 
-                ChangePath path = new ChangePath(v.getLine(), lastPoint, lastPos);
+                ChangePath path = new ChangePath(v.getLine(),
+                                                lastPoint,
+                                                v.getLine().getStops().get(v.getLine().getStops().size()-1).getKey());
                 path.AddVehicle(v);
 
                 int index = altRouteSelector.getItems().indexOf(path);
@@ -360,9 +409,9 @@ public class Controller {
             }
         }
 
-        if(isPaused && isInClosureMode) {
+        if(isPaused && state != GUIState.NORMAL) {
             if(!altRouteSelector.getItems().isEmpty()) return;
-
+            closeStreetButton.setDisable(true);
             onCloseStreetClicked(null);
         }
 
@@ -378,15 +427,16 @@ public class Controller {
 
     @FXML
     void onCloseStreetClicked(ActionEvent actionEvent) {
-        isInClosureMode = !isInClosureMode;
 
-        if(isInClosureMode) {
+        if(state == GUIState.NORMAL) {
+            state = GUIState.CLOSING_STREETS;
             if(isPaused==false) {
                 onPauseClicked(null);
             }
 
             closeStreetButton.setText("Cancel");
         } else {
+            state = GUIState.NORMAL;
             closeStreetButton.setText("Close Street");
         }
     }
@@ -408,25 +458,28 @@ public class Controller {
             shape.setStroke(Color.BLACK);
             shape.setStrokeWidth(5);
         }
-
         UpdateHighlightedVehicle();
     }
 
     private void ClearHighlights() {
-        for (Pair<Shape, GUIMapElement> s : highlightedObjects) {
-            if (s.getValue() instanceof GUIVehiclePath) {
-                field.getChildren().remove(s.getKey());
-            } else {
-                s.getKey().setFill(s.getValue().getNormalColor());
-                s.getKey().setStroke(s.getValue().getNormalColor());
-                if (s.getKey() instanceof Circle) {
-                    s.getKey().setStrokeWidth(1);
-                    highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
-                }
-            }
+        for (Pair<Shape, GUIMapElement> pair : highlightedObjects) {
+            ClearHighlight(pair);
         }
         streetBusinessSelector.setDisable(true);
         highlightedObjects.removeAll(highlightedObjects);
+    }
+
+    private void ClearHighlight(Pair<Shape,GUIMapElement> pair) {
+        if (pair.getValue() instanceof GUIVehiclePath) {
+            field.getChildren().remove(pair.getKey());
+        } else {
+            pair.getKey().setFill(pair.getValue().getNormalColor());
+            pair.getKey().setStroke(pair.getValue().getNormalColor());
+            if (pair.getKey() instanceof Circle) {
+                pair.getKey().setStrokeWidth(1);
+                highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
+            }
+        }
     }
 }
 

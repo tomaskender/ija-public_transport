@@ -131,18 +131,18 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     public List<Route> getRoutes() { return routes; }
 
     @Override
-    public Coordinate getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
+    public AbstractMap.SimpleImmutableEntry<Street,Coordinate> getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
         for(Route r:getRoutes()) {
             for(int i=0; i<r.getRoute().size()-1; i++) {
                 AbstractMap.SimpleImmutableEntry<Street, Coordinate> p1 = r.getRoute().get(i);
                 AbstractMap.SimpleImmutableEntry<Street, Coordinate> p2 = r.getRoute().get(i+1);
 
-                if(p1.getKey() == street) {
+                if(p1.getKey().getId() == street.getId()) {
                     if(Math2D.isLocatedBetweenPoints(coord, p1.getValue(), p2.getValue())) {
                         // TODO tip for improvement- if coord is found to be in path, then
                         //  return first point after current vehicle position and for each line
                         //  adjust all returned positions to the furthest one
-                        return p1.getValue();
+                        return new AbstractMap.SimpleImmutableEntry<>(p1.getKey(), p1.getValue());
                     }
                 }
             }
