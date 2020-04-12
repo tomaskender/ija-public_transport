@@ -27,6 +27,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
@@ -107,8 +108,9 @@ public class Controller {
 
         mousePlaceStopMarker = new Circle();
         mousePlaceStopMarker.setVisible(false);
-        mousePlaceStopMarker.setFill(Color.RED);
-        mousePlaceStopMarker.setRadius(5);
+        Image stop = new Image(getClass().getResourceAsStream("./media/close.png"));
+        mousePlaceStopMarker.setFill(new ImagePattern(stop));
+        mousePlaceStopMarker.setRadius(10);
         mousePlaceStopMarker.setMouseTransparent(true);
         field.getChildren().add(mousePlaceStopMarker);
 
@@ -354,7 +356,8 @@ public class Controller {
         Coordinate p = Coordinate.CreateCoordinate(mousePlaceStopMarker.getCenterX(), mousePlaceStopMarker.getCenterY());
         c.setCenterX(p.getX());
         c.setCenterY(p.getY());
-        c.setFill(Color.RED);
+        Image stop = new Image(getClass().getResourceAsStream("./media/close.png"));
+        c.setFill(new ImagePattern(stop));
         c.setRadius(10);
         c.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
