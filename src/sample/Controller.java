@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
@@ -64,6 +65,8 @@ public class Controller {
     public Button closeStreetButton;
     @FXML
     AnchorPane field;
+    @FXML
+    AnchorPane zoom_map;
 
     GUIState state = GUIState.NORMAL;
 
@@ -141,6 +144,15 @@ public class Controller {
                 closeStreetButton.setDisable(true);
             }
         });
+    }
+
+    @FXML
+    public void Zoom(ScrollEvent zoom){
+        zoom.consume();
+        double zoom_scale = zoom.getDeltaY() > 0 ? 1.1 : 0.9;
+        zoom_map.setScaleX(zoom_scale * zoom_map.getScaleX());
+        zoom_map.setScaleY(zoom_scale * zoom_map.getScaleY());
+        zoom_map.layout();
     }
 
     @FXML
