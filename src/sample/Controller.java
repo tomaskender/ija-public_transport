@@ -72,6 +72,7 @@ public class Controller {
     Street currHoveredStreet = null;
     Circle mousePlaceStopMarker;
     List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
+    List<Street> selectedRouteStreets = new ArrayList<>();
     Route selectedRoute = new MyRoute();
 
     @FXML
@@ -132,7 +133,8 @@ public class Controller {
 
                 Circle end = new Circle(newValue.getEnd().getCoordinate().getX(), newValue.getEnd().getCoordinate().getY(), 10, Color.GREEN);
                 field.getChildren().add(end);
-                SelectRoute(selectedRoute, newValue.getBeginning().getStreet());
+                selectedRouteStreets.add(newValue.getBeginning().getStreet());
+                RedrawSelectedRoute(selectedRoute);
                 state = GUIState.ALT_ROUTE_SELECTION;
                 closeStreetButton.setDisable(true);
             }
@@ -163,10 +165,13 @@ public class Controller {
                         case ALT_ROUTE_SELECTION:
                             if(!highlightedObjects.isEmpty() && highlightedObjects.get(highlightedObjects.size()-1).getKey().contains(new Point2D(mouseEvent.getX(), mouseEvent.getY()))) {
                                 // remove if it's already highlighted
-                                ClearHighlight(highlightedObjects.get(highlightedObjects.size()-1));
+                                selectedRouteStreets.remove(street);
+                                //ClearHighlight(highlightedObjects.get(highlightedObjects.size()-1));
+                                RedrawSelectedRoute(selectedRoute);
                             } else {
                                 // otherwise highlight it
-                                SelectRoute(selectedRoute, street);
+                                selectedRouteStreets.add(street);
+                                RedrawSelectedRoute(selectedRoute);
                             }
 
                     }
@@ -196,12 +201,14 @@ public class Controller {
         }
     }
 
-    private void SelectRoute(Route r, Street street) {
-        if(r.ConstructRoute(Stream.concat(r.getRoute().stream().map(e -> e.getKey()).collect(Collectors.toList()).stream(), Arrays.asList(street).stream()).collect(Collectors.toList()),
+    private void RedrawSelectedRoute(Route r) {
+        if(r.ConstructRoute(selectedRouteStreets,
                 altRouteSelector.getSelectionModel().getSelectedItem().getBeginning(),
                 altRouteSelector.getSelectionModel().getSelectedItem().getEnd(),
                 0)) {
             //succeeded, remove vehicle from alt route list
+            System.out.println("lul");
+
         }
         ClearHighlights();
         List<AbstractMap.SimpleImmutableEntry<Street, Coordinate>> route = r.getRoute();

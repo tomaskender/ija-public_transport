@@ -33,7 +33,7 @@ public class MyRoute implements Route {
                 boolean noClosurePointInWay = true;
 
                 for(Coordinate closurePoint: currStreet.getClosurePoints()) {
-                    if(!Math2D.isLocatedBetweenPoints(closurePoint, route.get(route.size()-1).getValue(), secondStop.getCoordinate()))
+                    if(Math2D.isLocatedBetweenPoints(closurePoint, route.get(route.size()-1).getValue(), secondStop.getCoordinate()))
                         noClosurePointInWay = false;
                 }
 

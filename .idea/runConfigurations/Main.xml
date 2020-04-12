@@ -2,6 +2,7 @@
   <configuration default="false" name="Main" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="sample.Main" />
     <module name="public-transport-tracker" />
+    <option name="VM_PARAMETERS" value="-Dsun.awt.disablegrab=true" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="sample.*" />
