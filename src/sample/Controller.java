@@ -163,16 +163,20 @@ public class Controller {
                             onStreetClosed();
                             break;
                         case ALT_ROUTE_SELECTION:
-                            if(!highlightedObjects.isEmpty() && highlightedObjects.get(highlightedObjects.size()-1).getKey().contains(new Point2D(mouseEvent.getX(), mouseEvent.getY()))) {
+                            if(!highlightedObjects.isEmpty() && Math2D.isLocatedBetweenPoints(Coordinate.CreateCoordinate(mouseEvent.getX(),mouseEvent.getY()),
+                                                                                            Coordinate.CreateCoordinate(
+                                                                                                    ((Line)highlightedObjects.get(highlightedObjects.size()-1).getKey()).getStartX(),
+                                                                                                    ((Line)highlightedObjects.get(highlightedObjects.size()-1).getKey()).getStartY()),
+                                                                                            Coordinate.CreateCoordinate(
+                                                                                                    ((Line)highlightedObjects.get(highlightedObjects.size()-1).getKey()).getEndX(),
+                                                                                                    ((Line)highlightedObjects.get(highlightedObjects.size()-1).getKey()).getEndY()))) {
                                 // remove if it's already highlighted
                                 selectedRouteStreets.remove(street);
-                                //ClearHighlight(highlightedObjects.get(highlightedObjects.size()-1));
-                                RedrawSelectedRoute(selectedRoute);
                             } else {
                                 // otherwise highlight it
                                 selectedRouteStreets.add(street);
-                                RedrawSelectedRoute(selectedRoute);
                             }
+                            RedrawSelectedRoute(selectedRoute);
 
                     }
                 }
@@ -347,7 +351,7 @@ public class Controller {
     private void onStreetClosed() {
         // create closure
         Circle c = new Circle();
-        Coordinate p = Coordinate.CreateCoordinate((int)mousePlaceStopMarker.getCenterX(), (int)mousePlaceStopMarker.getCenterY());
+        Coordinate p = Coordinate.CreateCoordinate(mousePlaceStopMarker.getCenterX(), mousePlaceStopMarker.getCenterY());
         c.setCenterX(p.getX());
         c.setCenterY(p.getY());
         c.setFill(Color.RED);

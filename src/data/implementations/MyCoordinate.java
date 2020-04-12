@@ -12,6 +12,10 @@ public class MyCoordinate implements Coordinate {
         this.y = y;
     }
 
+    public static Coordinate CreateCoordinate(double x, double y) {
+        return CreateCoordinate((int)x, (int)y);
+    }
+
     public static Coordinate CreateCoordinate(int x, int y) {
         if(x < 0 || y < 0)
             return null;
