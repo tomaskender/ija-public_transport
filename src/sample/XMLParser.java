@@ -1,5 +1,6 @@
 package sample;
 
+import java.io.File;
 import java.io.InputStream;
 import javax.security.auth.login.Configuration;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -10,10 +11,12 @@ import data.interfaces.Coordinate;
 import data.interfaces.Line;
 import data.interfaces.Stop;
 import data.interfaces.Street;
+import javafx.stage.FileChooser;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
 
 import java.sql.Array;
 import java.time.LocalTime;
@@ -21,18 +24,19 @@ import java.util.*;
 
 public class XMLParser {
 
-    public static void main(String[] args) {
+
+    public static void main(File file) {
         Map<String, Coordinate> stops = new LinkedHashMap<>();
         Map<String, List> streets = new LinkedHashMap<>();
         Map<String, List> links = new LinkedHashMap<>();
         Map<String, String> stops_on_streets = new LinkedHashMap<>();
         Map<String, Map<String, String>> line_stops = new LinkedHashMap<>();
 
+
         try {
-            InputStream input = XMLParser.class.getResourceAsStream("source.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(input);
+            Document doc = dBuilder.parse(file);
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("def_stops");
@@ -108,7 +112,8 @@ public class XMLParser {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.print("Wrong input format");
+            System.exit(1);
         }
 
         for(String street_key : streets.keySet()){

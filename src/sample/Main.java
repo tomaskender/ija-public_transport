@@ -10,9 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,6 +32,12 @@ public class Main extends Application {
         primaryStage.show();
 
         Controller controller = loader.getController();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("./src/sample/maps"));
+        fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter("XML", "*.xml"));
+        fileChooser.setTitle("Open Resource File");
+        File file = fileChooser.showOpenDialog(primaryStage);
+        XMLParser.main(file);
         CONFIG.controller = controller;
         controller.LoadStreets();
         controller.LoadStops();
@@ -66,7 +74,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        XMLParser.main(args);
         launch(args);
     }
 }
