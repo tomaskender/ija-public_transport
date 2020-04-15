@@ -393,9 +393,12 @@ public class Controller {
 
     @FXML
     private void EvaluateStreetsAffectedByClosedPoint() {
+        // paths that are already fixed and will be removed from selector list
         List<ChangePath> toRemove = new ArrayList<>();
+
         for(ChangePath path:altRouteSelector.getItems()) {
             Route altRoute = path.getFoundAlternativeRoute();
+            // check if selector list items have been fixed and if so, add altRoute to vehicles route
             if(altRoute != null) {
                 PointInPath firstPoint = altRoute.getRoute().get(0);
                 PointInPath lastPoint = altRoute.getRoute().get(altRoute.getRoute().size()-1);
@@ -404,18 +407,43 @@ public class Controller {
                     Route routeWithFirstAltRoutePoint = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
                     // remove everything up to (including) this index
                     Route route = vehicle.getRoutes()
-                            .stream()
-                            .filter(r->r.getRoute().get(r.getRoute().size()-1).equals(lastPoint)).findFirst().get();
+                                .stream()
+                                .filter(r -> r.getRoute().get(r.getRoute().size() - 1).equals(lastPoint)).findFirst().get();
                     int lastIndexToRemove = vehicle.getRoutes().indexOf(route);
-                    routeWithFirstAltRoutePoint.ConstructRoute(altRoute.getRoute().stream().map(r->r.getStreet()).distinct().collect(Collectors.toList()),
+
+
+                    //TODO FUJ HACK
+                    List<Street> streetList = new ArrayList<>();
+                    streetList.add(altRoute.getRoute().get(0).getStreet());
+
+                    for(int i=0; i<routeWithFirstAltRoutePoint.getRoute().size()-1; i++) {
+                        if(streetList.get(streetList.size()-1) != routeWithFirstAltRoutePoint.getRoute().get(i).getStreet()) {
+                            streetList.add(routeWithFirstAltRoutePoint.getRoute().get(i).getStreet());
+                        }
+                        PointInPath p1 = routeWithFirstAltRoutePoint.getRoute().get(i);
+                        PointInPath p2 = routeWithFirstAltRoutePoint.getRoute().get(i + 1);
+                        if(Math2D.isLocatedBetweenPoints(altRoute.getRoute().get(0).getCoordinate(), p1.getCoordinate(), p2.getCoordinate())) {
+                            break;
+                        }
+                    }
+
+                    for(int i=0; i<altRoute.getRoute().size();i++) {
+                        if(streetList.get(streetList.size()-1) != altRoute.getRoute().get(i).getStreet()) {
+                            streetList.add(altRoute.getRoute().get(i).getStreet());
+                        }
+                    }
+
+                    routeWithFirstAltRoutePoint.ConstructRoute(streetList,
                             routeWithFirstAltRoutePoint.getRoute().get(0),
                             altRoute.getRoute().get(altRoute.getRoute().size()-1),
                             altRoute.getExpectedDeltaTime());
                     vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
+
+                    System.out.println("vehicle path fixed");
                 }
                 toRemove.add(path);
             }
-            altRouteSelector.getItems().remove(toRemove);
+            toRemove.forEach(p->altRouteSelector.getItems().remove(p));
         }
 
         for(Street street: CONFIG.streets.values()) {
