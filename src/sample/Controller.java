@@ -393,6 +393,7 @@ public class Controller {
 
     @FXML
     private void EvaluateStreetsAffectedByClosedPoint() {
+        List<ChangePath> toRemove = new ArrayList<>();
         for(ChangePath path:altRouteSelector.getItems()) {
             Route altRoute = path.getFoundAlternativeRoute();
             if(altRoute != null) {
@@ -402,17 +403,19 @@ public class Controller {
                 for(Vehicle vehicle:path.getSubscribedVehicles()) {
                     Route routeWithFirstAltRoutePoint = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
                     // remove everything up to (including) this index
-                    int lastIndexToRemove = vehicle.getRoutes().indexOf(vehicle.getRoutes()
+                    Route route = vehicle.getRoutes()
                             .stream()
-                            .filter(r->r.getRoute().get(r.getRoute().size()-1) == lastPoint).findFirst().isPresent());
-                    routeWithFirstAltRoutePoint.ConstructRoute(altRoute.getRoute().stream().map(r->r.getStreet()).collect(Collectors.toList()),
+                            .filter(r->r.getRoute().get(r.getRoute().size()-1).equals(lastPoint)).findFirst().get();
+                    int lastIndexToRemove = vehicle.getRoutes().indexOf(route);
+                    routeWithFirstAltRoutePoint.ConstructRoute(altRoute.getRoute().stream().map(r->r.getStreet()).distinct().collect(Collectors.toList()),
                             routeWithFirstAltRoutePoint.getRoute().get(0),
                             altRoute.getRoute().get(altRoute.getRoute().size()-1),
                             altRoute.getExpectedDeltaTime());
                     vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
                 }
-                altRouteSelector.getItems().remove(path);
+                toRemove.add(path);
             }
+            altRouteSelector.getItems().remove(toRemove);
         }
 
         for(Street street: CONFIG.streets.values()) {
