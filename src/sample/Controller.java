@@ -130,18 +130,20 @@ public class Controller {
             @Override
             public void changed(ObservableValue<? extends ChangePath> observable, ChangePath oldValue, ChangePath newValue) {
                 ClearHighlights();
-                Circle beg = new Circle(newValue.getBeginning().getCoordinate().getX(), newValue.getBeginning().getCoordinate().getY(), 10, Color.GREEN);
-                field.getChildren().add(beg);
+                if(newValue != null) {
+                    Circle beg = new Circle(newValue.getBeginning().getCoordinate().getX(), newValue.getBeginning().getCoordinate().getY(), 10, Color.GREEN);
+                    field.getChildren().add(beg);
 
-                for(PointInPath e:newValue.getEnds()) {
-                    Circle end = new Circle(e.getCoordinate().getX(), e.getCoordinate().getY(), 10, Color.RED);
-                    field.getChildren().add(end);
+                    for (PointInPath e : newValue.getEnds()) {
+                        Circle end = new Circle(e.getCoordinate().getX(), e.getCoordinate().getY(), 10, Color.RED);
+                        field.getChildren().add(end);
+                    }
+                    selectedRouteStreets.clear();
+                    selectedRouteStreets.add(newValue.getBeginning().getStreet());
+                    RedrawSelectedRoute(selectedRoute);
+                    state = GUIState.ALT_ROUTE_SELECTION;
+                    closeStreetButton.setDisable(true);
                 }
-                selectedRouteStreets.clear();
-                selectedRouteStreets.add(newValue.getBeginning().getStreet());
-                RedrawSelectedRoute(selectedRoute);
-                state = GUIState.ALT_ROUTE_SELECTION;
-                closeStreetButton.setDisable(true);
             }
         });
     }
@@ -226,7 +228,8 @@ public class Controller {
                     endEntry,
                     0)) {
                 //succeeded, remove vehicle from alt route list
-                System.out.println("lul");
+                System.err.println("Alternative route was set.");
+                altRouteSelector.getSelectionModel().getSelectedItem().SetFoundAlternativeRoute(r);
                 break;
             }
         }
@@ -388,6 +391,7 @@ public class Controller {
         EvaluateStreetsAffectedByClosedPoint();
     }
 
+    @FXML
     private void EvaluateStreetsAffectedByClosedPoint() {
         for(ChangePath path:altRouteSelector.getItems()) {
             Route altRoute = path.getFoundAlternativeRoute();
@@ -401,12 +405,11 @@ public class Controller {
                     int lastIndexToRemove = vehicle.getRoutes().indexOf(vehicle.getRoutes()
                             .stream()
                             .filter(r->r.getRoute().get(r.getRoute().size()-1) == lastPoint).findFirst().isPresent());
-                    vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
-                    altRoute.getExpectedDeltaTime();
                     routeWithFirstAltRoutePoint.ConstructRoute(altRoute.getRoute().stream().map(r->r.getStreet()).collect(Collectors.toList()),
-                                                                routeWithFirstAltRoutePoint.getRoute().get(0),
-                                                                altRoute.getRoute().get(altRoute.getRoute().size()-1),
-                                                                altRoute.getExpectedDeltaTime());
+                            routeWithFirstAltRoutePoint.getRoute().get(0),
+                            altRoute.getRoute().get(altRoute.getRoute().size()-1),
+                            altRoute.getExpectedDeltaTime());
+                    vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
                 }
                 altRouteSelector.getItems().remove(path);
             }
