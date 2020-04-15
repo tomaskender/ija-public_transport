@@ -65,7 +65,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 break;
             case MOVING:
                 Route currRoute = routes.get(currRouteIndex);
-                double streetModifier = currRoute.getRoute().get(0).getKey().getStreetState().getModifier();
+                double streetModifier = currRoute.getRoute().get(0).getStreet().getStreetState().getModifier();
                 double deltaInSecs = (double)deltaInMillis/1000;
                 progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
@@ -92,17 +92,17 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     }
 
     private Coordinate getPosition(double progressToNextStop) {
-        List<AbstractMap.SimpleImmutableEntry<Street,Coordinate>> coords = routes.get(currRouteIndex).getRoute();
+        List<PointInPath> coords = routes.get(currRouteIndex).getRoute();
         // get total route length
         double totalDistance = 0;
         for(int i=0; i<coords.size()-1;i++) {
-            totalDistance += Math2D.getDistanceBetweenPoints(coords.get(i).getValue(), coords.get(i+1).getValue());
+            totalDistance += Math2D.getDistanceBetweenPoints(coords.get(i).getCoordinate(), coords.get(i+1).getCoordinate());
         }
 
         double distanceSum = 0;
         for(int i=0; i<coords.size()-1;i++) {
-            Coordinate coord1 = coords.get(i).getValue();
-            Coordinate coord2 = coords.get(i+1).getValue();
+            Coordinate coord1 = coords.get(i).getCoordinate();
+            Coordinate coord2 = coords.get(i+1).getCoordinate();
 
             double pointsDistance = Math2D.getDistanceBetweenPoints(coord1, coord2);
 
@@ -134,15 +134,15 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     public PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
         for(Route r:getRoutes()) {
             for(int i=0; i<r.getRoute().size()-1; i++) {
-                AbstractMap.SimpleImmutableEntry<Street, Coordinate> p1 = r.getRoute().get(i);
-                AbstractMap.SimpleImmutableEntry<Street, Coordinate> p2 = r.getRoute().get(i+1);
+                PointInPath p1 = r.getRoute().get(i);
+                PointInPath p2 = r.getRoute().get(i+1);
 
-                if(p1.getKey().getId() == street.getId()) {
-                    if(Math2D.isLocatedBetweenPoints(coord, p1.getValue(), p2.getValue())) {
+                if(p1.getStreet().getId() == street.getId()) {
+                    if(Math2D.isLocatedBetweenPoints(coord, p1.getCoordinate(), p2.getCoordinate())) {
                         // TODO tip for improvement- if coord is found to be in path, then
                         //  return first point after current vehicle position and for each line
                         //  adjust all returned positions to the furthest one
-                        return new PointInPath(r, p1.getKey(), p1.getValue());
+                        return new PointInPath(r, p1.getStreet(), p1.getCoordinate());
                     }
                 }
             }
