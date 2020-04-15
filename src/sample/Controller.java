@@ -231,10 +231,10 @@ public class Controller {
             }
         }
         ClearHighlights();
-        List<AbstractMap.SimpleImmutableEntry<Street, Coordinate>> route = r.getRoute();
+        List<PointInPath> route = r.getRoute();
         for(int i=0;i<route.size()-1; i++) {
-            Coordinate c1 = route.get(i).getValue();
-            Coordinate c2 = route.get(i+1).getValue();
+            Coordinate c1 = route.get(i).getCoordinate();
+            Coordinate c2 = route.get(i+1).getCoordinate();
             Line altRoute = new Line(c1.getX(), c1.getY(), c2.getX(), c2.getY());
             altRoute.setStrokeWidth(2);
             field.getChildren().add(altRoute);
@@ -281,8 +281,8 @@ public class Controller {
                     List<Route> line_route = v.getRoutes();
                     List<Coordinate> coords = new ArrayList<>();
                     for(Route list_streets : line_route){
-                        for(AbstractMap.SimpleImmutableEntry<Street, Coordinate> list_all_streets : list_streets.getRoute()){
-                            coords.add(list_all_streets.getValue());
+                        for(PointInPath list_all_streets : list_streets.getRoute()){
+                            coords.add(list_all_streets.getCoordinate());
                         }
                     }
                     int old_x = coords.get(0).getX();
@@ -392,18 +392,22 @@ public class Controller {
         for(ChangePath path:altRouteSelector.getItems()) {
             Route altRoute = path.getFoundAlternativeRoute();
             if(altRoute != null) {
-                /*Coordinate firstPoint =altRoute.getRoute().get(0).getValue();
-                Coordinate lastPoint =altRoute.getRoute().get(altRoute.getRoute().size()-1).getValue();
+                PointInPath firstPoint = altRoute.getRoute().get(0);
+                PointInPath lastPoint = altRoute.getRoute().get(altRoute.getRoute().size()-1);
 
                 for(Vehicle vehicle:path.getSubscribedVehicles()) {
-                    Route firstChangedRoute = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
+                    Route routeWithFirstAltRoutePoint = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
                     // remove everything up to (including) this index
                     int lastIndexToRemove = vehicle.getRoutes().indexOf(vehicle.getRoutes()
                             .stream()
-                            .filter(r->r.getRoute().get(r.getRoute().size()-1).getValue() == lastPoint).findFirst().isPresent());
-                    vehicle.getRoutes().subList(0, lastIndexToRemove+1).clear();
-                    altRoute.getExpectedDeltaTime()
-                }*/
+                            .filter(r->r.getRoute().get(r.getRoute().size()-1) == lastPoint).findFirst().isPresent());
+                    vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
+                    altRoute.getExpectedDeltaTime();
+                    routeWithFirstAltRoutePoint.ConstructRoute(altRoute.getRoute().stream().map(r->r.getStreet()).collect(Collectors.toList()),
+                                                                routeWithFirstAltRoutePoint.getRoute().get(0),
+                                                                altRoute.getRoute().get(altRoute.getRoute().size()-1),
+                                                                altRoute.getExpectedDeltaTime());
+                }
                 altRouteSelector.getItems().remove(path);
             }
         }
@@ -418,9 +422,7 @@ public class Controller {
                                     pip,
                                     v.getRoutes().subList(v.getRoutes().indexOf(pip.getRoute()), v.getRoutes().size())
                                             .stream()
-                                            .map(r -> new PointInPath(r,
-                                                    r.getRoute().get(r.getRoute().size() - 1).getKey(),
-                                                    r.getRoute().get(r.getRoute().size() - 1).getValue()))
+                                            .map(r -> r.getRoute().get(r.getRoute().size() - 1))
                                             .collect(Collectors.toList()),
                                     0);
                             path.AddVehicle(v);

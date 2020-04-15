@@ -6,6 +6,7 @@ import data.interfaces.Stop;
 import data.interfaces.Street;
 import utils.Math2D;
 
+import java.awt.*;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,17 +14,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MyRoute implements Route {
-    List<AbstractMap.SimpleImmutableEntry<Street,Coordinate>> route = new ArrayList<>();
+    List<PointInPath> route = new ArrayList<>();
     double deltaTime;
 
     @Override
-    public boolean ConstructRoute(List<Street> streets, PointInPath firstStop, PointInPath secondStop, int deltaTimeInMins) {
+    public boolean ConstructRoute(List<Street> streets, PointInPath firstStop, PointInPath secondStop, double deltaTimeInMins) {
         this.deltaTime = deltaTimeInMins*60;
 
         //algorithm for stops at different streets
         route = new ArrayList<>();
 
-        route.add(new AbstractMap.SimpleImmutableEntry<>(firstStop.getStreet(), firstStop.getCoordinate()));
+        route.add(new PointInPath(this, firstStop.getStreet(), firstStop.getCoordinate()));
         for(int street_i=streets.indexOf(firstStop.getStreet()); street_i<streets.size(); street_i++) {
             Street currStreet = streets.get(street_i);
 
@@ -33,12 +34,12 @@ public class MyRoute implements Route {
                 boolean noClosurePointInWay = true;
 
                 for(Coordinate closurePoint: currStreet.getClosurePoints()) {
-                    if(Math2D.isLocatedBetweenPoints(closurePoint, route.get(route.size()-1).getValue(), secondStop.getCoordinate()))
+                    if(Math2D.isLocatedBetweenPoints(closurePoint, route.get(route.size()-1).getCoordinate(), secondStop.getCoordinate()))
                         noClosurePointInWay = false;
                 }
 
                 if(noClosurePointInWay) {
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, secondStop.getCoordinate()));
+                    route.add(new PointInPath(this, currStreet, secondStop.getCoordinate()));
                     return true;
                 }
             }
@@ -49,34 +50,34 @@ public class MyRoute implements Route {
                         nextStreet.getBegin(),
                         nextStreet.getEnd())) {
                     // |------
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, currStreet.getBegin()));
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, currStreet.getBegin()));
+                    route.add(new PointInPath(this, currStreet, currStreet.getBegin()));
+                    route.add(new PointInPath(this, nextStreet, currStreet.getBegin()));
                 } else if(Math2D.isLocatedBetweenPoints(currStreet.getEnd(),
                         nextStreet.getBegin(),
                         nextStreet.getEnd())) {
                     // ------|
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, currStreet.getEnd()));
-                    route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, currStreet.getEnd()));
+                    route.add(new PointInPath(this, currStreet, currStreet.getEnd()));
+                    route.add(new PointInPath(this, nextStreet, currStreet.getEnd()));
                 } else {
                     // ---|---
                     if(Math2D.isLocatedBetweenPoints(nextStreet.getBegin(),
                             currStreet.getBegin(),
                             currStreet.getEnd())) {
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, nextStreet.getBegin()));
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, nextStreet.getBegin()));
+                            route.add(new PointInPath(this, currStreet, nextStreet.getBegin()));
+                            route.add(new PointInPath(this, nextStreet, nextStreet.getBegin()));
                     } else if(Math2D.isLocatedBetweenPoints(nextStreet.getEnd(),
                             currStreet.getBegin(),
                             currStreet.getEnd())) {
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(currStreet, nextStreet.getEnd()));
-                        route.add(new AbstractMap.SimpleImmutableEntry<>(nextStreet, nextStreet.getEnd()));
+                            route.add(new PointInPath(this, currStreet, nextStreet.getEnd()));
+                            route.add(new PointInPath(this, nextStreet, nextStreet.getEnd()));
                     } else {
                         break;
                     }
                 }
             } else {
                 // street list does not contain full path to second stop
-                route.add(new AbstractMap.SimpleImmutableEntry<>(streets.get(street_i), currStreet.getBegin()));
-                route.add(new AbstractMap.SimpleImmutableEntry<>(streets.get(street_i), currStreet.getEnd()));
+                route.add(new PointInPath(this, streets.get(street_i), currStreet.getBegin()));
+                route.add(new PointInPath(this, streets.get(street_i), currStreet.getEnd()));
                 break;
             }
         }
@@ -84,7 +85,7 @@ public class MyRoute implements Route {
     }
 
     @Override
-    public List<AbstractMap.SimpleImmutableEntry<Street, Coordinate>> getRoute() {
+    public List<PointInPath> getRoute() {
         return route;
     }
 
