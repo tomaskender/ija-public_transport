@@ -131,7 +131,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     public List<Route> getRoutes() { return routes; }
 
     @Override
-    public AbstractMap.SimpleImmutableEntry<Street,Coordinate> getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
+    public PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
         for(Route r:getRoutes()) {
             for(int i=0; i<r.getRoute().size()-1; i++) {
                 AbstractMap.SimpleImmutableEntry<Street, Coordinate> p1 = r.getRoute().get(i);
@@ -142,7 +142,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                         // TODO tip for improvement- if coord is found to be in path, then
                         //  return first point after current vehicle position and for each line
                         //  adjust all returned positions to the furthest one
-                        return new AbstractMap.SimpleImmutableEntry<>(p1.getKey(), p1.getValue());
+                        return new PointInPath(r, p1.getKey(), p1.getValue());
                     }
                 }
             }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import data.enums.VehicleState;
 import data.implementations.MyVehicle;
+import data.implementations.PointInPath;
 
 public interface Vehicle extends GUIMapElement {
     static Vehicle CreateVehicle(Line line, LocalTime start) { return MyVehicle.CreateVehicle(line, start); }
@@ -15,5 +16,5 @@ public interface Vehicle extends GUIMapElement {
     VehicleState getState();
     void AddRoute(Route route);
     List<Route> getRoutes();
-    AbstractMap.SimpleImmutableEntry<Street,Coordinate> getLastRoutePointBeforeCoordinate(Street street, Coordinate coord);
+    PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord);
 }

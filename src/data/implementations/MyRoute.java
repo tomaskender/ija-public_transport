@@ -17,7 +17,7 @@ public class MyRoute implements Route {
     double deltaTime;
 
     @Override
-    public boolean ConstructRoute(List<Street> streets, Stop firstStop, Stop secondStop, int deltaTimeInMins) {
+    public boolean ConstructRoute(List<Street> streets, PointInPath firstStop, PointInPath secondStop, int deltaTimeInMins) {
         this.deltaTime = deltaTimeInMins*60;
 
         //algorithm for stops at different streets

@@ -1,37 +1,46 @@
 package data.implementations;
 
-import data.interfaces.Coordinate;
-import data.interfaces.Line;
-import data.interfaces.Stop;
-import data.interfaces.Vehicle;
+import data.interfaces.*;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChangePath {
     private Line line;
     private List<Vehicle> subscribedVehicles = new ArrayList<>();
-    private Stop beginning;
-    private Stop end;
+    private PointInPath beginning;
+    private List<PointInPath> ends;
+    private int deltaInMins;
 
-    public ChangePath(Line line, Stop beginning, Stop end) {
+    private Route foundAlternativeRoute = null;
+
+    public ChangePath(Line line, PointInPath beginning, List<PointInPath> ends, int deltaInMins) {
         this.line = line;
         this.beginning = beginning;
-        this.end = end;
+        this.ends = ends;
+        this.deltaInMins = deltaInMins;
     }
 
-    public Stop getBeginning() {
+    public PointInPath getBeginning() {
         return beginning;
     }
 
-    public Stop getEnd() {
-        return end;
+    public List<PointInPath> getEnds() {
+        return ends;
     }
 
     public void AddVehicle(Vehicle v) {
         subscribedVehicles.add(v);
     }
 
+    public List<Vehicle> getSubscribedVehicles() { return subscribedVehicles; }
+
+    public void SetFoundAlternativeRoute(Route altRoute) { foundAlternativeRoute = altRoute; }
+
+    public Route getFoundAlternativeRoute() { return foundAlternativeRoute; }
+
+    public int getDeltaInMins() { return deltaInMins; }
     @Override
     public String toString() {
         switch (subscribedVehicles.size()) {
@@ -51,7 +60,7 @@ public class ChangePath {
         if(o instanceof ChangePath) {
             return line.getId().equals(((ChangePath) o).line.getId()) &&
                     getBeginning().equals(((ChangePath) o).getBeginning()) &&
-                    getEnd().equals(((ChangePath) o).getEnd());
+                    getEnds().equals(((ChangePath) o).getEnds());
         }
         return false;
     }

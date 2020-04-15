@@ -3,10 +3,7 @@ package sample;
 import data.enums.GUIState;
 import data.enums.StreetState;
 import data.enums.VehicleState;
-import data.implementations.CONFIG;
-import data.implementations.ChangePath;
-import data.implementations.GUIVehiclePath;
-import data.implementations.MyRoute;
+import data.implementations.*;
 import data.interfaces.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -136,8 +133,11 @@ public class Controller {
                 Circle beg = new Circle(newValue.getBeginning().getCoordinate().getX(), newValue.getBeginning().getCoordinate().getY(), 10, Color.GREEN);
                 field.getChildren().add(beg);
 
-                Circle end = new Circle(newValue.getEnd().getCoordinate().getX(), newValue.getEnd().getCoordinate().getY(), 10, Color.GREEN);
-                field.getChildren().add(end);
+                for(PointInPath e:newValue.getEnds()) {
+                    Circle end = new Circle(e.getCoordinate().getX(), e.getCoordinate().getY(), 10, Color.RED);
+                    field.getChildren().add(end);
+                }
+                selectedRouteStreets.clear();
                 selectedRouteStreets.add(newValue.getBeginning().getStreet());
                 RedrawSelectedRoute(selectedRoute);
                 state = GUIState.ALT_ROUTE_SELECTION;
@@ -220,13 +220,15 @@ public class Controller {
     }
 
     private void RedrawSelectedRoute(Route r) {
-        if(r.ConstructRoute(selectedRouteStreets,
-                altRouteSelector.getSelectionModel().getSelectedItem().getBeginning(),
-                altRouteSelector.getSelectionModel().getSelectedItem().getEnd(),
-                0)) {
-            //succeeded, remove vehicle from alt route list
-            System.out.println("lul");
-
+        for(PointInPath endEntry:altRouteSelector.getSelectionModel().getSelectedItem().getEnds()) {
+            if (r.ConstructRoute(selectedRouteStreets,
+                    altRouteSelector.getSelectionModel().getSelectedItem().getBeginning(),
+                    endEntry,
+                    0)) {
+                //succeeded, remove vehicle from alt route list
+                System.out.println("lul");
+                break;
+            }
         }
         ClearHighlights();
         List<AbstractMap.SimpleImmutableEntry<Street, Coordinate>> route = r.getRoute();
@@ -383,24 +385,54 @@ public class Controller {
         currHoveredStreet.AddClosurePoint(p);
         field.getChildren().add(c);
 
-        for (Vehicle v:CONFIG.vehicles.values()) {
-            AbstractMap.SimpleImmutableEntry<Street,Coordinate> e = v.getLastRoutePointBeforeCoordinate(currHoveredStreet, p);
-            if(e != null) {
-                Stop lastPoint = Stop.CreateStop("last point", e.getValue());
-                lastPoint.SetStreet(e.getKey());
-                Route lastRoute = v.getRoutes().get(v.getRoutes().size()-1);
-                Coordinate lastPos = lastRoute.getRoute().get(lastRoute.getRoute().size()-1).getValue();
+        EvaluateStreetsAffectedByClosedPoint();
+    }
 
-                ChangePath path = new ChangePath(v.getLine(),
-                                                lastPoint,
-                                                v.getLine().getStops().get(v.getLine().getStops().size()-1).getKey());
-                path.AddVehicle(v);
+    private void EvaluateStreetsAffectedByClosedPoint() {
+        for(ChangePath path:altRouteSelector.getItems()) {
+            Route altRoute = path.getFoundAlternativeRoute();
+            if(altRoute != null) {
+                /*Coordinate firstPoint =altRoute.getRoute().get(0).getValue();
+                Coordinate lastPoint =altRoute.getRoute().get(altRoute.getRoute().size()-1).getValue();
 
-                int index = altRouteSelector.getItems().indexOf(path);
-                if(index != -1)
-                    altRouteSelector.getItems().get(index).AddVehicle(v);
-                else
-                    altRouteSelector.getItems().add(path);
+                for(Vehicle vehicle:path.getSubscribedVehicles()) {
+                    Route firstChangedRoute = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
+                    // remove everything up to (including) this index
+                    int lastIndexToRemove = vehicle.getRoutes().indexOf(vehicle.getRoutes()
+                            .stream()
+                            .filter(r->r.getRoute().get(r.getRoute().size()-1).getValue() == lastPoint).findFirst().isPresent());
+                    vehicle.getRoutes().subList(0, lastIndexToRemove+1).clear();
+                    altRoute.getExpectedDeltaTime()
+                }*/
+                altRouteSelector.getItems().remove(path);
+            }
+        }
+
+        for(Street street: CONFIG.streets.values()) {
+            if(!street.getClosurePoints().isEmpty()) {
+                for(Coordinate closurePoint:street.getClosurePoints()) {
+                    for (Vehicle v : CONFIG.vehicles.values()) {
+                        PointInPath pip = v.getLastRoutePointBeforeCoordinate(street, closurePoint);
+                        if (pip != null) {
+                            ChangePath path = new ChangePath(v.getLine(),
+                                    pip,
+                                    v.getRoutes().subList(v.getRoutes().indexOf(pip.getRoute()), v.getRoutes().size())
+                                            .stream()
+                                            .map(r -> new PointInPath(r,
+                                                    r.getRoute().get(r.getRoute().size() - 1).getKey(),
+                                                    r.getRoute().get(r.getRoute().size() - 1).getValue()))
+                                            .collect(Collectors.toList()),
+                                    0);
+                            path.AddVehicle(v);
+
+                            int index = altRouteSelector.getItems().indexOf(path);
+                            if (index != -1)
+                                altRouteSelector.getItems().get(index).AddVehicle(v);
+                            else
+                                altRouteSelector.getItems().add(path);
+                        }
+                    }
+                }
             }
         }
     }
@@ -434,6 +466,7 @@ public class Controller {
         }
 
         if(isPaused && state != GUIState.NORMAL) {
+            EvaluateStreetsAffectedByClosedPoint();
             if(!altRouteSelector.getItems().isEmpty()) return;
             closeStreetButton.setDisable(true);
             onCloseStreetClicked(null);

@@ -76,7 +76,10 @@ public class MyLine implements Line {
             vehicles.add(v);
             for(int i=0; i<stops.size()-1;i++) {
                 Route route = new MyRoute();
-                route.ConstructRoute(streets, stops.get(i).getKey(), stops.get(i+1).getKey(), stops.get(i+1).getValue());
+                route.ConstructRoute(streets,
+                                    new PointInPath(route, stops.get(i).getKey().getStreet(), stops.get(i).getKey().getCoordinate()),
+                                    new PointInPath(route, stops.get(i+1).getKey().getStreet(), stops.get(i+1).getKey().getCoordinate()),
+                                    stops.get(i+1).getValue());
                 v.AddRoute(route);
             }
             return true;
