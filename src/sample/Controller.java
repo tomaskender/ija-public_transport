@@ -444,7 +444,7 @@ public class Controller {
                     routeWithFirstAltRoutePoint.ConstructRoute(streetList,
                             routeWithFirstAltRoutePoint.getRoute().get(0),
                             altRoute.getRoute().get(altRoute.getRoute().size()-1),
-                            altRoute.getExpectedDeltaTime());
+                            altRoute.getExpectedDeltaTime()/60);
                     vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
 
                 }
@@ -465,7 +465,7 @@ public class Controller {
                                             .stream()
                                             .map(r -> r.getRoute().get(r.getRoute().size() - 1))
                                             .collect(Collectors.toList()),
-                                    1);
+                                    8);
                             path.AddVehicle(v);
 
                             int index = altRouteSelector.getItems().indexOf(path);
@@ -511,7 +511,7 @@ public class Controller {
         if(isPaused && state != GUIState.NORMAL) {
             EvaluateStreetsAffectedByClosedPoint();
             if(!altRouteSelector.getItems().isEmpty()) return;
-            closeStreetButton.setDisable(true);
+            closeStreetButton.setDisable(false);
             onCloseStreetClicked(null);
         }
 
