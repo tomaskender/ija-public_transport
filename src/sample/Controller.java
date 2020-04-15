@@ -443,8 +443,8 @@ public class Controller {
                 }
                 toRemove.add(path);
             }
-            toRemove.forEach(p->altRouteSelector.getItems().remove(p));
         }
+        toRemove.forEach(p->altRouteSelector.getItems().remove(p));
 
         for(Street street: CONFIG.streets.values()) {
             if(!street.getClosurePoints().isEmpty()) {
