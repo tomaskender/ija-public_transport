@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MyVehicle implements Vehicle, GUIMapElement {
@@ -94,10 +95,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     private Coordinate getPosition(double progressToNextStop) {
         List<PointInPath> coords = routes.get(currRouteIndex).getRoute();
         // get total route length
-        double totalDistance = 0;
-        for(int i=0; i<coords.size()-1;i++) {
-            totalDistance += Math2D.getDistanceBetweenPoints(coords.get(i).getCoordinate(), coords.get(i+1).getCoordinate());
-        }
+        double totalDistance = Math2D.getRouteLength(routes.get(currRouteIndex));
 
         double distanceSum = 0;
         for(int i=0; i<coords.size()-1;i++) {
@@ -127,22 +125,44 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         routes.add(route);
     }
 
+
     @Override
-    public List<Route> getRoutes() { return routes; }
+    public void EditRouteAndNormalizeProgress(int index, Route route) {
+        if(currRouteIndex == index) {
+            double currDistance = Math2D.getRouteLength(routes.get(currRouteIndex));
+            double newDistance = Math2D.getRouteLength(route);
+            // adjust currently active routes progress so that the vehicle remains in the same position in getPosition
+            progressTowardsNextStop = progressTowardsNextStop * currDistance/newDistance;
+        }
+        routes.set(index, route);
+    }
+
+    @Override
+    public void RemoveRoute(int index) {
+        routes.remove(index);
+    }
+
+    @Override
+    public List<Route> getRoutes() { return new ArrayList<>(routes); }
 
     @Override
     public PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
-        for(Route r:getRoutes()) {
+        for(int r_index = currRouteIndex; r_index<=routes.size()-1; r_index++) {
+            Route r = routes.get(r_index);
             for(int i=0; i<r.getRoute().size()-1; i++) {
                 PointInPath p1 = r.getRoute().get(i);
                 PointInPath p2 = r.getRoute().get(i+1);
 
                 if(p1.getStreet().getId() == street.getId()) {
                     if(Math2D.isLocatedBetweenPoints(coord, p1.getCoordinate(), p2.getCoordinate())) {
-                        // TODO tip for improvement- if coord is found to be in path, then
-                        //  return first point after current vehicle position and for each line
-                        //  adjust all returned positions to the furthest one
-                        return new PointInPath(r, p1.getStreet(), p1.getCoordinate());
+                        if(r_index != currRouteIndex) {
+                            return new PointInPath(r, p1.getStreet(), p1.getCoordinate());
+                        } else {
+                            Coordinate vehiclePos = getPosition(progressTowardsNextStop);
+                            if(Math2D.isLocatedBetweenPoints(vehiclePos, p1.getCoordinate(), coord)) {
+                                return new PointInPath(r, p1.getStreet(), vehiclePos);
+                            }
+                        }
                     }
                 }
             }

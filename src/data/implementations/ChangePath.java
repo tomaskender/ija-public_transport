@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ChangePath {
     private Line line;
-    private List<Vehicle> subscribedVehicles = new ArrayList<>();
+    private List<Vehicle> subscribedVehicles;
     private PointInPath beginning;
     private List<PointInPath> ends;
     private int deltaInMins;
@@ -20,6 +20,7 @@ public class ChangePath {
         this.beginning = beginning;
         this.ends = ends;
         this.deltaInMins = deltaInMins;
+        this.subscribedVehicles = new ArrayList<>();
     }
 
     public PointInPath getBeginning() {

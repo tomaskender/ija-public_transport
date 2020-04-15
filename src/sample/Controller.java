@@ -31,11 +31,13 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
+import org.w3c.dom.ranges.Range;
 import sun.security.ssl.Debug;
 import sun.security.util.ArrayUtil;
 import utils.Math2D;
 
 import java.awt.*;
+import java.awt.font.NumericShaper;
 import java.rmi.UnexpectedException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -221,7 +223,7 @@ public class Controller {
                     endEntry,
                     altRouteSelector.getSelectionModel().getSelectedItem().getDeltaInMins())) {
                 //succeeded, remove vehicle from alt route list
-                System.err.println("Alternative route was set.");
+                System.out.println("Alternative route was set.");
                 altRouteSelector.getSelectionModel().getSelectedItem().SetFoundAlternativeRoute(r);
                 break;
             }
@@ -441,11 +443,16 @@ public class Controller {
                         }
                     }
 
-                    routeWithFirstAltRoutePoint.ConstructRoute(streetList,
+                    int modifiedIndex = vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint);
+                    Route newRoute = new MyRoute();
+                    newRoute.ConstructRoute(streetList,
                             routeWithFirstAltRoutePoint.getRoute().get(0),
                             altRoute.getRoute().get(altRoute.getRoute().size()-1),
                             altRoute.getExpectedDeltaTime()/60);
-                    vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
+                    vehicle.EditRouteAndNormalizeProgress(modifiedIndex, newRoute);
+
+                    for(int i=lastIndexToRemove; i>modifiedIndex; i--)
+                        vehicle.RemoveRoute(i);
 
                 }
                 toRemove.add(path);

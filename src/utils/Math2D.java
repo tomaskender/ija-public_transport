@@ -1,6 +1,10 @@
 package utils;
 
+import data.implementations.PointInPath;
 import data.interfaces.Coordinate;
+import data.interfaces.Route;
+
+import java.util.List;
 
 public class Math2D {
     public static boolean isLocatedBetweenPoints(Coordinate target, Coordinate p1, Coordinate p2) {
@@ -42,5 +46,15 @@ public class Math2D {
         {
             return Coordinate.CreateCoordinate((int) Math.round(s1X + u * xDelta), (int) Math.round(s1Y + u * yDelta));
         }
+    }
+
+    public static double getRouteLength(Route route) {
+        List<PointInPath> coords = route.getRoute();
+        // get total route length
+        double totalDistance = 0;
+        for(int i=0; i<coords.size()-1;i++) {
+            totalDistance += Math2D.getDistanceBetweenPoints(coords.get(i).getCoordinate(), coords.get(i+1).getCoordinate());
+        }
+        return totalDistance;
     }
 }

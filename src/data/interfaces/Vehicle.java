@@ -15,6 +15,8 @@ public interface Vehicle extends GUIMapElement {
     void Tick(long deltaInMillis);
     VehicleState getState();
     void AddRoute(Route route);
+    void EditRouteAndNormalizeProgress(int index, Route route);
+    void RemoveRoute(int index);
     List<Route> getRoutes();
     PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord);
 }
