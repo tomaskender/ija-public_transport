@@ -120,9 +120,12 @@ public class Controller {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(state == GUIState.CLOSING_STREETS && currHoveredStreet != null) {
-                    Coordinate p = getClosurePoint(currHoveredStreet, (int)mouseEvent.getX(), (int)mouseEvent.getY());
-                    mousePlaceStopMarker.setCenterX(p.getX());
-                    mousePlaceStopMarker.setCenterY(p.getY());
+                    try {
+                        Coordinate p = getClosurePoint(currHoveredStreet, (int) mouseEvent.getX(), (int) mouseEvent.getY());
+                        mousePlaceStopMarker.setCenterX(p.getX());
+                        mousePlaceStopMarker.setCenterY(p.getY());
+                    } catch(Exception e) {
+                    }
                 }
             }
         });
