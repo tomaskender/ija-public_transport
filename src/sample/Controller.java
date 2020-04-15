@@ -131,13 +131,6 @@ public class Controller {
             public void changed(ObservableValue<? extends ChangePath> observable, ChangePath oldValue, ChangePath newValue) {
                 ClearHighlights();
                 if(newValue != null) {
-                    Circle beg = new Circle(newValue.getBeginning().getCoordinate().getX(), newValue.getBeginning().getCoordinate().getY(), 10, Color.GREEN);
-                    field.getChildren().add(beg);
-
-                    for (PointInPath e : newValue.getEnds()) {
-                        Circle end = new Circle(e.getCoordinate().getX(), e.getCoordinate().getY(), 10, Color.RED);
-                        field.getChildren().add(end);
-                    }
                     selectedRouteStreets.clear();
                     selectedRouteStreets.add(newValue.getBeginning().getStreet());
                     RedrawSelectedRoute(selectedRoute);
@@ -226,7 +219,7 @@ public class Controller {
             if (r.ConstructRoute(selectedRouteStreets,
                     altRouteSelector.getSelectionModel().getSelectedItem().getBeginning(),
                     endEntry,
-                    0)) {
+                    altRouteSelector.getSelectionModel().getSelectedItem().getDeltaInMins())) {
                 //succeeded, remove vehicle from alt route list
                 System.err.println("Alternative route was set.");
                 altRouteSelector.getSelectionModel().getSelectedItem().SetFoundAlternativeRoute(r);
@@ -234,6 +227,18 @@ public class Controller {
             }
         }
         ClearHighlights();
+
+        ChangePath path = altRouteSelector.getSelectionModel().getSelectedItem();
+        Circle beg = new Circle(path.getBeginning().getCoordinate().getX(), path.getBeginning().getCoordinate().getY(), 10, Color.GREEN);
+        field.getChildren().add(beg);
+        HighlightObject(beg, new GUIVehiclePath(Color.GREEN), false);
+
+        for (PointInPath e : path.getEnds()) {
+            Circle end = new Circle(e.getCoordinate().getX(), e.getCoordinate().getY(), 10, Color.RED);
+            field.getChildren().add(end);
+            HighlightObject(end, new GUIVehiclePath(Color.RED), false);
+        }
+
         List<PointInPath> route = r.getRoute();
         for(int i=0;i<route.size()-1; i++) {
             Coordinate c1 = route.get(i).getCoordinate();
@@ -400,6 +405,9 @@ public class Controller {
             Route altRoute = path.getFoundAlternativeRoute();
             // check if selector list items have been fixed and if so, add altRoute to vehicles route
             if(altRoute != null) {
+                if(altRouteSelector.getSelectionModel().getSelectedItem() == path)
+                    ClearHighlights();
+
                 PointInPath firstPoint = altRoute.getRoute().get(0);
                 PointInPath lastPoint = altRoute.getRoute().get(altRoute.getRoute().size()-1);
 
@@ -439,7 +447,6 @@ public class Controller {
                             altRoute.getExpectedDeltaTime());
                     vehicle.getRoutes().subList(vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint)+1, lastIndexToRemove+1).clear();
 
-                    System.out.println("vehicle path fixed");
                 }
                 toRemove.add(path);
             }
@@ -458,7 +465,7 @@ public class Controller {
                                             .stream()
                                             .map(r -> r.getRoute().get(r.getRoute().size() - 1))
                                             .collect(Collectors.toList()),
-                                    0);
+                                    1);
                             path.AddVehicle(v);
 
                             int index = altRouteSelector.getItems().indexOf(path);
