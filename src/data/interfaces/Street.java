@@ -4,12 +4,14 @@ import java.util.List;
 
 import data.enums.StreetState;
 import data.implementations.MyStreet;
+import javafx.scene.shape.Line;
 
 public interface Street extends GUIMapElement {
     static Street CreateStreet(String id, Coordinate... coordinates) { return MyStreet.CreateStreet(id, coordinates); }
     String getId();
     List<Coordinate> getStreetPoints();
-    boolean Follows(Street s);
+    boolean follows(Line line);
+    boolean follows(Street street);
     boolean AddStopToStreet(Stop s);
     List<Stop> getStops();
     Coordinate getBegin();

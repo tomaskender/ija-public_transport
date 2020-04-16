@@ -3,6 +3,7 @@ package data.implementations;
 import data.enums.StreetState;
 import data.interfaces.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import utils.Math2D;
 
 import java.util.ArrayList;
@@ -65,11 +66,16 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     @Override
-    public boolean Follows(Street s) {
-        return this.getBegin().equals(s.getBegin()) ||
-                this.getBegin().equals(s.getEnd()) ||
-                this.getEnd().equals(s.getBegin()) ||
-                this.getEnd().equals(s.getEnd());
+    public boolean follows(Street street) {
+        return follows(new Line(street.getStreetPoints().get(0).getX(), street.getStreetPoints().get(0).getY(), street.getStreetPoints().get(1).getX(), street.getStreetPoints().get(1).getY()));
+    }
+
+    @Override
+    public boolean follows(Line line) {
+        return Math2D.isLocatedBetweenPoints(Coordinate.CreateCoordinate(line.getStartX(), line.getStartY()), getBegin(), getEnd()) ||
+                Math2D.isLocatedBetweenPoints(Coordinate.CreateCoordinate(line.getEndX(), line.getEndY()), getBegin(), getEnd()) ||
+                Math2D.isLocatedBetweenPoints(getBegin(), Coordinate.CreateCoordinate(line.getStartX(), line.getStartY()), Coordinate.CreateCoordinate(line.getEndX(), line.getEndY())) ||
+                Math2D.isLocatedBetweenPoints(getEnd(), Coordinate.CreateCoordinate(line.getStartX(), line.getStartY()), Coordinate.CreateCoordinate(line.getEndX(), line.getEndY()));
     }
 
     @Override

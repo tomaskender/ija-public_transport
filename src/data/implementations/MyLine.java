@@ -49,7 +49,7 @@ public class MyLine implements Line {
             follows = true;
         } else {
             for (Street s : streets) {
-                if (s.Follows(street)) {
+                if (s.follows(street)) {
                     follows = true;
                     break;
                 }

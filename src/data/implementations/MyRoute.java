@@ -76,8 +76,21 @@ public class MyRoute implements Route {
                 }
             } else {
                 // street list does not contain full path to second stop
-                route.add(new PointInPath(this, streets.get(street_i), currStreet.getBegin()));
-                route.add(new PointInPath(this, streets.get(street_i), currStreet.getEnd()));
+                Coordinate closestBeginStop = currStreet.getBegin();
+                Coordinate closestEndStop = currStreet.getEnd();
+                for(Coordinate closurePoint: currStreet.getClosurePoints()) {
+                    if(Math2D.isLocatedBetweenPoints(closurePoint, route.get(route.size()-1).getCoordinate(), currStreet.getBegin())) {
+                        if(closestBeginStop == null || Math2D.getDistanceBetweenPoints(route.get(route.size()-1).getCoordinate(), closurePoint) <
+                                                        Math2D.getDistanceBetweenPoints(route.get(route.size()-1).getCoordinate(), closestBeginStop))
+                            closestBeginStop = closurePoint;
+                    } else {
+                        if(closestBeginStop == null || Math2D.getDistanceBetweenPoints(route.get(route.size()-1).getCoordinate(), closurePoint) <
+                                                        Math2D.getDistanceBetweenPoints(route.get(route.size()-1).getCoordinate(), closestEndStop))
+                            closestEndStop = closurePoint;
+                    }
+                }
+                route.add(new PointInPath(this, streets.get(street_i), closestBeginStop));
+                route.add(new PointInPath(this, streets.get(street_i), closestEndStop));
                 break;
             }
         }

@@ -188,7 +188,10 @@ public class Controller {
                                 selectedRouteStreets.remove(street);
                             } else {
                                 // otherwise highlight it
-                                selectedRouteStreets.add(street);
+                                Line latestHighlightedLine = (Line) highlightedObjects.get(highlightedObjects.size()-1).getKey();
+                                if(street.follows(latestHighlightedLine)) {
+                                    selectedRouteStreets.add(street);
+                                }
                             }
                             RedrawSelectedRoute(selectedRoute);
 
@@ -552,7 +555,7 @@ public class Controller {
     }
 
     private void HighlightObject(Shape shape, GUIMapElement element, boolean exclusiveHighlightion) {
-        if(exclusiveHighlightion /*|| (!highlightedObjects.isEmpty() && element.getClass() != highlightedObjects.get(highlightedObjects.size()-1).getValue().getClass())*/) {
+        if(exclusiveHighlightion) {
             ClearHighlights();
         }
 
