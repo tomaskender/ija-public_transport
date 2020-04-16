@@ -72,10 +72,13 @@ public class MyStreet implements Street, GUIMapElement {
 
     @Override
     public boolean follows(Line line) {
-        return Math2D.isLocatedBetweenPoints(Coordinate.CreateCoordinate(line.getStartX(), line.getStartY()), getBegin(), getEnd()) ||
-                Math2D.isLocatedBetweenPoints(Coordinate.CreateCoordinate(line.getEndX(), line.getEndY()), getBegin(), getEnd()) ||
-                Math2D.isLocatedBetweenPoints(getBegin(), Coordinate.CreateCoordinate(line.getStartX(), line.getStartY()), Coordinate.CreateCoordinate(line.getEndX(), line.getEndY())) ||
-                Math2D.isLocatedBetweenPoints(getEnd(), Coordinate.CreateCoordinate(line.getStartX(), line.getStartY()), Coordinate.CreateCoordinate(line.getEndX(), line.getEndY()));
+        Coordinate lineStart = Coordinate.CreateCoordinate(line.getStartX(), line.getStartY());
+        Coordinate lineEnd = Coordinate.CreateCoordinate(line.getEndX(), line.getEndY());
+        return (Math2D.isLocatedBetweenPoints(lineStart, getBegin(), getEnd()) ||
+                Math2D.isLocatedBetweenPoints(lineEnd, getBegin(), getEnd()) ||
+                Math2D.isLocatedBetweenPoints(getBegin(), lineStart, lineEnd) ||
+                Math2D.isLocatedBetweenPoints(getEnd(), lineStart, lineEnd)) &&
+                !(Math2D.isLocatedBetweenPoints(lineStart, getBegin(), getEnd()) && Math2D.isLocatedBetweenPoints(lineEnd, getBegin(), getEnd()));
     }
 
     @Override

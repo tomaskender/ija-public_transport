@@ -189,6 +189,7 @@ public class Controller {
                             } else {
                                 // otherwise highlight it
                                 Line latestHighlightedLine = (Line) highlightedObjects.get(highlightedObjects.size()-1).getKey();
+                                GUIMapElement element = highlightedObjects.get(highlightedObjects.size()-1).getValue();
                                 if(street.follows(latestHighlightedLine)) {
                                     selectedRouteStreets.add(street);
                                 }
