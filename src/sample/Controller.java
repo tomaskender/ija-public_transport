@@ -60,6 +60,7 @@ public class Controller {
     public Label busState;
     public Pane highlightedBusPath;
 
+    public TextField changePathDelta;
     public ChoiceBox streetBusinessSelector;
     public Button closeStreetButton;
     @FXML
@@ -134,6 +135,10 @@ public class Controller {
             @Override
             public void changed(ObservableValue<? extends ChangePath> observable, ChangePath oldValue, ChangePath newValue) {
                 ClearHighlights();
+                if(oldValue != null) {
+                    oldValue.SetDeltaInMins(Integer.parseInt(changePathDelta.getText()));
+                }
+
                 if(newValue != null) {
                     selectedRouteStreets.clear();
                     if(newValue.getFoundAlternativeRoute() != null) {
@@ -150,6 +155,12 @@ public class Controller {
                     RedrawSelectedRoute();
                     state = GUIState.ALT_ROUTE_SELECTION;
                     closeStreetButton.setDisable(true);
+
+                    changePathDelta.setText(String.valueOf(newValue.getDeltaInMins()));
+                    changePathDelta.setDisable(false);
+                } else {
+                    changePathDelta.setText("Alt Route Delta");
+                    changePathDelta.setDisable(true);
                 }
             }
         });
@@ -417,10 +428,7 @@ public class Controller {
 
     @FXML
     private void EvaluateStreetsAffectedByClosedPoint() {
-        // paths that are already fixed and will be removed from selector list
-        List<ChangePath> toRemove = new ArrayList<>();
-
-        for(ChangePath path:altRouteSelector.getItems()) {
+        for(ChangePath path:new ArrayList<ChangePath>(altRouteSelector.getItems())) {
             Route altRoute = path.getFoundAlternativeRoute();
             // check if selector list items have been fixed and if so, add altRoute to vehicles route
             if(altRoute != null) {
@@ -429,6 +437,8 @@ public class Controller {
 
                 PointInPath firstPoint = altRoute.getRoute().get(0);
                 PointInPath lastPoint = altRoute.getRoute().get(altRoute.getRoute().size()-1);
+
+                altRouteSelector.getItems().remove(path);
 
                 for(Vehicle vehicle:path.getSubscribedVehicles()) {
                     Route routeWithFirstAltRoutePoint = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
@@ -465,17 +475,15 @@ public class Controller {
                     newRoute.ConstructRoute(streetList,
                             routeWithFirstAltRoutePoint.getRoute().get(0),
                             altRoute.getRoute().get(altRoute.getRoute().size()-1),
-                            altRoute.getExpectedDeltaTime()/60);
+                            path.getDeltaInMins());
                     vehicle.EditRouteAndNormalizeProgress(modifiedIndex, newRoute);
 
                     for(int i=lastIndexToRemove; i>modifiedIndex; i--)
                         vehicle.RemoveRoute(i);
 
                 }
-                toRemove.add(path);
             }
         }
-        toRemove.forEach(p->altRouteSelector.getItems().remove(p));
 
         for(Street street: CONFIG.streets.values()) {
             if(!street.getClosurePoints().isEmpty()) {

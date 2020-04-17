@@ -42,6 +42,9 @@ public class ChangePath {
     public Route getFoundAlternativeRoute() { return foundAlternativeRoute; }
 
     public int getDeltaInMins() { return deltaInMins; }
+
+    public void SetDeltaInMins(int delta) { this.deltaInMins = delta; }
+
     @Override
     public String toString() {
         switch (subscribedVehicles.size()) {

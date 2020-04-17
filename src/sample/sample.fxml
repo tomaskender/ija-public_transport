@@ -18,32 +18,38 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="881.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <right>
-      <AnchorPane prefHeight="550.0" prefWidth="169.0" BorderPane.alignment="CENTER">
-         <children>
-            <TitledPane animated="false" layoutY="120.0" prefHeight="181.0" prefWidth="202.0" text="Alternative Routes">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <ListView fx:id="altRouteSelector" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </TitledPane>
-            <Button fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="123.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="27.0" prefWidth="32.0">
-               <graphic>
-                  <ImageView>
-                     <image>
-                        <Image url="@media/play.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="27.0" prefWidth="107.0" text="00:00" />
-            <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" value="1.0" />
-            <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" />
-            <ChoiceBox fx:id="streetBusinessSelector" disable="true" layoutX="15.0" layoutY="475.0" prefHeight="24.0" prefWidth="174.0" />
-            <Button fx:id="closeStreetButton" layoutX="14.0" layoutY="507.0" mnemonicParsing="false" onAction="#onCloseStreetClicked" prefHeight="32.0" prefWidth="176.0" text="Close Street" />
-         </children>
-      </AnchorPane>
+      <SplitPane dividerPositions="0.8, 0.5" prefHeight="550.0" prefWidth="169.0" BorderPane.alignment="CENTER" orientation="VERTICAL">
+         <items>
+             <Pane>
+                 <TitledPane animated="false" layoutY="120.0" prefHeight="181.0" prefWidth="202.0" text="Alternative Routes">
+                     <content>
+                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                             <children>
+                                 <ListView fx:id="altRouteSelector" />
+                             </children>
+                         </AnchorPane>
+                     </content>
+                 </TitledPane>
+                 <Button fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="123.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="27.0" prefWidth="32.0">
+                     <graphic>
+                         <ImageView>
+                             <image>
+                                 <Image url="@media/play.png" />
+                             </image>
+                         </ImageView>
+                     </graphic>
+                 </Button>
+                 <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="27.0" prefWidth="107.0" text="00:00" />
+                 <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" value="1.0" />
+                 <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" />
+             </Pane>
+             <Pane prefHeight="140" minHeight="140" maxHeight="140">
+                 <TextField fx:id="changePathDelta" disable="true" layoutX="15.0" layoutY="10.0" prefHeight="24.0" prefWidth="140.0" alignment="BASELINE_RIGHT" />
+                 <ChoiceBox fx:id="streetBusinessSelector" disable="true" layoutX="15.0" layoutY="50.0" prefHeight="24.0" prefWidth="140.0" />
+                 <Button fx:id="closeStreetButton" layoutX="14.0" layoutY="90.0" mnemonicParsing="false" onAction="#onCloseStreetClicked" prefHeight="32.0" prefWidth="140.0" text="Close Street" />
+             </Pane>
+         </items>
+      </SplitPane>
    </right>
    <center>
       <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
@@ -67,7 +73,7 @@
                   <Label fx:id="busState" layoutX="70.0" prefHeight="20.0" prefWidth="73.0" text="MOVING" />
                </children>
             </Pane>
-            <Pane fx:id="highlightedBusPath" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" />
+            <Pane fx:id="highlightedBusPath" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="112.0" />
         </items>
       </SplitPane>
    </center>
