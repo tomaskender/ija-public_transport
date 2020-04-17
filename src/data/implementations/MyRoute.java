@@ -104,4 +104,11 @@ public class MyRoute implements Route {
 
     @Override
     public double getExpectedDeltaTime() { return deltaTime; }
+
+    @Override
+    public void SetExpectedDeltaTime(double delta) {
+        this.deltaTime = delta;
+    }
+
+
 }

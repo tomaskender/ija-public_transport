@@ -9,4 +9,5 @@ public interface Route {
     boolean ConstructRoute(List<Street> streets, PointInPath firstStop, PointInPath secondStop, double deltaTimeInMins);
     List<PointInPath> getRoute();
     double getExpectedDeltaTime();
+    void SetExpectedDeltaTime(double delta);
 }

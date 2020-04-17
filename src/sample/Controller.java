@@ -473,7 +473,7 @@ public class Controller {
                     int modifiedIndex = vehicle.getRoutes().indexOf(routeWithFirstAltRoutePoint);
                     Route newRoute = new MyRoute();
                     newRoute.ConstructRoute(streetList,
-                            routeWithFirstAltRoutePoint.getRoute().get(0),
+                            altRoute.getRoute().get(0),
                             altRoute.getRoute().get(altRoute.getRoute().size()-1),
                             path.getDeltaInMins());
                     vehicle.EditRouteAndNormalizeProgress(modifiedIndex, newRoute);

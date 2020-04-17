@@ -128,10 +128,23 @@ public class MyVehicle implements Vehicle, GUIMapElement {
 
     @Override
     public void EditRouteAndNormalizeProgress(int index, Route route) {
+        Route editedRoute = routes.get(index);
+        double currDistance = Math2D.getRouteLength(editedRoute);
+
+        // some vehicles are already traversing the currently edited route
+        // we need to change only the part of the route they haven't crossed yet
+        if(route.getRoute().get(0) != getRoutes().get(index).getRoute().get(0)) {
+            // get the connecting point between two routes
+            int connIndex = editedRoute.getRoute().indexOf(route.getRoute().get(0));
+            route.getRoute().addAll(0, editedRoute.getRoute().subList(0, connIndex));
+
+            double shareOfPartBeforeConnectionPoint = Math2D.getRouteLength(route, 0, connIndex)/currDistance;
+            route.SetExpectedDeltaTime(editedRoute.getExpectedDeltaTime()*shareOfPartBeforeConnectionPoint+route.getExpectedDeltaTime());
+        }
+
         if(currRouteIndex == index) {
-            double currDistance = Math2D.getRouteLength(routes.get(currRouteIndex));
-            double newDistance = Math2D.getRouteLength(route);
             // adjust currently active routes progress so that the vehicle remains in the same position in getPosition
+            double newDistance = Math2D.getRouteLength(route);
             progressTowardsNextStop = progressTowardsNextStop * currDistance/newDistance;
         }
         routes.set(index, route);
@@ -160,7 +173,10 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                         } else {
                             Coordinate vehiclePos = getPosition(progressTowardsNextStop);
                             if(Math2D.isLocatedBetweenPoints(vehiclePos, p1.getCoordinate(), coord)) {
-                                return new PointInPath(r, p1.getStreet(), vehiclePos);
+                                PointInPath currVehiclePoint = new PointInPath(r, p1.getStreet(), vehiclePos);
+                                r.getRoute().add(i+1, currVehiclePoint);
+
+                                return currVehiclePoint;
                             }
                         }
                     }

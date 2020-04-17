@@ -49,10 +49,14 @@ public class Math2D {
     }
 
     public static double getRouteLength(Route route) {
+        return getRouteLength(route, 0, route.getRoute().size()-1);
+    }
+
+    public static double getRouteLength(Route route, int startIndex, int endIndex) {
         List<PointInPath> coords = route.getRoute();
         // get total route length
         double totalDistance = 0;
-        for(int i=0; i<coords.size()-1;i++) {
+        for(int i=startIndex; i<coords.size()-1 && i<=endIndex;i++) {
             totalDistance += Math2D.getDistanceBetweenPoints(coords.get(i).getCoordinate(), coords.get(i+1).getCoordinate());
         }
         return totalDistance;
