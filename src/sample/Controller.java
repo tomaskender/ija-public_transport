@@ -76,7 +76,6 @@ public class Controller {
     Circle mousePlaceStopMarker;
     List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
     List<Street> selectedRouteStreets = new ArrayList<>();
-    Route selectedRoute = new MyRoute();
 
     @FXML
     public void initialize() {
@@ -137,8 +136,18 @@ public class Controller {
                 ClearHighlights();
                 if(newValue != null) {
                     selectedRouteStreets.clear();
-                    selectedRouteStreets.add(newValue.getBeginning().getStreet());
-                    RedrawSelectedRoute(selectedRoute);
+                    if(newValue.getFoundAlternativeRoute() != null) {
+                        List<PointInPath> path = newValue.getFoundAlternativeRoute().getRoute();
+                        selectedRouteStreets.add(path.get(0).getStreet());
+                        for(int i=1; i<path.size(); i++) {
+                            if(selectedRouteStreets.get(selectedRouteStreets.size()-1) != path.get(i).getStreet()) {
+                                selectedRouteStreets.add(path.get(i).getStreet());
+                            }
+                        }
+                    } else {
+                        selectedRouteStreets.add(newValue.getBeginning().getStreet());
+                    }
+                    RedrawSelectedRoute();
                     state = GUIState.ALT_ROUTE_SELECTION;
                     closeStreetButton.setDisable(true);
                 }
@@ -194,7 +203,7 @@ public class Controller {
                                     selectedRouteStreets.add(street);
                                 }
                             }
-                            RedrawSelectedRoute(selectedRoute);
+                            RedrawSelectedRoute();
 
                     }
                 }
@@ -223,7 +232,8 @@ public class Controller {
         }
     }
 
-    private void RedrawSelectedRoute(Route r) {
+    private void RedrawSelectedRoute() {
+        Route r = new MyRoute();
         for(PointInPath endEntry:altRouteSelector.getSelectionModel().getSelectedItem().getEnds()) {
             if (r.ConstructRoute(selectedRouteStreets,
                     altRouteSelector.getSelectionModel().getSelectedItem().getBeginning(),
