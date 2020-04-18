@@ -338,17 +338,27 @@ public class Controller {
 
                     // replace drawn path
                     highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
+                    LocalTime timer = null;
                     for(AbstractMap.SimpleImmutableEntry<Stop, Integer> stop : stops_on_lines){
                         int x_pos = old_offset_x + stop.getValue()*30;
                         Line route1  = new Line(old_offset_x + 5, y_pos, x_pos, y_pos);
                         Circle circle = new Circle();
                         Text text = new Text(stop.getKey().getId());
-                        if(stop.getValue() != 0){
-                            Text time = new Text(String.valueOf(stop.getValue()));
-                            time.setY(y_pos + 15);
-                            time.setX(((old_offset_x+x_pos)/2.0)-5);
-                            highlightedBusPath.getChildren().add(time);
+                        Text time = null;
+
+                        if(stop.getValue() == 0) {
+                            timer = v.getStart();
+                            time = new Text(String.valueOf(timer));
+                        } else {
+                            timer = timer.plus(stop.getValue(), ChronoUnit.MINUTES);
+                            time = new Text(String.valueOf(timer));
+                            timer = timer.plus((long) CONFIG.EXPECTED_STOP_TIME, ChronoUnit.SECONDS);
                         }
+                        time.setRotate(90);
+                        time.setY(y_pos + 33);
+                        time.setX(x_pos-20);
+                        highlightedBusPath.getChildren().add(time);
+
                         circle.setCenterX(x_pos);
                         circle.setCenterY(y_pos);
                         circle.setRadius(5);
