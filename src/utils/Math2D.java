@@ -56,7 +56,7 @@ public class Math2D {
         List<PointInPath> coords = route.getRoute();
         // get total route length
         double totalDistance = 0;
-        for(int i=startIndex; i<coords.size()-1 && i<=endIndex;i++) {
+        for(int i=startIndex; i<coords.size()-1 && i<endIndex;i++) {
             totalDistance += Math2D.getDistanceBetweenPoints(coords.get(i).getCoordinate(), coords.get(i+1).getCoordinate());
         }
         return totalDistance;
