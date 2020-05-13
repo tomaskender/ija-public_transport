@@ -3,6 +3,7 @@ package sample;
 import data.implementations.CONFIG;
 import data.interfaces.Vehicle;
 import javafx.application.Application;
+import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,11 +11,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +27,8 @@ import java.util.TimerTask;
 public class Main extends Application {
     @FXML
     AnchorPane field;
+    private boolean onlyAtStart = true;
+    LocalTime wantedTime;
 
     /**
      * @brief main application stage
@@ -66,6 +73,37 @@ public class Main extends Application {
                                     }
                                 }
                             });
+                        }
+                        if(onlyAtStart){
+                            if(controller.start){
+                                wantedTime = LocalTime.parse(controller.timeLabel.getText());}
+                            else{
+                                if(CONFIG.CURRENT_TIME.compareTo(wantedTime.plusSeconds(-1600)) < 0){
+                                    CONFIG.DELTA =  200000;
+                                    for(Shape vehicle : controller.vehicles.values()){
+                                        vehicle.setFill(Color.TRANSPARENT);
+                                    }
+                                }
+                                else if(CONFIG.CURRENT_TIME.compareTo(wantedTime) < 0){
+                                    controller.timeLabel.setText(wantedTime.toString());
+                                    CONFIG.DELTA = 3000;
+                                    for(Shape vehicle : controller.vehicles.values()){
+                                        vehicle.setFill(Color.TRANSPARENT);
+                                    }
+                                }
+                                else{
+                                    for(Map.Entry<Vehicle, Circle> vehicle : controller.vehicles.entrySet()){
+                                        vehicle.getValue().setFill(vehicle.getKey().getLine().getMapColor());
+                                    }
+                                    controller.timeLabel.setVisible(true);
+                                    CONFIG.DELTA = (int)controller.simSpeedSlider.getValue();
+                                    controller.timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
+                                    onlyAtStart = false;
+                                }
+                            }
+                        }
+                        else{
+                            controller.timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
                         }
                     }
                 }.start();

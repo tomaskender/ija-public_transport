@@ -70,9 +70,9 @@ public class Controller {
 
     GUIState state = GUIState.NORMAL;
 
-    private Map<Vehicle,Circle> vehicles = new HashMap<>();
+    public Map<Vehicle,Circle> vehicles = new HashMap<>();
     private boolean onlyAtStart = true;
-    private boolean start = true;
+    public boolean start = true;
     private LocalTime wantedTime;
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
@@ -498,9 +498,9 @@ public class Controller {
         }
         else{
             timeLabel.setText(CONFIG.CURRENT_TIME.toString());
-        }
+        }*/
         UpdateHighlightedVehicle();
-    */}
+    }
 
     /**
      * @brief get points where was street closed
