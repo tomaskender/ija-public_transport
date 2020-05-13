@@ -6,6 +6,7 @@ import data.enums.VehicleState;
 import javafx.scene.paint.Color;
 import utils.Math2D;
 
+import javax.security.auth.login.Configuration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
@@ -17,7 +18,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     Line line;
     LocalTime start;
     double progressTowardsNextStop;
-    double stopTime=0;
+    long stopTimeInMillis=0;
     VehicleState state;
     List<Route> routes = new ArrayList<>();
     int currRouteIndex = 0;
@@ -86,10 +87,14 @@ public class MyVehicle implements Vehicle, GUIMapElement {
      */
     @Override
     public void Tick(long deltaInMillis) {
+        long wastedDeltaInMillis = 0;
+
         switch (state) {
             case INACTIVE:
-                if(CONFIG.CURRENT_TIME.compareTo(start) >= 0 && CONFIG.CURRENT_TIME.compareTo(start.plus(deltaInMillis, ChronoUnit.MILLIS)) < 0)
+                if(CONFIG.CURRENT_TIME.compareTo(start) >= 0 && CONFIG.CURRENT_TIME.compareTo(start.plus(deltaInMillis, ChronoUnit.MILLIS)) < 0) {
                     SetState(VehicleState.MOVING);
+                    wastedDeltaInMillis -= CONFIG.CURRENT_TIME.minusNanos(start.toNanoOfDay()).toNanoOfDay()/1000;
+                }
                 break;
             case MOVING:
                 Route currRoute = routes.get(currRouteIndex);
@@ -105,6 +110,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 double deltaInSecs = (double)deltaInMillis/1000;
                 progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
+                    wastedDeltaInMillis = (long)((progressTowardsNextStop-1)*currRoute.getExpectedDeltaTime()/streetModifier)*1000;
                     currRouteIndex++;
                     SetState(VehicleState.STOPPED);
                     progressTowardsNextStop = 0.0;
@@ -113,9 +119,11 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                     CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
                 break;
             case STOPPED:
-                stopTime += (double)deltaInMillis/1000;
-                if (stopTime >= CONFIG.EXPECTED_STOP_TIME) {
-                    stopTime = 0;
+                stopTimeInMillis += deltaInMillis;
+                if (stopTimeInMillis >= CONFIG.EXPECTED_STOP_TIME*1000) {
+                    wastedDeltaInMillis = stopTimeInMillis-(long)CONFIG.EXPECTED_STOP_TIME*1000;
+
+                    stopTimeInMillis = 0;
                     if(currRouteIndex < routes.size()) {
                         SetState(VehicleState.MOVING);
                     } else {
@@ -124,6 +132,11 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                     }
                 }
                 break;
+        }
+
+        // ensures we can skip states in single tick if the speed of simulation is high
+        if(wastedDeltaInMillis > 0) {
+            Tick(wastedDeltaInMillis);
         }
     }
 
