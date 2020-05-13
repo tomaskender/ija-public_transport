@@ -1,5 +1,6 @@
 package data.implementations;
 
+import data.enums.StreetState;
 import data.interfaces.*;
 import data.enums.VehicleState;
 import javafx.scene.paint.Color;
@@ -92,7 +93,15 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 break;
             case MOVING:
                 Route currRoute = routes.get(currRouteIndex);
-                double streetModifier = currRoute.getRoute().get(0).getStreet().getStreetState().getModifier();
+
+                // get current street modifier
+                double streetModifier = StreetState.LOW.getModifier();
+                for(int i=0; i<currRoute.getRoute().size(); i++) {
+                    if(Math2D.getRouteLength(currRoute, 0, i) / Math2D.getRouteLength(currRoute) > progressTowardsNextStop)
+                        break;
+                    streetModifier = currRoute.getRoute().get(i).getStreet().getStreetState().getModifier();
+                }
+
                 double deltaInSecs = (double)deltaInMillis/1000;
                 progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
                 if(progressTowardsNextStop >= 1) {
