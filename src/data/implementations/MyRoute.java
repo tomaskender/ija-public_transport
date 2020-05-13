@@ -17,6 +17,14 @@ public class MyRoute implements Route {
     List<PointInPath> route = new ArrayList<>();
     double deltaTime;
 
+    /**
+     * @brief route constructor
+     * @param streets vector of given streets on route
+     * @param firstStop first stop on route
+     * @param secondStop second stop on route
+     * @param deltaTimeInMins time to get to stop
+     * @return true if route was sucessfuly constructed, otherwise false
+     */
     @Override
     public boolean ConstructRoute(List<Street> streets, PointInPath firstStop, PointInPath secondStop, double deltaTimeInMins) {
         this.deltaTime = deltaTimeInMins*60;
@@ -97,14 +105,26 @@ public class MyRoute implements Route {
         return false;
     }
 
+    /**
+     * @brief get route
+     * @return route
+     */
     @Override
     public List<PointInPath> getRoute() {
         return route;
     }
 
+    /**
+     * @brief get time to get to stop
+     * @return double time
+     */
     @Override
     public double getExpectedDeltaTime() { return deltaTime; }
 
+    /**
+     * @brief set route time
+     * @param deltaInMins give route time
+     */
     @Override
     public void SetExpectedDeltaTime(double delta) {
         this.deltaTime = delta;

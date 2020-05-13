@@ -16,21 +16,21 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="881.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="881.0" style="-fx-background-color: #737373;" stylesheets="@media/modena_dark.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <right>
-      <SplitPane dividerPositions="0.8, 0.5" prefHeight="550.0" prefWidth="169.0" BorderPane.alignment="CENTER" orientation="VERTICAL">
+      <SplitPane dividerPositions="0.8" orientation="VERTICAL" prefHeight="550.0" prefWidth="169.0" style="-fx-background-color: #737373;" BorderPane.alignment="CENTER">
          <items>
-             <Pane>
-                 <TitledPane animated="false" layoutY="120.0" prefHeight="181.0" prefWidth="202.0" text="Alternative Routes">
+             <Pane style="-fx-background-color: #262626;">
+                 <TitledPane animated="false" layoutY="120.0" prefHeight="181.0" prefWidth="202.0" style="-fx-background-color: #262626;" text="Alternative Routes">
                      <content>
-                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #737373;">
                              <children>
-                                 <ListView fx:id="altRouteSelector" />
+                                 <ListView fx:id="altRouteSelector" style="-fx-background-color: #737373;" />
                              </children>
                          </AnchorPane>
                      </content>
                  </TitledPane>
-                 <Button fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="123.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="27.0" prefWidth="32.0">
+                 <Button fx:id="pauseButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="123.0" layoutY="23.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="27.0" prefWidth="32.0" style="-fx-background-color: #737373;">
                      <graphic>
                          <ImageView>
                              <image>
@@ -39,28 +39,28 @@
                          </ImageView>
                      </graphic>
                  </Button>
-                 <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="27.0" prefWidth="107.0" text="00:00" />
-                 <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" value="1.0" />
-                 <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" />
+                 <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="27.0" prefWidth="107.0" style="-fx-background-color: #737373;" text="00:00" />
+                 <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" style="-fx-background-color: #262626;" value="1.0" />
+                 <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" textFill="WHITE" />
              </Pane>
-             <Pane prefHeight="140" minHeight="140" maxHeight="140">
-                 <TextField fx:id="changePathDelta" disable="true" layoutX="15.0" layoutY="10.0" prefHeight="24.0" prefWidth="140.0" alignment="BASELINE_RIGHT" />
-                 <ChoiceBox fx:id="streetBusinessSelector" disable="true" layoutX="15.0" layoutY="50.0" prefHeight="24.0" prefWidth="140.0" />
-                 <Button fx:id="closeStreetButton" layoutX="14.0" layoutY="90.0" mnemonicParsing="false" onAction="#onCloseStreetClicked" prefHeight="32.0" prefWidth="140.0" text="Close Street" />
+             <Pane maxHeight="140" minHeight="140" prefHeight="140" style="-fx-background-color: #262626; -fx-border-color: #262626;">
+                 <TextField fx:id="changePathDelta" alignment="BASELINE_RIGHT" disable="true" layoutX="15.0" layoutY="10.0" prefHeight="24.0" prefWidth="140.0" style="-fx-background-color: #737373;" />
+                 <ChoiceBox fx:id="streetBusinessSelector" disable="true" layoutX="15.0" layoutY="50.0" prefHeight="24.0" prefWidth="140.0" style="-fx-background-color: #737373;" />
+                 <Button fx:id="closeStreetButton" layoutX="14.0" layoutY="90.0" mnemonicParsing="false" onAction="#onCloseStreetClicked" prefHeight="32.0" prefWidth="140.0" style="-fx-background-color: #737373;" text="Close Street" />
              </Pane>
          </items>
       </SplitPane>
    </right>
    <center>
-      <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.8, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" style="-fx-background-color: #737373;" BorderPane.alignment="CENTER">
         <items>
-            <ScrollPane fx:id="content" pannable="true" prefHeight="200.0" prefWidth="200.0">
+            <ScrollPane fx:id="content" pannable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #737373;">
                <content>
                   <Group>
                      <children>
-                        <AnchorPane fx:id="zoom_map" onScroll="#Zoom" prefHeight="738.0" prefWidth="995.0">
+                        <AnchorPane fx:id="zoom_map" onScroll="#Zoom" prefHeight="738.0" prefWidth="995.0" style="-fx-background-color: #737373;">
                            <children>
-                              <AnchorPane fx:id="field" layoutX="115.0" layoutY="81.0" onScroll="#Zoom" prefHeight="585.0" prefWidth="764.0" />
+                              <AnchorPane fx:id="field" layoutX="115.0" layoutY="81.0" onScroll="#Zoom" prefHeight="585.0" prefWidth="764.0" style="-fx-background-color: #737373;" />
                            </children>
                         </AnchorPane>
                      </children>

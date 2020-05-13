@@ -18,6 +18,10 @@ import java.util.*;
 //Parsing input XML into LinkedHashMaps to save order and ease of finding corresponding values
 public class XMLParser {
 
+    /**
+     * @brief parsing input file
+     * @param file input file
+     */
     public static void main(File file) {
         //maps for saving data from XML input
         Map<String, Coordinate> stops = new LinkedHashMap<>();

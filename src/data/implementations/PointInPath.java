@@ -9,14 +9,34 @@ public class PointInPath {
     Street street;
     Route route;
 
+    /**
+     * @brief Point in path of vehicle route
+     * @param route route of vehicle
+     * @param street current street
+     * @param point coordinates of point
+     */
     public PointInPath(Route route, Street street, Coordinate point) {
         this.point = point;
         this.street = street;
         this.route = route;
     }
 
+    /**
+     * @brief get coordinates
+     * @return coordinates
+     */
     public Coordinate getCoordinate() { return point; }
+
+    /**
+     * @brief get street
+     * @return street
+     */
     public Street getStreet() { return street; }
+
+    /**
+     * @brief get route
+     * @return route
+     */
     public Route getRoute() { return route; }
 
     @Override

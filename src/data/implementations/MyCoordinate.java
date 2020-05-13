@@ -12,10 +12,22 @@ public class MyCoordinate implements Coordinate {
         this.y = y;
     }
 
+    /**
+     * @brief create coordinates for double values
+     * @param x position on axe x
+     * @param y position on axe y
+     * @return coordinates
+     */
     public static Coordinate CreateCoordinate(double x, double y) {
         return CreateCoordinate((int)x, (int)y);
     }
 
+    /**
+     * @brief create coordinates for int values
+     * @param x position on axe x
+     * @param y position on axe y
+     * @return coordinates
+     */
     public static Coordinate CreateCoordinate(int x, int y) {
         if(x < 0 || y < 0)
             return null;
@@ -23,11 +35,19 @@ public class MyCoordinate implements Coordinate {
             return new MyCoordinate(x, y);
     }
 
+    /**
+     * @brief get value on X axe
+     * @return x value
+     */
     @Override
     public int getX() {
         return x;
     }
 
+    /**
+     * @brief get value on Y axe
+     * @return y value
+     */
     @Override
     public int getY() {
         return y;

@@ -15,6 +15,11 @@ public class MyLine implements Line {
     private List<Vehicle> vehicles = new ArrayList<>();
     private Color mapColor;
 
+    /**
+     * @brief Create line instance with name and color
+     * @param id line identifier
+     * @return line instance
+     */
     public static Line CreateLine(String id) { return new MyLine(id); }
 
     public MyLine(String id) {
@@ -26,9 +31,19 @@ public class MyLine implements Line {
         }
     }
 
+    /**
+     * @brief get line identifier
+     * @return line identifier
+     */
     @Override
     public String getId() { return id; }
 
+    /**
+     * @brief add given stop with name and time to get there on line
+     * @param stop given stop
+     * @param delta time to get to sto
+     * @return true if stop lies on traversal street otherwise false
+     */
     @Override
     public boolean AddStop(Stop stop, int delta) {
         // is the street neighboring any existing streets?
@@ -63,6 +78,11 @@ public class MyLine implements Line {
         return true;
     }
 
+    /**
+     * @brief add vehicle instance to line
+     * @param v vehicle instance
+     * @return true if could be added, otherwise false
+     */
     @Override
     public boolean AddVehicleToLine(Vehicle v) {
         boolean alreadyContainsThisVehicle = false;
@@ -88,6 +108,10 @@ public class MyLine implements Line {
         }
     }
 
+    /**
+     * @brief get color of this line
+     * @return color value
+     */
     @Override
     public Color getMapColor() { return mapColor; }
 }

@@ -23,15 +23,23 @@ public class Main extends Application {
     @FXML
     AnchorPane field;
 
+    /**
+     * @brief main application stage
+     * @param primaryStage application main stage
+     * @throws Exception stage could not be loaded
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("Public Transport Tracker");
-        primaryStage.setScene(new Scene(root, 1000, 700));
+        Scene scene = new Scene(root, 1000, 700);
+        primaryStage.setScene(scene);
+
         primaryStage.show();
 
         Controller controller = loader.getController();
+        //open file chooser to choose a map
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("./src/sample/maps"));
         fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter("XML", "*.xml"));

@@ -21,6 +21,12 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     List<Route> routes = new ArrayList<>();
     int currRouteIndex = 0;
 
+    /**
+     * @brief create vehicle instance
+     * @param line given line instance
+     * @param start start time of vehicle
+     * @return vehicle instance
+     */
     public static Vehicle CreateVehicle(Line line, LocalTime start) {
         if(line != null && start != null) {
             Vehicle v = new MyVehicle(line, start);
@@ -38,25 +44,45 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         this.state = VehicleState.INACTIVE;
     }
 
+    /**
+     * @brief get line on which vehicle will travel
+     * @return line on which vehicle will travel
+     */
     @Override
     public Line getLine() {
         return line;
     }
 
+    /**
+     * @brief get start time of vehicle
+     * @return start time
+     */
     @Override
     public LocalTime getStart() {
         return start;
     }
 
+    /**
+     * @brief set state of vehicle
+     * @param state of vehicle
+     */
     private void SetState(VehicleState state) {
         this.state = state;
     }
 
+    /**
+     * @brief get vehicle state
+     * @return vehicle state
+     */
     @Override
     public VehicleState getState() {
         return state;
     }
 
+    /**
+     * @brief update position of vehicle in time
+     * @return vehicle position
+     */
     @Override
     public void Tick(long deltaInMillis) {
         switch (state) {
@@ -92,6 +118,11 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         }
     }
 
+    /**
+     * @brief get current position of vehicle
+     * @param progressToNextStop travel distance to next stop
+     * @return position of vehicle
+     */
     private Coordinate getPosition(double progressToNextStop) {
         List<PointInPath> coords = routes.get(currRouteIndex).getRoute();
         // get total route length
@@ -120,12 +151,21 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         return null;
     }
 
+    /**
+     * @brief add route for this vehicle
+     * @param  route new route
+     */
     @Override
     public void AddRoute(Route route) {
         routes.add(route);
     }
 
 
+    /**
+     * @brief edit route for this vehicle
+     * @param index in current route
+     * @param route new route
+     */
     @Override
     public void EditRouteAndNormalizeProgress(int index, Route route) {
         Route editedRoute = routes.get(index);
@@ -150,14 +190,28 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         routes.set(index, route);
     }
 
+    /**
+     * @brief remove route from this vehicle
+     * @param index route on index to remove
+     */
     @Override
     public void RemoveRoute(int index) {
         routes.remove(index);
     }
 
+    /**
+     * @brief get vehicle route
+     * @return vector of vehicle routes
+     */
     @Override
     public List<Route> getRoutes() { return new ArrayList<>(routes); }
 
+    /**
+     * @brief get last point before coordinate
+     * @param street given street
+     * @param coord given coordinate
+     * @return last point
+     */
     @Override
     public PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
         for(int r_index = currRouteIndex; r_index<=routes.size()-1; r_index++) {
@@ -186,9 +240,17 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         return null;
     }
 
+    /**
+     * @brief get color of line
+     * @return color of line
+     */
     @Override
     public Color getNormalColor() { return getLine().getMapColor(); }
 
+    /**
+     * @brief get highlighted color of line
+     * @return color of line
+     */
     @Override
     public Color getHighlightedColor() { return getLine().getMapColor(); }
 }

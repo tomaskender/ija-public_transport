@@ -71,6 +71,9 @@ public class Controller {
     GUIState state = GUIState.NORMAL;
 
     private Map<Vehicle,Circle> vehicles = new HashMap<>();
+    private boolean onlyAtStart = true;
+    private boolean start = true;
+    private LocalTime wantedTime;
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
     Street currHoveredStreet = null;
@@ -78,6 +81,9 @@ public class Controller {
     List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
     List<Street> selectedRouteStreets = new ArrayList<>();
 
+    /**
+     * @brief initialize default scene with default values
+     */
     @FXML
     public void initialize() {
         timeLabel.setText(CONFIG.CURRENT_TIME.toString());
@@ -86,6 +92,12 @@ public class Controller {
         simSpeedSlider.setValue(CONFIG.DELTA);
 
         simSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            /**
+             * @brief listener if speedslider was changed
+             * @param observableValue value to observe
+             * @param oldValue old value of speed
+             * @param newValue new speed value
+             */
             @Override
             public void changed(
                     ObservableValue<? extends Number> observableValue,
@@ -99,6 +111,12 @@ public class Controller {
         for(StreetState s:StreetState.values())
             streetBusinessSelector.getItems().add(s.toString());
         streetBusinessSelector.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            /**
+             * listener if street highlight was changed
+             * @param observableValue observer street
+             * @param number street number
+             * @param number2 street number
+             */
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                 if(!highlightedObjects.isEmpty()) {
@@ -108,6 +126,7 @@ public class Controller {
             }
         });
 
+        //place stop marker
         mousePlaceStopMarker = new Circle();
         mousePlaceStopMarker.setVisible(false);
         Image stop = new Image(getClass().getResourceAsStream("./media/close.png"));
@@ -117,6 +136,10 @@ public class Controller {
         field.getChildren().add(mousePlaceStopMarker);
 
         field.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            /**
+             * @brief handle click on stop marker
+             * @param mouseEvent mouse event
+             */
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(state == GUIState.CLOSING_STREETS && currHoveredStreet != null) {
@@ -132,6 +155,12 @@ public class Controller {
 
         altRouteSelector.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ChangePath>() {
 
+            /**
+             * listener if alternative route selector value was changed
+             * @param observable observed alternative route value
+             * @param oldValue old value
+             * @param newValue new value
+             */
             @Override
             public void changed(ObservableValue<? extends ChangePath> observable, ChangePath oldValue, ChangePath newValue) {
                 ClearHighlights();
@@ -166,6 +195,10 @@ public class Controller {
         });
     }
 
+    /**
+     * @brief zoom implementation for scene
+     * @param zoom zoom value
+     */
     @FXML
     public void Zoom(ScrollEvent zoom){
         zoom.consume();
@@ -175,6 +208,9 @@ public class Controller {
         zoom_map.layout();
     }
 
+    /**
+     * @brief load streets from input and draw them into scene
+     */
     @FXML
     public void LoadStreets(){
         for (Street street : CONFIG.streets.values()){
@@ -185,6 +221,10 @@ public class Controller {
             streetObj.setStrokeWidth(5);
 
             streetObj.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                /**
+                 * handle mouse events on streets
+                 * @param mouseEvent mouse event
+                 */
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     switch (state) {
@@ -221,6 +261,10 @@ public class Controller {
             });
 
             streetObj.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                /**
+                 * @brief mouse hoover for placing stop marks
+                 * @param mouseEvent mouse event
+                 */
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     if(state == GUIState.CLOSING_STREETS) {
@@ -231,6 +275,10 @@ public class Controller {
             });
 
             streetObj.setOnMouseExited(new EventHandler<MouseEvent>() {
+                /**
+                 * mouse event for removing stop marks
+                 * @param mouseEvent mouse event
+                 */
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     if(currHoveredStreet == street) {
@@ -243,6 +291,9 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief redraw selected route
+     */
     private void RedrawSelectedRoute() {
         Route r = new MyRoute();
         for(PointInPath endEntry:altRouteSelector.getSelectionModel().getSelectedItem().getEnds()) {
@@ -280,6 +331,9 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief load all stops from input file and draw them
+     */
     @FXML
     public void LoadStops(){
         for (String stop : CONFIG.stops.keySet()){
@@ -294,6 +348,11 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief draw vehicle into scene and set necessary properties
+     * @param v vehicle to be drawn
+     * @param pos poistion of vehicle
+     */
     @FXML
     public void SetVehicle(Vehicle v, Coordinate pos) {
         if(vehicles.containsKey(v)) {
@@ -306,10 +365,14 @@ public class Controller {
             c.setRadius(10);
             c.setFill(v.getLine().getMapColor());
             c.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                /**
+                 * handle mouse event click on vehicle
+                 * @param mouseEvent mouse event
+                 */
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     HighlightObject(c, v, true);
-
+                    //get info about vehicle, initialize default values
                     String line = v.getLine().getId();
                     data.interfaces.Line lines = CONFIG.lines.get(line);
                     List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops_on_lines = lines.getStops();
@@ -318,6 +381,7 @@ public class Controller {
                     final int y_pos = 40;
                     List<Route> line_route = v.getRoutes();
                     List<Coordinate> coords = new ArrayList<>();
+                    //get vehicle path
                     for(Route list_streets : line_route){
                         for(PointInPath list_all_streets : list_streets.getRoute()){
                             coords.add(list_all_streets.getCoordinate());
@@ -325,6 +389,7 @@ public class Controller {
                     }
                     int old_x = coords.get(0).getX();
                     int old_y = coords.get(0).getY();
+                    //draw vehicle route
                     for(Coordinate coordinate : coords){
                         Line streetObj = new Line(old_x, old_y, coordinate.getX(), coordinate.getY());
                         streetObj.setStrokeWidth(5);
@@ -339,6 +404,8 @@ public class Controller {
                     // replace drawn path
                     highlightedBusPath.getChildren().removeAll(highlightedBusPath.getChildren());
                     LocalTime timer = null;
+                    //draw bus route to different scene window, with dynamic length according to distance between stops
+                    //each stop contains time when bus will arrive according to timetable
                     for(AbstractMap.SimpleImmutableEntry<Stop, Integer> stop : stops_on_lines){
                         int x_pos = old_offset_x + stop.getValue()*30;
                         Line route1  = new Line(old_offset_x + 5, y_pos, x_pos, y_pos);
@@ -354,6 +421,7 @@ public class Controller {
                             time = new Text(String.valueOf(timer));
                             timer = timer.plus((long) CONFIG.EXPECTED_STOP_TIME, ChronoUnit.SECONDS);
                         }
+                        //text rotation, offset fixation, and position calculation
                         time.setRotate(90);
                         time.setY(y_pos + 33);
                         time.setX(x_pos-20);
@@ -378,6 +446,10 @@ public class Controller {
         }
     }
 
+    /**
+     * remove vehicle from map
+     * @param v vehicle
+     */
     @FXML
     public void RemoveVehicle(Vehicle v) {
         if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() == v)
@@ -387,15 +459,56 @@ public class Controller {
         vehicles.remove(v);
     }
 
+    /**
+     * draw vehicle in each tick
+     * @param deltaInMillis time for tick
+     */
     @FXML
     public void TickTime(long deltaInMillis) {
         CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(deltaInMillis, ChronoUnit.MILLIS);
         timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
-
+/*
+        if(onlyAtStart){
+            if(start){
+                wantedTime = LocalTime.parse(timeLabel.getText());}
+            else{
+                if(CONFIG.CURRENT_TIME.compareTo(wantedTime.plusSeconds(-1600)) < 0){
+                    CONFIG.DELTA =  200000;
+                    for(Shape vehicle : vehicles.values()){
+                        vehicle.setFill(Color.TRANSPARENT);
+                    }
+                }
+                else if(CONFIG.CURRENT_TIME.compareTo(wantedTime) < 0){
+                    timeLabel.setText(wantedTime.toString());
+                    CONFIG.DELTA = 3000;
+                    for(Shape vehicle : vehicles.values()){
+                        vehicle.setFill(Color.TRANSPARENT);
+                    }
+                }
+                else{
+                    for(Map.Entry<Vehicle, Circle> vehicle : vehicles.entrySet()){
+                        vehicle.getValue().setFill(vehicle.getKey().getLine().getMapColor());
+                    }
+                    timeLabel.setVisible(true);
+                    CONFIG.DELTA = (int)simSpeedSlider.getValue();
+                    timeLabel.setText(CONFIG.CURRENT_TIME.toString());
+                    onlyAtStart = false;
+                }
+            }
+        }
+        else{
+            timeLabel.setText(CONFIG.CURRENT_TIME.toString());
+        }
         UpdateHighlightedVehicle();
+    */}
 
-    }
-
+    /**
+     * @brief get points where was street closed
+     * @param currHoveredStreet current street
+     * @param mouseX x position of mouse
+     * @param mouseY y position of mouse
+     * @return closest point to closing mark
+     */
     private Coordinate getClosurePoint(Street currHoveredStreet, int mouseX, int mouseY) {
         Coordinate currMousePosition = Coordinate.CreateCoordinate(mouseX, mouseY);
 
@@ -412,6 +525,9 @@ public class Controller {
         return closestPoint;
     }
 
+    /**
+     * @brief street is closed, draw close sign
+     */
     private void onStreetClosed() {
         // create closure
         Circle c = new Circle();
@@ -422,6 +538,10 @@ public class Controller {
         c.setFill(new ImagePattern(stop));
         c.setRadius(10);
         c.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            /**
+             * @brief handle mouse event on street
+             * @param mouseEvent mouse event
+             */
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(state == GUIState.CLOSING_STREETS) {
@@ -436,6 +556,9 @@ public class Controller {
         EvaluateStreetsAffectedByClosedPoint();
     }
 
+    /**
+     * @brief evaluate all streets that has been affected by placing close sign
+     */
     @FXML
     private void EvaluateStreetsAffectedByClosedPoint() {
         for(ChangePath path:new ArrayList<ChangePath>(altRouteSelector.getItems())) {
@@ -522,6 +645,9 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief update highlight of vehicle, set line and vehicle state
+     */
     private void UpdateHighlightedVehicle() {
         if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() instanceof Vehicle) {
             busLineId.setText("Line " + ((Vehicle)(highlightedObjects.get(0).getValue())).getLine().getId());
@@ -532,13 +658,21 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief update simulation label for speed of simulation
+     */
     @FXML
     private void UpdateSimSpeedLabel() {
         simSpeedLabel.setText("sim speed: "+CONFIG.DELTA+":1");
     }
 
+    /**
+     * @brief actions when user clicks on pause button, changing states
+     * @param actionEvent action event
+     */
     @FXML
     void onPauseClicked(ActionEvent actionEvent) {
+        start = false;
         if(!initTimeHasBeenSet) {
             try {
                 CONFIG.CURRENT_TIME =  LocalTime.parse(timeLabel.getText(), DateTimeFormatter.ofPattern("H:m"));
@@ -567,6 +701,10 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief action when user clicks on close street, change state
+     * @param actionEvent action event
+     */
     @FXML
     void onCloseStreetClicked(ActionEvent actionEvent) {
 
@@ -583,6 +721,12 @@ public class Controller {
         }
     }
 
+    /**
+     * @brief highlight clicked object
+     * @param shape shape of object
+     * @param element element in GUI map
+     * @param exclusiveHighlightion if object is already highlighted
+     */
     private void HighlightObject(Shape shape, GUIMapElement element, boolean exclusiveHighlightion) {
         if(exclusiveHighlightion) {
             ClearHighlights();
@@ -603,6 +747,9 @@ public class Controller {
         UpdateHighlightedVehicle();
     }
 
+    /**
+     * @brief clear highlight of object
+     */
     private void ClearHighlights() {
         for (Pair<Shape, GUIMapElement> pair : highlightedObjects) {
             ClearHighlight(pair);
@@ -611,6 +758,10 @@ public class Controller {
         highlightedObjects.removeAll(highlightedObjects);
     }
 
+    /**
+     * clear highlight of pair of objects
+     * @param pair pair of objects
+     */
     private void ClearHighlight(Pair<Shape,GUIMapElement> pair) {
         if (pair.getValue() instanceof GUIVehiclePath) {
             field.getChildren().remove(pair.getKey());
