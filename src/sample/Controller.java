@@ -465,13 +465,22 @@ public class Controller {
      */
     @FXML
     public void TickTime(long deltaInMillis) {
-        CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(deltaInMillis, ChronoUnit.MILLIS);
-        timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
-/*
+        //application is running, update vehicles and time
+        if(!isPaused) {
+            CONFIG.CURRENT_TIME = CONFIG.CURRENT_TIME.plus(deltaInMillis, ChronoUnit.MILLIS);
+            for (Map.Entry<String, Vehicle> v : CONFIG.vehicles.entrySet()) {
+                v.getValue().Tick(deltaInMillis);
+            }
+        };
+
         if(onlyAtStart){
-            if(start){
-                wantedTime = LocalTime.parse(timeLabel.getText());}
-            else{
+            if(start) {
+                try {
+                    wantedTime = LocalTime.parse(timeLabel.getText());
+                } catch(Exception e) {
+                    return;
+                }
+            } else {
                 if(CONFIG.CURRENT_TIME.compareTo(wantedTime.plusSeconds(-1600)) < 0){
                     CONFIG.DELTA =  200000;
                     for(Shape vehicle : vehicles.values()){
@@ -479,7 +488,7 @@ public class Controller {
                     }
                 }
                 else if(CONFIG.CURRENT_TIME.compareTo(wantedTime) < 0){
-                    timeLabel.setText(wantedTime.toString());
+                    timeLabel.setText(wantedTime.withNano(0).toString());
                     CONFIG.DELTA = 3000;
                     for(Shape vehicle : vehicles.values()){
                         vehicle.setFill(Color.TRANSPARENT);
@@ -491,14 +500,13 @@ public class Controller {
                     }
                     timeLabel.setVisible(true);
                     CONFIG.DELTA = (int)simSpeedSlider.getValue();
-                    timeLabel.setText(CONFIG.CURRENT_TIME.toString());
+                    timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
                     onlyAtStart = false;
                 }
             }
+        } else {
+            timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
         }
-        else{
-            timeLabel.setText(CONFIG.CURRENT_TIME.toString());
-        }*/
         UpdateHighlightedVehicle();
     }
 
@@ -581,8 +589,6 @@ public class Controller {
                                 .filter(r -> r.getRoute().get(r.getRoute().size() - 1).equals(lastPoint)).findFirst().get();
                     int lastIndexToRemove = vehicle.getRoutes().indexOf(route);
 
-
-                    //TODO FUJ HACK
                     List<Street> streetList = new ArrayList<>();
                     streetList.add(altRoute.getRoute().get(0).getStreet());
 

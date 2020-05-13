@@ -92,8 +92,9 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         switch (state) {
             case INACTIVE:
                 if(CONFIG.CURRENT_TIME.compareTo(start) >= 0 && CONFIG.CURRENT_TIME.compareTo(start.plus(deltaInMillis, ChronoUnit.MILLIS)) < 0) {
+                    currRouteIndex = 0;
                     SetState(VehicleState.MOVING);
-                    wastedDeltaInMillis -= CONFIG.CURRENT_TIME.minusNanos(start.toNanoOfDay()).toNanoOfDay()/1000;
+                    wastedDeltaInMillis = CONFIG.CURRENT_TIME.minusNanos(start.toNanoOfDay()).toNanoOfDay()/1000;
                 }
                 break;
             case MOVING:
@@ -107,23 +108,22 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                     streetModifier = currRoute.getRoute().get(i).getStreet().getStreetState().getModifier();
                 }
 
-                double deltaInSecs = (double)deltaInMillis/1000;
-                progressTowardsNextStop += deltaInSecs * streetModifier / currRoute.getExpectedDeltaTime();
+                progressTowardsNextStop += deltaInMillis * streetModifier / (currRoute.getExpectedDeltaTime()*1000);
                 if(progressTowardsNextStop >= 1) {
                     wastedDeltaInMillis = (long)((progressTowardsNextStop-1)*currRoute.getExpectedDeltaTime()/streetModifier)*1000;
-                    currRouteIndex++;
                     SetState(VehicleState.STOPPED);
-                    progressTowardsNextStop = 0.0;
-                }
-                if(currRouteIndex < routes.size())
+                    CONFIG.controller.SetVehicle(this, currRoute.getRoute().get(currRoute.getRoute().size()-1).getCoordinate());
+                } else if(currRouteIndex < routes.size())
                     CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
                 break;
             case STOPPED:
                 stopTimeInMillis += deltaInMillis;
                 if (stopTimeInMillis >= CONFIG.EXPECTED_STOP_TIME*1000) {
                     wastedDeltaInMillis = stopTimeInMillis-(long)CONFIG.EXPECTED_STOP_TIME*1000;
-
                     stopTimeInMillis = 0;
+                    progressTowardsNextStop = 0.0;
+                    currRouteIndex++;
+
                     if(currRouteIndex < routes.size()) {
                         SetState(VehicleState.MOVING);
                     } else {

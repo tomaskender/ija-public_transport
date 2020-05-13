@@ -63,48 +63,12 @@ public class Main extends Application {
             public void run() {
                 new Thread() {
                     public void run() {
-                        if(!controller.isPaused) {
-                            Platform.runLater(new Runnable() {
-                                public void run() {
-                                    long deltaInMillis = (long)(CONFIG.DELTA*CONFIG.SIM_DELTA*1000);
-                                    controller.TickTime(deltaInMillis);
-                                    for (Map.Entry<String, Vehicle> v : CONFIG.vehicles.entrySet()) {
-                                        v.getValue().Tick(deltaInMillis);
-                                    }
-                                }
-                            });
-                        }
-                        if(onlyAtStart){
-                            if(controller.start){
-                                wantedTime = LocalTime.parse(controller.timeLabel.getText());}
-                            else{
-                                if(CONFIG.CURRENT_TIME.compareTo(wantedTime.plusSeconds(-1600)) < 0){
-                                    CONFIG.DELTA =  200000;
-                                    for(Shape vehicle : controller.vehicles.values()){
-                                        vehicle.setFill(Color.TRANSPARENT);
-                                    }
-                                }
-                                else if(CONFIG.CURRENT_TIME.compareTo(wantedTime) < 0){
-                                    controller.timeLabel.setText(wantedTime.toString());
-                                    CONFIG.DELTA = 3000;
-                                    for(Shape vehicle : controller.vehicles.values()){
-                                        vehicle.setFill(Color.TRANSPARENT);
-                                    }
-                                }
-                                else{
-                                    for(Map.Entry<Vehicle, Circle> vehicle : controller.vehicles.entrySet()){
-                                        vehicle.getValue().setFill(vehicle.getKey().getLine().getMapColor());
-                                    }
-                                    controller.timeLabel.setVisible(true);
-                                    CONFIG.DELTA = (int)controller.simSpeedSlider.getValue();
-                                    controller.timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
-                                    onlyAtStart = false;
-                                }
+                        Platform.runLater(new Runnable() {
+                            public void run() {
+                                long deltaInMillis = (long)(CONFIG.DELTA*CONFIG.SIM_DELTA*1000);
+                                controller.TickTime(deltaInMillis);
                             }
-                        }
-                        else{
-                            controller.timeLabel.setText(CONFIG.CURRENT_TIME.withNano(0).toString());
-                        }
+                        });
                     }
                 }.start();
             }
