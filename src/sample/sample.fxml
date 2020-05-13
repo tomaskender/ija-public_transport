@@ -40,7 +40,7 @@
                      </graphic>
                  </Button>
                  <TextField fx:id="timeLabel" alignment="CENTER" layoutX="14.0" layoutY="23.0" prefHeight="27.0" prefWidth="107.0" style="-fx-background-color: #737373;" text="00:00" />
-                 <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="300.0" min="1.0" prefHeight="18.0" prefWidth="141.0" style="-fx-background-color: #262626;" value="1.0" />
+                 <Slider fx:id="simSpeedSlider" blockIncrement="5.0" layoutX="15.0" layoutY="67.0" max="5000.0" min="1.0" prefHeight="18.0" prefWidth="141.0" style="-fx-background-color: #262626;" value="1.0" />
                  <Label fx:id="simSpeedLabel" alignment="CENTER" layoutX="16.0" layoutY="81.0" prefHeight="30.0" prefWidth="138.0" text="sim speed: xxx:1" textFill="WHITE" />
              </Pane>
              <Pane maxHeight="140" minHeight="140" prefHeight="140" style="-fx-background-color: #262626; -fx-border-color: #262626;">
