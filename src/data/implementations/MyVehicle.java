@@ -108,6 +108,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 }
 
                 progressTowardsNextStop += deltaInMillis * streetModifier / (currRoute.getExpectedDeltaTime()*1000);
+                // vehicle arrived to next stop
                 if(progressTowardsNextStop >= 1) {
                     wastedDeltaInMillis = (long)((progressTowardsNextStop-1)*currRoute.getExpectedDeltaTime()/streetModifier)*1000;
                     SetState(VehicleState.STOPPED);
@@ -117,6 +118,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 break;
             case STOPPED:
                 stopTimeInMillis += deltaInMillis;
+                // after arriving at a stop, wait for passenger to get off
                 if (stopTimeInMillis >= CONFIG.EXPECTED_STOP_TIME*1000) {
                     wastedDeltaInMillis = stopTimeInMillis-(long)CONFIG.EXPECTED_STOP_TIME*1000;
                     stopTimeInMillis = 0;
@@ -124,8 +126,10 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                     currRouteIndex++;
 
                     if(currRouteIndex < routes.size()) {
+                        // start new route
                         SetState(VehicleState.MOVING);
                     } else {
+                        // if there is no route left, delete the vehicle and wait for next day
                         SetState(VehicleState.INACTIVE);
                         CONFIG.controller.RemoveVehicle(this);
                     }
@@ -133,7 +137,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 break;
         }
 
-        // ensures we can skip states in single tick if the speed of simulation is high
+        // when the delta is set to a high number, we might experience situations where one delta is enough to satisfy more states in a row in a single tick
         if(wastedDeltaInMillis > 0) {
             Tick(wastedDeltaInMillis);
         }
@@ -195,14 +199,16 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         // some vehicles are already traversing the currently edited route
         // we need to change only the part of the route they haven't crossed yet
         if(route.getRoute().get(0) != getRoutes().get(index).getRoute().get(0)) {
-            // get the connecting point between two routes
+            // find index where the start of alt route is connecting to old route
             int connIndex = editedRoute.getRoute().indexOf(route.getRoute().get(0));
             route.getRoute().addAll(0, editedRoute.getRoute().subList(0, connIndex));
 
+            // normalize time it takes to go from stop to stop
             double shareOfPartBeforeConnectionPoint = Math2D.getRouteLength(route, 0, connIndex)/currDistance;
             route.SetExpectedDeltaTime(editedRoute.getExpectedDeltaTime()*shareOfPartBeforeConnectionPoint+route.getExpectedDeltaTime());
         }
 
+        // vehicle is already going on this route- path progress needs to be normalized
         if(currRouteIndex == index) {
             // adjust currently active routes progress so that the vehicle remains in the same position in getPosition
             double newDistance = Math2D.getRouteLength(route);
@@ -237,6 +243,8 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     public PointInPath getLastRoutePointBeforeCoordinate(Street street, Coordinate coord) {
         for(int r_index = currRouteIndex; r_index<=routes.size()-1; r_index++) {
             Route r = routes.get(r_index);
+
+            // iterate through the route
             for(int i=0; i<r.getRoute().size()-1; i++) {
                 PointInPath p1 = r.getRoute().get(i);
                 PointInPath p2 = r.getRoute().get(i+1);
@@ -244,8 +252,10 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 if(p1.getStreet().getId() == street.getId()) {
                     if(Math2D.isLocatedBetweenPoints(coord, p1.getCoordinate(), p2.getCoordinate())) {
                         if(r_index != currRouteIndex) {
+                            // return last route point that is already a part of the street
                             return new PointInPath(r, p1.getStreet(), p1.getCoordinate());
                         } else {
+                            // returned route point is the vehicle's position
                             Coordinate vehiclePos = getPosition(progressTowardsNextStop);
                             if(Math2D.isLocatedBetweenPoints(vehiclePos, p1.getCoordinate(), coord)) {
                                 PointInPath currVehiclePoint = new PointInPath(r, p1.getStreet(), vehiclePos);
