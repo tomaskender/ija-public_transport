@@ -1,4 +1,7 @@
-
+/*
+* Inspired by https://github.com/joffrey-bion/javafx-themes
+* everything used and changed according LICENCE
+*/
 .root {
     -fx-base: rgb(50, 50, 50);
     -fx-background:'#737373';
