@@ -72,7 +72,6 @@ public class Controller {
 
     public Map<Vehicle,Circle> vehicles = new HashMap<>();
     private boolean onlyAtStart = true;
-    public boolean start = true;
     private LocalTime wantedTime;
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
@@ -474,13 +473,7 @@ public class Controller {
         };
 
         if(onlyAtStart){
-            if(start) {
-                try {
-                    wantedTime = LocalTime.parse(timeLabel.getText());
-                } catch(Exception e) {
-                    return;
-                }
-            } else {
+            if(initTimeHasBeenSet) {
                 if(CONFIG.CURRENT_TIME.compareTo(wantedTime.plusSeconds(-1600)) < 0){
                     CONFIG.DELTA =  200000;
                     for(Shape vehicle : vehicles.values()){
@@ -678,10 +671,9 @@ public class Controller {
      */
     @FXML
     void onPauseClicked(ActionEvent actionEvent) {
-        start = false;
         if(!initTimeHasBeenSet) {
             try {
-                CONFIG.CURRENT_TIME =  LocalTime.parse(timeLabel.getText(), DateTimeFormatter.ofPattern("H:m"));
+                wantedTime =  LocalTime.parse(timeLabel.getText(), DateTimeFormatter.ofPattern("H:m"));
                 timeLabel.setDisable(true);
                 initTimeHasBeenSet = true;
             } catch(DateTimeParseException e) {
