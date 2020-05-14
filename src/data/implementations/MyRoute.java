@@ -36,6 +36,7 @@ public class MyRoute implements Route {
         for(int street_i=streets.indexOf(firstStop.getStreet()); street_i<streets.size(); street_i++) {
             Street currStreet = streets.get(street_i);
 
+            // find second stop
             if(Math2D.isLocatedBetweenPoints(secondStop.getCoordinate(),
                     currStreet.getBegin(),
                     currStreet.getEnd())) {
@@ -52,6 +53,7 @@ public class MyRoute implements Route {
                 }
             }
 
+            // find path through current street to next street in street list
             if(street_i+1 < streets.size()){
                 Street nextStreet = streets.get(street_i+1);
                 if(Math2D.isLocatedBetweenPoints(currStreet.getBegin(),
@@ -83,7 +85,7 @@ public class MyRoute implements Route {
                     }
                 }
             } else {
-                // street list does not contain full path to second stop
+                // street list is not finished yet, highlight entire street from start to finish - typically used during alternative route selection
                 Coordinate closestBeginStop = currStreet.getBegin();
                 Coordinate closestEndStop = currStreet.getEnd();
                 for(Coordinate closurePoint: currStreet.getClosurePoints()) {
