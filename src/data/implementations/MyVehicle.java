@@ -88,13 +88,12 @@ public class MyVehicle implements Vehicle, GUIMapElement {
     @Override
     public void Tick(long deltaInMillis) {
         long wastedDeltaInMillis = 0;
-
         switch (state) {
             case INACTIVE:
                 if(CONFIG.CURRENT_TIME.compareTo(start) >= 0 && CONFIG.CURRENT_TIME.compareTo(start.plus(deltaInMillis, ChronoUnit.MILLIS)) < 0) {
                     currRouteIndex = 0;
                     SetState(VehicleState.MOVING);
-                    wastedDeltaInMillis = CONFIG.CURRENT_TIME.minusNanos(start.toNanoOfDay()).toNanoOfDay()/1000;
+                    wastedDeltaInMillis = CONFIG.CURRENT_TIME.minusNanos(start.toNanoOfDay()).toNanoOfDay()/1000000;
                 }
                 break;
             case MOVING:
