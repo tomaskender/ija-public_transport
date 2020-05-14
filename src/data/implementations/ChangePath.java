@@ -7,10 +7,10 @@ import java.util.List;
 
 
 public class ChangePath {
-    private Line line;
-    private List<Vehicle> subscribedVehicles;
-    private PointInPath beginning;
-    private List<PointInPath> ends;
+    private final Line line;
+    private final List<Vehicle> subscribedVehicles;
+    private final PointInPath beginning;
+    private final List<PointInPath> ends;
     private int deltaInMins;
 
     private Route foundAlternativeRoute = null;

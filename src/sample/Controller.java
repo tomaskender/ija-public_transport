@@ -11,9 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -34,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -59,15 +55,15 @@ public class Controller {
 
     GUIState state = GUIState.NORMAL;
 
-    public Map<Vehicle,Circle> vehicles = new HashMap<>();
+    public final Map<Vehicle,Circle> vehicles = new HashMap<>();
     private boolean onlyAtStart = true;
     private LocalTime wantedTime;
     public boolean isPaused = true;
     boolean initTimeHasBeenSet = false;
     Street currHoveredStreet = null;
     Circle mousePlaceStopMarker;
-    List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
-    List<Street> selectedRouteStreets = new ArrayList<>();
+    final List<Pair<Shape, GUIMapElement>> highlightedObjects = new ArrayList<>();
+    final List<Street> selectedRouteStreets = new ArrayList<>();
 
     /**
      * @brief initialize default scene with default values
@@ -136,6 +132,7 @@ public class Controller {
                         mousePlaceStopMarker.setCenterX(p.getX());
                         mousePlaceStopMarker.setCenterY(p.getY());
                     } catch(Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -237,7 +234,6 @@ public class Controller {
                             } else {
                                 // otherwise highlight it
                                 Line latestHighlightedLine = (Line) highlightedObjects.get(highlightedObjects.size()-1).getKey();
-                                GUIMapElement element = highlightedObjects.get(highlightedObjects.size()-1).getValue();
                                 if(street.follows(latestHighlightedLine)) {
                                     selectedRouteStreets.add(street);
                                 }
@@ -399,12 +395,13 @@ public class Controller {
                         Line route1  = new Line(old_offset_x + 5, y_pos, x_pos, y_pos);
                         Circle circle = new Circle();
                         Text text = new Text(stop.getKey().getId());
-                        Text time = null;
+                        Text time;
 
                         if(stop.getValue() == 0) {
                             timer = v.getStart();
                             time = new Text(String.valueOf(timer));
                         } else {
+                            assert timer != null;
                             timer = timer.plus(stop.getValue(), ChronoUnit.MINUTES);
                             time = new Text(String.valueOf(timer));
                             timer = timer.plus((long) CONFIG.EXPECTED_STOP_TIME, ChronoUnit.SECONDS);
@@ -459,7 +456,7 @@ public class Controller {
             for (Map.Entry<String, Vehicle> v : CONFIG.vehicles.entrySet()) {
                 v.getValue().Tick(deltaInMillis);
             }
-        };
+        }
 
         if(onlyAtStart){
             if(initTimeHasBeenSet) {
@@ -697,7 +694,7 @@ public class Controller {
 
         if(state == GUIState.NORMAL) {
             state = GUIState.CLOSING_STREETS;
-            if(isPaused==false) {
+            if(!isPaused) {
                 onPauseClicked(null);
             }
 

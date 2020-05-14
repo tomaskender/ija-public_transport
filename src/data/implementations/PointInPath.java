@@ -5,9 +5,9 @@ import data.interfaces.Route;
 import data.interfaces.Street;
 
 public class PointInPath {
-    Coordinate point;
-    Street street;
-    Route route;
+    final Coordinate point;
+    final Street street;
+    final Route route;
 
     /**
      * @brief Point in path of vehicle route

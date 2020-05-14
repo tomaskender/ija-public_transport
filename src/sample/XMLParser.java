@@ -15,6 +15,12 @@ import org.w3c.dom.Element;
 import java.time.LocalTime;
 import java.util.*;
 
+import static data.interfaces.Coordinate.CreateCoordinate;
+import static data.interfaces.Line.CreateLine;
+import static data.interfaces.Stop.CreateStop;
+import static data.interfaces.Street.CreateStreet;
+import static data.interfaces.Vehicle.CreateVehicle;
+
 //Parsing input XML into LinkedHashMaps to save order and ease of finding corresponding values
 public class XMLParser {
 
@@ -52,7 +58,7 @@ public class XMLParser {
                             //saving info about streets on which the stops lie
                             stops_on_streets.put(stop.getTextContent(), stop.getAttribute("street"));
                             //put info about coordinates into local struct
-                            stops.put(stop.getTextContent(), Coordinate.CreateCoordinate(Integer.parseInt(stop.getAttribute("cord_X")), Integer.parseInt(stop.getAttribute("cord_Y"))));
+                            stops.put(stop.getTextContent(), CreateCoordinate(Integer.parseInt(stop.getAttribute("cord_X")), Integer.parseInt(stop.getAttribute("cord_Y"))));
                         }
                     }
                 }
@@ -72,8 +78,8 @@ public class XMLParser {
                             Element street = (Element) node1;
                             List<Coordinate> coordinates = new ArrayList<>();
                             //saving info about street beginning and ending
-                            coordinates.add(Coordinate.CreateCoordinate(Integer.parseInt(street.getAttribute("begin").split("\\s+")[0]), Integer.parseInt(street.getAttribute("begin").split("\\s+")[1])));
-                            coordinates.add(Coordinate.CreateCoordinate(Integer.parseInt(street.getAttribute("end").split("\\s+")[0]), Integer.parseInt(street.getAttribute("end").split("\\s+")[1])));
+                            coordinates.add(CreateCoordinate(Integer.parseInt(street.getAttribute("begin").split("\\s+")[0]), Integer.parseInt(street.getAttribute("begin").split("\\s+")[1])));
+                            coordinates.add(CreateCoordinate(Integer.parseInt(street.getAttribute("end").split("\\s+")[0]), Integer.parseInt(street.getAttribute("end").split("\\s+")[1])));
                             //put streets with coordinates into local struct
                             streets.put(street.getTextContent(), coordinates);
                         }
@@ -93,7 +99,7 @@ public class XMLParser {
                     List<String> link_timesList = new ArrayList<>();
                     //saving route (streets in order in which they lie on route).
                     route = Arrays.asList(element.getAttribute("route").split("\\s+"));
-                    if(route.get(0) != "") {
+                    if(!route.get(0).equals("")) {
                         attribs.add(route);
                     }
                     //saving bus line starting time
@@ -130,11 +136,11 @@ public class XMLParser {
 
         //put created streets into global CONFIG struct with all necessary info
         for(String street_key : streets.keySet()){
-            CONFIG.streets.put(street_key,MyStreet.CreateStreet(street_key, (Coordinate) streets.get(street_key).get(0), (Coordinate) streets.get(street_key).get(1)));
+            CONFIG.streets.put(street_key, CreateStreet(street_key, (Coordinate) streets.get(street_key).get(0), (Coordinate) streets.get(street_key).get(1)));
         }
         //put created stops into global CONFIG struct with all necessary info
         for(String stop_key : stops.keySet()){
-            Stop stop = MyStop.CreateStop(stop_key, stops.get(stop_key));
+            Stop stop = CreateStop(stop_key, stops.get(stop_key));
             CONFIG.stops.put(stop_key, stop);
             for(String street_key : stops_on_streets.keySet()){
                 if(stop_key.equals(street_key)){
@@ -145,7 +151,7 @@ public class XMLParser {
         }
         //put created lines into global CONFIG struct with all necessary info
         for(String line_key : line_stops.keySet()){
-            Line line = MyLine.CreateLine(line_key);
+            Line line = CreateLine(line_key);
             List route = (List)links.get(line_key).get(0);
             List times = (List)links.get(line_key).get(1);
             for(Object street : route){
@@ -158,7 +164,8 @@ public class XMLParser {
             CONFIG.lines.put(line_key, line);
             //Create vehicles on lines and but them into global CONFIG struct with all necessary info
             for(Object vehicle_time : times){
-                CONFIG.vehicles.put(line_key + "_" + vehicle_time.toString(), MyVehicle.CreateVehicle(CONFIG.lines.get(line_key), LocalTime.parse(vehicle_time.toString())));
+                CONFIG.vehicles.put(line_key + "_" + vehicle_time.toString(), CreateVehicle(CONFIG.lines.get(line_key), LocalTime.parse(vehicle_time.toString())));
+
             }
         }
     }

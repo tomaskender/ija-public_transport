@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyLine implements Line {
-    private String id;
-    private List<Street> streets = new ArrayList<>();
-    private List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops = new ArrayList<>();
-    private List<Vehicle> vehicles = new ArrayList<>();
+    private final String id;
+    private final List<Street> streets = new ArrayList<>();
+    private final List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> stops = new ArrayList<>();
+    private final List<Vehicle> vehicles = new ArrayList<>();
     private Color mapColor;
 
     /**
@@ -41,17 +41,15 @@ public class MyLine implements Line {
      * @brief add given stop with name and time to get there on line
      * @param stop given stop
      * @param delta time to get to sto
-     * @return true if stop lies on traversal street otherwise false
      */
     @Override
-    public boolean AddStop(Stop stop, int delta) {
+    public void AddStop(Stop stop, int delta) {
         // is the street neighboring any existing streets?
-        if(AddTraversalStreet(stop.getStreet()) == false)
-            return false;
-        if(stop.getStreet().AddStopToStreet(stop) == false)
-            return false;
+        if(!AddTraversalStreet(stop.getStreet()))
+            return;
+        if(!stop.getStreet().AddStopToStreet(stop))
+            return;
         stops.add(new AbstractMap.SimpleImmutableEntry<>(stop,delta));
-        return true;
     }
 
     public List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> getStops() { return stops;}
@@ -69,7 +67,7 @@ public class MyLine implements Line {
                 }
             }
         }
-        if(follows == false) {
+        if(!follows) {
             return false;
         }
         if(!streets.contains(street))

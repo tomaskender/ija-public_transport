@@ -5,7 +5,7 @@ public enum StreetState {
     MEDIUM (0.75),
     HIGH (0.5);
 
-    private double factor;
+    private final double factor;
 
     StreetState(double factor) { this.factor = factor; }
 

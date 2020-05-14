@@ -3,7 +3,8 @@ package data.implementations;
 import data.interfaces.*;
 
 public class MyCoordinate implements Coordinate {
-    int x, y;
+    final int x;
+    final int y;
 
     public MyCoordinate(int x, int y) {
         this.x = x;

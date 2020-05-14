@@ -120,7 +120,7 @@ public class MyRoute implements Route {
 
     /**
      * @brief set route time
-     * @param deltaInMins give route time
+     * @param delta give route time
      */
     @Override
     public void SetExpectedDeltaTime(double delta) {

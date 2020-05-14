@@ -14,7 +14,7 @@ public interface Line {
     String getId();
     List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> getStops();
     boolean AddTraversalStreet(Street s);
-    boolean AddStop(Stop s, int delta);
+    void AddStop(Stop s, int delta);
     boolean AddVehicleToLine(Vehicle v);
     Color getMapColor();
 }

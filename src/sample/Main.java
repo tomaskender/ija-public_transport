@@ -3,18 +3,13 @@ package sample;
 import data.implementations.CONFIG;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,24 +46,15 @@ public class Main extends Application {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                new Thread() {
-                    public void run() {
-                        Platform.runLater(new Runnable() {
-                            public void run() {
-                                long deltaInMillis = (long)(CONFIG.DELTA*CONFIG.SIM_DELTA*1000);
-                                controller.TickTime(deltaInMillis);
-                            }
-                        });
-                    }
-                }.start();
+                new Thread(() -> Platform.runLater(() -> {
+                    long deltaInMillis = (long)(CONFIG.DELTA*CONFIG.SIM_DELTA*1000);
+                    controller.TickTime(deltaInMillis);
+                })).start();
             }
         }, 0, (long)(CONFIG.SIM_DELTA*1000));
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                Platform.exit();
-                System.exit(0);
-            }
+        primaryStage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+            System.exit(0);
         });
     }
 

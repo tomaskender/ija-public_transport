@@ -3,9 +3,9 @@ package data.implementations;
 import data.interfaces.*;
 
 public class MyStop implements Stop {
-    String id;
+    final String id;
     Street street;
-    Coordinate coord;
+    final Coordinate coord;
 
     /**
      * @brief stop instance constructor

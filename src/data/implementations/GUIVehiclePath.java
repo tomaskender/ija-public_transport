@@ -4,7 +4,7 @@ import data.interfaces.GUIMapElement;
 import javafx.scene.paint.Color;
 
 public class GUIVehiclePath implements GUIMapElement {
-    private Color highlightColor;
+    private final Color highlightColor;
 
     /**
      * @brief  set highlighted color

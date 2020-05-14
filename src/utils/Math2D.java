@@ -33,7 +33,6 @@ public class Math2D {
 
         double u = ((spX - s1X) * xDelta + (spY - s1Y) * yDelta) / (xDelta * xDelta + yDelta * yDelta);
 
-        final Coordinate closestPoint;
         if (u < 0)
         {
             return s1;

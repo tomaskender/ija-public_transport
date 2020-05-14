@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MyStreet implements Street, GUIMapElement {
-    private String id;
-    private List<Coordinate> closurePoints = new ArrayList<>();
+    private final String id;
+    private final List<Coordinate> closurePoints = new ArrayList<>();
     private StreetState state = StreetState.LOW;
-    private List<Stop> stops = new ArrayList<>();
-    private List<Coordinate> coords = new ArrayList<>();
+    private final List<Stop> stops = new ArrayList<>();
+    private final List<Coordinate> coords;
 
     /**
      * @brief Street instance constructor
@@ -92,7 +92,7 @@ public class MyStreet implements Street, GUIMapElement {
                 }
             }
         }
-        if(isOnStreet == false) {
+        if(!isOnStreet) {
             return false;
         }
 

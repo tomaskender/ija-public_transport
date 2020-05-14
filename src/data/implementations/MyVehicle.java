@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyVehicle implements Vehicle, GUIMapElement {
-    Line line;
-    LocalTime start;
+    final Line line;
+    final LocalTime start;
     double progressTowardsNextStop;
     long stopTimeInMillis=0;
     VehicleState state;
-    List<Route> routes = new ArrayList<>();
+    final List<Route> routes = new ArrayList<>();
     int currRouteIndex = 0;
 
     /**
@@ -80,7 +80,6 @@ public class MyVehicle implements Vehicle, GUIMapElement {
 
     /**
      * @brief update position of vehicle in time
-     * @return vehicle position
      */
     @Override
     public void Tick(long deltaInMillis) {
@@ -246,7 +245,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 PointInPath p1 = r.getRoute().get(i);
                 PointInPath p2 = r.getRoute().get(i+1);
 
-                if(p1.getStreet().getId() == street.getId()) {
+                if(p1.getStreet().getId().equals(street.getId())) {
                     if(Math2D.isLocatedBetweenPoints(coord, p1.getCoordinate(), p2.getCoordinate())) {
                         if(r_index != currRouteIndex) {
                             // return last route point that is already a part of the street
