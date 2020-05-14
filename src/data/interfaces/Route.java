@@ -2,7 +2,6 @@ package data.interfaces;
 
 import data.implementations.PointInPath;
 
-import java.util.AbstractMap;
 import java.util.List;
 
 public interface Route {

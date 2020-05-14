@@ -1,9 +1,7 @@
 package sample;
 
 import data.implementations.CONFIG;
-import data.interfaces.Vehicle;
 import javafx.application.Application;
-import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -11,24 +9,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.time.LocalTime;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main extends Application {
-    @FXML
-    AnchorPane field;
-    private boolean onlyAtStart = true;
-    LocalTime wantedTime;
 
     /**
      * @brief main application stage

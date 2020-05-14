@@ -2,8 +2,6 @@ package data.implementations;
 
 import data.interfaces.*;
 
-import java.util.Objects;
-
 public class MyCoordinate implements Coordinate {
     int x, y;
 

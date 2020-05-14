@@ -2,16 +2,11 @@ package data.implementations;
 
 import data.interfaces.Coordinate;
 import data.interfaces.Route;
-import data.interfaces.Stop;
 import data.interfaces.Street;
 import utils.Math2D;
 
-import java.awt.*;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MyRoute implements Route {
     List<PointInPath> route = new ArrayList<>();
