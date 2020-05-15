@@ -532,7 +532,9 @@ public class Controller {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(state == GUIState.CLOSING_STREETS) {
-                    currHoveredStreet.RemoveClosurePoint(p);
+                    for(Street street:CONFIG.streets.values()) {
+                        street.RemoveClosurePoint(p);
+                    }
                     field.getChildren().remove(c);
                 }
             }
