@@ -108,8 +108,8 @@ public class MyVehicle implements Vehicle, GUIMapElement {
                 if(progressTowardsNextStop >= 1) {
                     wastedDeltaInMillis = (long)((progressTowardsNextStop-1)*currRoute.getExpectedDeltaTime()/streetModifier)*1000;
                     SetState(VehicleState.STOPPED);
-                    CONFIG.controller.SetVehicle(this, currRoute.getRoute().get(currRoute.getRoute().size()-1).getCoordinate());
-                } else if(currRouteIndex < routes.size())
+                }
+                if(currRouteIndex < routes.size())
                     CONFIG.controller.SetVehicle(this, getPosition(progressTowardsNextStop));
                 break;
             case STOPPED:
@@ -149,24 +149,28 @@ public class MyVehicle implements Vehicle, GUIMapElement {
         // get total route length
         double totalDistance = Math2D.getRouteLength(routes.get(currRouteIndex));
 
-        double distanceSum = 0;
-        for(int i=0; i<coords.size()-1;i++) {
-            Coordinate coord1 = coords.get(i).getCoordinate();
-            Coordinate coord2 = coords.get(i+1).getCoordinate();
+        if(progressTowardsNextStop > 0.99) {
+            return coords.get(coords.size()-1).getCoordinate();
+        } else {
+            double distanceSum = 0;
+            for (int i = 0; i < coords.size() - 1; i++) {
+                Coordinate coord1 = coords.get(i).getCoordinate();
+                Coordinate coord2 = coords.get(i + 1).getCoordinate();
 
-            double pointsDistance = Math2D.getDistanceBetweenPoints(coord1, coord2);
+                double pointsDistance = Math2D.getDistanceBetweenPoints(coord1, coord2);
 
-            double progressToNextPoint = (distanceSum+pointsDistance)/totalDistance;
-            if(progressToNextPoint > progressToNextStop) {
-                double progressToLastPoint = (distanceSum/totalDistance);
-                double progressFromLastPointToCurrPos = progressToNextStop - progressToLastPoint;
-                double progressFromLastPointToNextPoint = progressToNextPoint - progressToLastPoint;
-                double biasToCoord2 = progressFromLastPointToCurrPos / progressFromLastPointToNextPoint;
-                return Coordinate.CreateCoordinate((int)(coord1.getX() * (1-biasToCoord2) + coord2.getX() * (biasToCoord2)),
-                                                    (int)(coord1.getY() * (1-biasToCoord2) + coord2.getY() * (biasToCoord2)));
+                double progressToNextPoint = (distanceSum + pointsDistance) / totalDistance;
+                if (progressToNextPoint > progressToNextStop) {
+                    double progressToLastPoint = (distanceSum / totalDistance);
+                    double progressFromLastPointToCurrPos = progressToNextStop - progressToLastPoint;
+                    double progressFromLastPointToNextPoint = progressToNextPoint - progressToLastPoint;
+                    double biasToCoord2 = progressFromLastPointToCurrPos / progressFromLastPointToNextPoint;
+                    return Coordinate.CreateCoordinate((int) (coord1.getX() * (1 - biasToCoord2) + coord2.getX() * (biasToCoord2)),
+                            (int) (coord1.getY() * (1 - biasToCoord2) + coord2.getY() * (biasToCoord2)));
+                }
+
+                distanceSum += pointsDistance;
             }
-
-            distanceSum += pointsDistance;
         }
 
         return null;
