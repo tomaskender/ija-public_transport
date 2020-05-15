@@ -1,3 +1,7 @@
+/*
+ * A point in the path of a vehicle. Contains information about the coordinate, street and route of a vehicle
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.implementations;
 
 import data.interfaces.Coordinate;

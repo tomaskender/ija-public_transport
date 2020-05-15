@@ -1,3 +1,8 @@
+/*
+ * Entry for groups of vehicles that need to have alt route set.
+ * Authors: Tomas Duris and Tomas Kender
+ */
+
 package data.implementations;
 
 import data.interfaces.*;

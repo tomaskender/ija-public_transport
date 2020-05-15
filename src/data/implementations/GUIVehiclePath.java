@@ -1,3 +1,7 @@
+/*
+ * Selected path element in graphical interface
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.implementations;
 
 import data.interfaces.GUIMapElement;

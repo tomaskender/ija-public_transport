@@ -1,3 +1,7 @@
+/*
+ * Parse input xml file which contains the map and timetables.
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package sample;
 
 import java.io.File;

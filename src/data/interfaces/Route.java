@@ -1,3 +1,7 @@
+/*
+ * Route of a vehicle
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.interfaces;
 
 import data.implementations.PointInPath;

@@ -1,3 +1,7 @@
+/*
+ * Configuration values
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.implementations;
 
 import data.interfaces.Line;

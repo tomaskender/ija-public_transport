@@ -1,3 +1,7 @@
+/*
+ * State of street modifier for vehicles
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.enums;
 
 public enum StreetState {

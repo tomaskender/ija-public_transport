@@ -1,3 +1,7 @@
+/*
+ * A vehicle that belongs to certain line. It's movement is controlled by the state it is currently in.
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.interfaces;
 
 import java.time.LocalTime;

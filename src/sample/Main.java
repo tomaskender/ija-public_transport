@@ -1,3 +1,7 @@
+/*
+ * Controller for application initialization
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package sample;
 
 import data.implementations.CONFIG;

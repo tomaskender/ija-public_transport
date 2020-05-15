@@ -1,3 +1,7 @@
+/*
+ * Controller for the graphical interface, that processes events caused by clicking on GUI elements.
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package sample;
 
 import data.enums.GUIState;

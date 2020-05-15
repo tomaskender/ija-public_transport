@@ -1,3 +1,7 @@
+/*
+ * Math operations that are used during simulation
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package utils;
 
 import data.implementations.PointInPath;

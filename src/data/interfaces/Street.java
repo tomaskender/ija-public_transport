@@ -1,3 +1,7 @@
+/*
+ * A street on map that vehicles have to cross.
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.interfaces;
 
 import java.util.List;

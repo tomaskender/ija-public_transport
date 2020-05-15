@@ -1,3 +1,7 @@
+/*
+ * Transport line with it's associated vehicles
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.implementations;
 
 import data.interfaces.*;

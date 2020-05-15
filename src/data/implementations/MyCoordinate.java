@@ -1,3 +1,7 @@
+/*
+ * X and Y coordinate of element on the map
+ * Authors: Tomas Duris and Tomas Kender
+ */
 package data.implementations;
 
 import data.interfaces.*;
