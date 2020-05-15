@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="public-transport-tracker" default="all">
+<project name="public-transport-tracker" default="run">
   
   
   <property file="build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
-  <!-- 
   <property name="skip.tests" value="true"/>
-   -->
   
   <!-- Compiler options -->
   
+  <target name="compile" depends="all"/>
+  <target name="run" depends="compile">
+    <java dir="build" classname="sample.Main" fork="true"></java>
+  </target>
+
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
@@ -32,14 +35,14 @@
     <exclude name="**/vssver2.scc/**"/>
   </patternset>
   <patternset id="library.patterns">
-    <include name="*.war"/>
-    <include name="*.swc"/>
-    <include name="*.apk"/>
-    <include name="*.zip"/>
     <include name="*.egg"/>
-    <include name="*.ear"/>
-    <include name="*.ane"/>
     <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.klib"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.ane"/>
+    <include name="*.zip"/>
   </patternset>
   <patternset id="compiler.resources">
     <exclude name="**/?*.java"/>
@@ -80,20 +83,6 @@
   <property name="project.jdk.home" value="${jdk.home.1.8}"/>
   <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
   <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
-  <!-- Register Custom Compiler Taskdefs -->
-  <property name="javac2.home" value="${idea.home}/lib"/>
-  <path id="javac2.classpath">
-    <fileset dir="${javac2.home}">
-      <include name="javac2.jar"/>
-      <include name="jdom.jar"/>
-      <include name="asm-all*.jar"/>
-      <include name="forms-*.jar"/>
-    </fileset>
-  </path>
-  <target name="register.custom.compilers">
-    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
-    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
-  </target>
   
   <!-- Modules -->
   
@@ -109,8 +98,8 @@
   
   <property name="compiler.args.public-transport-tracker" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
   
-  <property name="public-transport-tracker.output.dir" value="${module.public-transport-tracker.basedir}/out/production/public-transport-tracker"/>
-  <property name="public-transport-tracker.testoutput.dir" value="${module.public-transport-tracker.basedir}/out/test/public-transport-tracker"/>
+  <property name="public-transport-tracker.output.dir" value="${module.public-transport-tracker.basedir}/build/production"/>
+  <property name="public-transport-tracker.testoutput.dir" value="${module.public-transport-tracker.basedir}/build/test"/>
   
   <path id="public-transport-tracker.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
@@ -152,15 +141,15 @@
   
   <target name="compile.module.public-transport-tracker" depends="compile.module.public-transport-tracker.production,compile.module.public-transport-tracker.tests" description="Compile module public-transport-tracker"/>
   
-  <target name="compile.module.public-transport-tracker.production" depends="register.custom.compilers" description="Compile module public-transport-tracker; production classes">
+  <target name="compile.module.public-transport-tracker.production" description="Compile module public-transport-tracker; production classes">
     <mkdir dir="${public-transport-tracker.output.dir}"/>
-    <javac2 destdir="${public-transport-tracker.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.public-transport-tracker}/javac">
+    <javac destdir="${public-transport-tracker.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.public-transport-tracker}/javac">
       <compilerarg line="${compiler.args.public-transport-tracker}"/>
       <bootclasspath refid="public-transport-tracker.module.bootclasspath"/>
       <classpath refid="public-transport-tracker.module.production.classpath"/>
       <src refid="public-transport-tracker.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.public-transport-tracker"/>
-    </javac2>
+    </javac>
     
     <copy todir="${public-transport-tracker.output.dir}">
       <fileset dir="${module.public-transport-tracker.basedir}/src">
@@ -170,7 +159,7 @@
     </copy>
   </target>
   
-  <target name="compile.module.public-transport-tracker.tests" depends="register.custom.compilers,compile.module.public-transport-tracker.production" description="compile module public-transport-tracker; test classes" unless="skip.tests"/>
+  <target name="compile.module.public-transport-tracker.tests" depends="compile.module.public-transport-tracker.production" description="compile module public-transport-tracker; test classes" unless="skip.tests"/>
   
   <target name="clean.module.public-transport-tracker" description="cleanup module">
     <delete dir="${public-transport-tracker.output.dir}"/>
@@ -181,36 +170,54 @@
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.public-transport-tracker" description="cleanup all"/>
+  <target name="clean" depends="clean.module.public-transport-tracker, clean.artifact.javafxapp" description="cleanup all"/>
   
   <target name="build.modules" depends="init, clean, compile.module.public-transport-tracker" description="build all modules"/>
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
-    <property name="artifact.output.javafxapp" value="${basedir}/out/artifacts/JavaFXApp"/>
+    <property name="artifact.output.javafxapp" value="${basedir}/build/artifacts/JavaFXApp"/>
     <mkdir dir="${artifacts.temp.dir}"/>
-    <property name="temp.jar.path.JavaFXApp.jar" value="${artifacts.temp.dir}/JavaFXApp.jar"/>
-    <property name="temp.jar.path.JavaFXApp.jar2" value="${artifacts.temp.dir}/1/JavaFXApp.jar"/>
-    <mkdir dir="${artifacts.temp.dir}/1"/>
+    <property name="artifact.temp.output.JavaFXApp" value="${artifacts.temp.dir}/JavaFXApp.jar"/>
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${jdk.home.1.8}/lib/ant-javafx.jar"/>
   </target>
   
-  <target name="artifact.javafxapp" depends="init.artifacts, compile.module.public-transport-tracker" description="Build &#39;JavaFXApp&#39; artifact">
-    <property name="artifact.temp.output.javafxapp" value="${artifacts.temp.dir}/JavaFXApp"/>
-    <mkdir dir="${artifact.temp.output.javafxapp}"/>
-    <jar destfile="${temp.jar.path.JavaFXApp.jar2}" duplicate="preserve" filesetmanifest="mergewithoutmain">
-      <zipfileset dir="${public-transport-tracker.output.dir}"/>
-    </jar>
-    <jar destfile="${temp.jar.path.JavaFXApp.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
-      <zipfileset file="${temp.jar.path.JavaFXApp.jar2}"/>
-    </jar>
-    <copy file="${temp.jar.path.JavaFXApp.jar}" tofile="${artifact.temp.output.javafxapp}/JavaFXApp.jar"/>
+  <target name="clean.artifact.javafxapp" description="clean JavaFXApp artifact output">
+    <delete dir="${artifact.output.javafxapp}"/>
+  </target>
+  
+  <target name="artifact.javafxapp" depends="init.artifacts, compile.module.public-transport-tracker" description="Build &#39;JavaFXApp&#39; artifact" xmlns:fx="javafx:com.sun.javafx.tools.ant">
+    <mkdir dir="${artifact.output.javafxapp}"/>
+    <copy todir="${artifact.temp.output.JavaFXApp}">
+      <fileset dir="${public-transport-tracker.output.dir}"/>
+    </copy>
+    <fx:fileset id="all_but_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar">
+      <exclude name="JavaFXApp.jar"/>
+    </fx:fileset>
+    <fx:fileset id="all_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar"/>
+    <fx:application id="JavaFXApp_id" name="JavaFXApp" mainClass="sample.Main"/>
+    <fx:jar destfile="${artifact.temp.output.JavaFXApp}/JavaFXApp.jar">
+      <fx:application refid="JavaFXApp_id"/>
+      <fileset dir="${artifact.temp.output.JavaFXApp}" excludes="**/*.jar"/>
+      <fx:resources>
+        <fx:fileset refid="all_but_JavaFXApp"/>
+      </fx:resources>
+    </fx:jar>
+    <fx:deploy width="600" height="400" updatemode="background" outdir="${artifact.temp.output.JavaFXApp}/deploy" outfile="JavaFXApp">
+      <fx:application refid="JavaFXApp_id"/>
+      <fx:resources>
+        <fx:fileset refid="all_JavaFXApp"/>
+      </fx:resources>
+    </fx:deploy>
+    <copy todir="${artifact.output.javafxapp}">
+      <fileset dir="${artifact.temp.output.JavaFXApp}/deploy"/>
+    </copy>
+    <delete includeemptydirs="true">
+      <fileset dir="${artifact.temp.output.JavaFXApp}"/>
+    </delete>
   </target>
   
   <target name="build.all.artifacts" depends="artifact.javafxapp" description="Build all artifacts">
-    <mkdir dir="${artifact.output.javafxapp}"/>
-    <copy todir="${artifact.output.javafxapp}">
-      <fileset dir="${artifact.temp.output.javafxapp}"/>
-    </copy>
     
     <!-- Delete temporary files -->
     <delete dir="${artifacts.temp.dir}"/>
