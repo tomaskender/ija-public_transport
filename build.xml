@@ -8,9 +8,18 @@
   
   <!-- Compiler options -->
   
-  <target name="compile" depends="all"/>
+  <target name="compile" depends="all">
+    <jar destfile="build/ija.jar"
+         basedir="build/production">
+      <manifest>
+        <attribute name="Main-Class" value="sample.Main"/>
+      </manifest>
+    </jar>
+  </target>
   <target name="run" depends="compile">
-    <java dir="build" classname="sample.Main" fork="true"></java>
+    <java jar="build/ija.jar"
+      fork="true">
+    </java>
   </target>
 
   <property name="compiler.debug" value="on"/>
