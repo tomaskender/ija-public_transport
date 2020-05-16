@@ -37,7 +37,7 @@ public class Main extends Application {
         Controller controller = loader.getController();
         //open file chooser to choose a map
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("./src/sample/maps"));
+        fileChooser.setInitialDirectory(new File("./data"));
         fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter("XML", "*.xml"));
         fileChooser.setTitle("Open Resource File");
         File file = fileChooser.showOpenDialog(primaryStage);
