@@ -11,6 +11,7 @@
   <target name="compile" depends="all">
     <jar destfile="build/ija.jar"
          basedir="build/production">
+      <zipgroupfileset dir="build/artifacts/JavaFXApp" includes="*.jar"/>
       <manifest>
         <attribute name="Main-Class" value="sample.Main"/>
       </manifest>
