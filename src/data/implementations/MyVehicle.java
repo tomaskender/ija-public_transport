@@ -202,7 +202,7 @@ public class MyVehicle implements Vehicle, GUIMapElement {
 
         // some vehicles are already traversing the currently edited route
         // we need to change only the part of the route they haven't crossed yet
-        if(route.getRoute().get(0) != getRoutes().get(index).getRoute().get(0)) {
+        if(route.getRoute().get(0) != editedRoute.getRoute().get(0)) {
             // find index where the start of alt route is connecting to old route
             int connIndex = editedRoute.getRoute().indexOf(route.getRoute().get(0));
             route.getRoute().addAll(0, editedRoute.getRoute().subList(0, connIndex));

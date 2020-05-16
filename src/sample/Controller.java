@@ -567,7 +567,9 @@ public class Controller {
                 altRouteSelector.getItems().remove(path);
 
                 for(Vehicle vehicle:path.getSubscribedVehicles()) {
-                    Route routeWithFirstAltRoutePoint = vehicle.getRoutes().stream().filter(r->r.getRoute().contains(firstPoint)).findFirst().get();
+                    Route routeWithFirstAltRoutePoint = vehicle.getRoutes().stream()
+                                                                .filter(r->-1 < r.getRoute().indexOf(firstPoint) && r.getRoute().indexOf(firstPoint) < r.getRoute().size()-1)
+                                                                .findFirst().get();
                     // remove everything up to (including) this index
                     Route route = vehicle.getRoutes()
                                 .stream()
