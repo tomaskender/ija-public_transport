@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Ant Build Config
+  Authors: Tomas Kender and Tomas Duris
+-->
 <project name="ija-projekt" default="compile">
   <property name="source" location="src"/>
   <property name="resources" location="${source}/sample/media"/>
