@@ -3,7 +3,8 @@ Public Transport Tracker
 
 Aplikácia slúži na simulovanie fiktívnych cestovných poriadkov v čase.
 
-Aplikácia sa dá preložiť a spustiť pomocou priloženého súboru build.xml príkazom ant.
+Aplikácia sa dá preložiť a spustiť pomocou priloženého súboru build.xml príkazom sudo ant run.
+Pre vygenerovanie dokumentácie sa môže použiť ant doc, len pre zloženie jar súboru sudo ant compile. Pre odstránenie zloženého programu ant clean.
 Po spustení aplikácia vyzve používateľa, aby si vybral súbor, v ktorom sa nachádza želaná mapa aj s cestovnými poriadkami vo formáte xml.
 Následne v aplikácii užívateľ nastaví počiatočný čas simulácie a spustí simuláciu jej odpauzovaním.
 Po kliknutí na niektorú ulicu sa nám sprístupní možnosť nastaviť vyššie vyťaženie ulice (dropdown selektor na pravom dolnom spodku okna), ktorý zmení rýchlosť,
