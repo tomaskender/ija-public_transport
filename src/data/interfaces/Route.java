@@ -1,13 +1,15 @@
-/*
- * Route of a vehicle
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.interfaces;
 
 import data.implementations.PointInPath;
 
 import java.util.List;
 
+/**
+ * Route of a vehicle.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public interface Route {
     /**
      * Route constructor

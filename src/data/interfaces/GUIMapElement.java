@@ -1,11 +1,13 @@
-/*
- * Brush color interface for elements on a map.
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.interfaces;
 
 import javafx.scene.paint.Color;
 
+/**
+ * Brush color interface for elements on a map.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public interface GUIMapElement {
     /**
      * Get normal element color

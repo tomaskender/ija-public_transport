@@ -1,8 +1,3 @@
-/*
- * Entry for groups of vehicles that need to have alt route set.
- * Authors: Tomas Duris and Tomas Kender
- */
-
 package data.implementations;
 
 import data.interfaces.*;
@@ -10,7 +5,13 @@ import data.interfaces.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Entry for groups of vehicles that need to have alt route set.
+ * Once set and processed, they will receive this path that will replace the old one.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class ChangePath {
     private final Line line;
     private final List<Vehicle> subscribedVehicles;

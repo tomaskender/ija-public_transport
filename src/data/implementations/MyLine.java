@@ -1,7 +1,3 @@
-/*
- * Transport line with it's associated vehicles
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.interfaces.*;
@@ -11,6 +7,12 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Transport line with it's associated vehicles
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class MyLine implements Line {
     private final String id;
     private final List<Street> streets = new ArrayList<>();

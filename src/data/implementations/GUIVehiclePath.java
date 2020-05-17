@@ -1,12 +1,14 @@
-/*
- * Selected path element in graphical interface
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.interfaces.GUIMapElement;
 import javafx.scene.paint.Color;
 
+/**
+ * Selected path element in graphical interface
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class GUIVehiclePath implements GUIMapElement {
     private final Color highlightColor;
 

@@ -1,11 +1,13 @@
-/*
- * X and Y coordinate of element on the map
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.interfaces.*;
 
+/**
+ * X and Y coordinate of element on the map
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class MyCoordinate implements Coordinate {
     final int x;
     final int y;

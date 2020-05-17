@@ -1,7 +1,3 @@
-/*
- * Configuration values
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.interfaces.Line;
@@ -13,6 +9,12 @@ import sample.Controller;
 import java.time.LocalTime;
 import java.util.*;
 
+/**
+ * Configuration values
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class CONFIG {
     public static final double EXPECTED_STOP_TIME = 60; // in seconds
     public static LocalTime CURRENT_TIME = LocalTime.parse("06:00");

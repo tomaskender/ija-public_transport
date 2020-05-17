@@ -1,7 +1,3 @@
-/*
- * A vehicle that belongs to certain line. It's movement is controlled by the state it is currently in.
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.interfaces;
 
 import java.time.LocalTime;
@@ -11,6 +7,12 @@ import data.enums.VehicleState;
 import data.implementations.MyVehicle;
 import data.implementations.PointInPath;
 
+/**
+ * A vehicle that belongs to certain line. It's movement is controlled by the state it is currently in.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public interface Vehicle extends GUIMapElement {
     /**
      * Create vehicle instance

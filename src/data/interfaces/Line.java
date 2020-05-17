@@ -1,7 +1,3 @@
-/*
- * Transport line with it's associated vehicles
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.interfaces;
 
 import data.implementations.MyLine;
@@ -12,8 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Transport line with it's associated vehicles.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public interface Line {
-    /*
+    /**
      * Pool of colors to be assigned to lines
      */
     List<Color> mapColors = new ArrayList<>(Arrays.asList(Color.GREEN, Color.BLUE, Color.RED, Color.ORANGE, Color.PURPLE, Color.BROWN, Color.PINK, Color.GREY, Color.LIME, Color.LIGHTBLUE));

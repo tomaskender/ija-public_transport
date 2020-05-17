@@ -1,7 +1,3 @@
-/*
- * Route of a vehicle
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.interfaces.Coordinate;
@@ -12,6 +8,12 @@ import utils.Math2D;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Route of a vehicle
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class MyRoute implements Route {
     List<PointInPath> route = new ArrayList<>();
     double deltaTime;

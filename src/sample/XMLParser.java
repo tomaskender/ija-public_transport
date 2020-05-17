@@ -1,7 +1,3 @@
-/*
- * Parse input xml file which contains the map and timetables.
- * Authors: Tomas Duris and Tomas Kender
- */
 package sample;
 
 import java.io.File;
@@ -25,7 +21,12 @@ import static data.interfaces.Stop.CreateStop;
 import static data.interfaces.Street.CreateStreet;
 import static data.interfaces.Vehicle.CreateVehicle;
 
-//Parsing input XML into LinkedHashMaps to save order and ease of finding corresponding values
+/**
+ * Parsing input XML into Maps to ease finding corresponding values
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class XMLParser {
 
     /**

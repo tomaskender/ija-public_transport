@@ -1,7 +1,3 @@
-/*
- * A street on map that vehicles have to cross.
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.enums.StreetState;
@@ -14,6 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A street on map that vehicles have to cross
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class MyStreet implements Street, GUIMapElement {
     private final String id;
     private final List<Coordinate> closurePoints = new ArrayList<>();

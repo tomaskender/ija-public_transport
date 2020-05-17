@@ -1,13 +1,15 @@
-/*
- * A point in the path of a vehicle. Contains information about the coordinate, street and route of a vehicle
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.implementations;
 
 import data.interfaces.Coordinate;
 import data.interfaces.Route;
 import data.interfaces.Street;
 
+/**
+ * A point in the path of a vehicle. Contains information about the coordinate, street and route of a vehicle.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class PointInPath {
     final Coordinate point;
     final Street street;

@@ -1,7 +1,3 @@
-/*
- * Controller for application initialization
- * Authors: Tomas Duris and Tomas Kender
- */
 package sample;
 
 import data.implementations.CONFIG;
@@ -17,6 +13,12 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Controller for application initialization.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class Main extends Application {
 
     /**

@@ -1,7 +1,3 @@
-/*
- * Math operations that are used during simulation
- * Authors: Tomas Duris and Tomas Kender
- */
 package utils;
 
 import data.implementations.PointInPath;
@@ -10,6 +6,12 @@ import data.interfaces.Route;
 
 import java.util.List;
 
+/**
+ * Math operations that are used during simulation.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class Math2D {
     public static boolean isLocatedBetweenPoints(Coordinate target, Coordinate p1, Coordinate p2) {
         double lineLen = Math.hypot(p1.getX() - p2.getX(), p1.getY() - p2.getY());

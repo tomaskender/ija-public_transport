@@ -1,7 +1,3 @@
-/*
- * A street on map that vehicles have to cross.
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.interfaces;
 
 import java.util.List;
@@ -10,6 +6,12 @@ import data.enums.StreetState;
 import data.implementations.MyStreet;
 import javafx.scene.shape.Line;
 
+/**
+ * A street on map that vehicles have to cross.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public interface Street extends GUIMapElement {
     /**
      * Create street instance

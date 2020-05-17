@@ -1,7 +1,3 @@
-/*
- * Controller for the graphical interface, that processes events caused by clicking on GUI elements.
- * Authors: Tomas Duris and Tomas Kender
- */
 package sample;
 
 import data.enums.GUIState;
@@ -37,6 +33,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for the graphical interface, that processes events caused by clicking on GUI elements.
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public class Controller {
     public Button pauseButton;
     public TextField timeLabel;

@@ -1,11 +1,13 @@
-/*
- * A stop on a vehicle route
- * Authors: Tomas Duris and Tomas Kender
- */
 package data.interfaces;
 
 import data.implementations.MyStop;
 
+/**
+ * A stop on a vehicle route
+ *
+ * @author Tomas Duris
+ * @author Tomas Kender
+ */
 public interface Stop {
     /**
      * Create stop instance
