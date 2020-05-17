@@ -20,7 +20,7 @@ import java.util.TimerTask;
 public class Main extends Application {
 
     /**
-     * @brief main application stage
+     * Main application stage
      * @param primaryStage application main stage
      * @throws Exception stage could not be loaded
      */

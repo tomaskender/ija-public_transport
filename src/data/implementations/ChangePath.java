@@ -21,7 +21,7 @@ public class ChangePath {
     private Route foundAlternativeRoute = null;
 
     /**
-     * @brief change path of vehicle
+     * Change path of vehicle
      * @param line line of vehicle
      * @param beginning beginning of route
      * @param ends end of route
@@ -36,61 +36,61 @@ public class ChangePath {
     }
 
     /**
-     * @brief get beginning of route
-     * @return beginning
+     * Get beginning of route
+     * @return beginning point of alt route
      */
     public PointInPath getBeginning() {
         return beginning;
     }
 
     /**
-     * @brief get ending of route
-     * @return ending
+     * Get ending of route
+     * @return points where alt route can end
      */
     public List<PointInPath> getEnds() {
         return ends;
     }
 
     /**
-     * @brief add vehicle to vehicle on route list
-     * @param v vehicle
+     * Add vehicle to vehicle on route list
+     * @param v vehicle to be added
      */
     public void AddVehicle(Vehicle v) {
         subscribedVehicles.add(v);
     }
 
     /**
-     * @brief get vehicles on route
+     * Get vehicles on route
      * @return list of vehicles
      */
     public List<Vehicle> getSubscribedVehicles() { return subscribedVehicles; }
 
     /**
-     * @brief change alternative route
+     * Change alternative route
      * @param altRoute new alternative route
      */
     public void SetFoundAlternativeRoute(Route altRoute) { foundAlternativeRoute = altRoute; }
 
     /**
-     * @brief get alternative route
-     * @return alternative route
+     * Get alternative route
+     * @return alternative route if found; otherwise null
      */
     public Route getFoundAlternativeRoute() { return foundAlternativeRoute; }
 
     /**
-     * @brief get time of route
+     * Get time of route
      * @return time of route
      */
     public int getDeltaInMins() { return deltaInMins; }
 
     /**
-     * @brief set time of route
+     * Set time of route
      * @param delta time of route
      */
     public void SetDeltaInMins(int delta) { this.deltaInMins = delta; }
 
     /**
-     * @brief get info about route
+     * Get info about route
      * @return string with info about route
      */
     @Override

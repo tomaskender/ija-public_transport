@@ -7,6 +7,15 @@ package data.interfaces;
 import javafx.scene.paint.Color;
 
 public interface GUIMapElement {
+    /**
+     * Get normal element color
+     * @return y value
+     */
     Color getNormalColor();
+
+    /**
+     * Get highlighted element color
+     * @return y value
+     */
     Color getHighlightedColor();
 }

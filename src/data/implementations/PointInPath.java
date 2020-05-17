@@ -14,7 +14,7 @@ public class PointInPath {
     final Route route;
 
     /**
-     * @brief Point in path of vehicle route
+     * Initialize point in path instance
      * @param route route of vehicle
      * @param street current street
      * @param point coordinates of point
@@ -26,19 +26,19 @@ public class PointInPath {
     }
 
     /**
-     * @brief get coordinates
+     * Get coordinates
      * @return coordinates
      */
     public Coordinate getCoordinate() { return point; }
 
     /**
-     * @brief get street
+     * Get street
      * @return street
      */
     public Street getStreet() { return street; }
 
     /**
-     * @brief get route
+     * Get route
      * @return route
      */
     public Route getRoute() { return route; }

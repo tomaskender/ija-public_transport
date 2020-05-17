@@ -12,7 +12,7 @@ public class MyStop implements Stop {
     final Coordinate coord;
 
     /**
-     * @brief stop instance constructor
+     * Create stop instance
      * @param id stop name
      * @param coord stop coordinates
      * @return new stop instance
@@ -20,7 +20,7 @@ public class MyStop implements Stop {
     public static Stop CreateStop(String id, Coordinate coord) { return new MyStop(id, coord); }
 
     /**
-     * @brief initialize stop instance values
+     * Initialize stop instance values
      * @param id stop name
      * @param coord stop coordinates (x and y)
      */
@@ -30,7 +30,7 @@ public class MyStop implements Stop {
     }
 
     /**
-     * @brief get info about street that stop lies on
+     * Get info about street that stop lies on
      * @return street that stop lies on
      */
     @Override
@@ -39,7 +39,7 @@ public class MyStop implements Stop {
     }
 
     /**
-     * @brief set street that stop lies on
+     * Set street that stop lies on
      * @param s given street instance
      */
     @Override
@@ -49,13 +49,13 @@ public class MyStop implements Stop {
     }
 
     /**
-     * @brief get stop name
+     * Get stop name
      * @return stop name
      */
     public String getId(){return id;}
 
     /**
-     * @brief get stop coordinates
+     * Get stop coordinates
      * @return stop coordinates
      */
     @Override

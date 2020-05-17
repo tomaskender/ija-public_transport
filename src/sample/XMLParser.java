@@ -29,7 +29,7 @@ import static data.interfaces.Vehicle.CreateVehicle;
 public class XMLParser {
 
     /**
-     * @brief parsing input file
+     * Parsing input file
      * @param file input file
      */
     public static void main(File file) {

@@ -10,26 +10,31 @@ public class MyCoordinate implements Coordinate {
     final int x;
     final int y;
 
+    /**
+     * Initialize coordinate
+     * @param x position on axe x
+     * @param y position on axe y
+     */
     public MyCoordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
     /**
-     * @brief create coordinates for double values
+     * Create coordinate for double values
      * @param x position on axe x
      * @param y position on axe y
-     * @return coordinates
+     * @return coordinate
      */
     public static Coordinate CreateCoordinate(double x, double y) {
         return CreateCoordinate((int)x, (int)y);
     }
 
     /**
-     * @brief create coordinates for int values
+     * Create coordinate for int values
      * @param x position on axe x
      * @param y position on axe y
-     * @return coordinates
+     * @return coordinate
      */
     public static Coordinate CreateCoordinate(int x, int y) {
         if(x < 0 || y < 0)
@@ -39,7 +44,7 @@ public class MyCoordinate implements Coordinate {
     }
 
     /**
-     * @brief get value on X axe
+     * Get value on X axe
      * @return x value
      */
     @Override
@@ -48,7 +53,7 @@ public class MyCoordinate implements Coordinate {
     }
 
     /**
-     * @brief get value on Y axe
+     * Get value on Y axe
      * @return y value
      */
     @Override

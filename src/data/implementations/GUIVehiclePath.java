@@ -11,13 +11,13 @@ public class GUIVehiclePath implements GUIMapElement {
     private final Color highlightColor;
 
     /**
-     * @brief  set highlighted color
+     * Set highlighted color
      * @param highlightColor color for highlight
      */
     public GUIVehiclePath(Color highlightColor) { this.highlightColor = highlightColor; }
 
     /**
-     * @brief get normal color
+     * Get normal color
      * @return NULL, because it is highlighted
      */
     @Override
@@ -26,7 +26,7 @@ public class GUIVehiclePath implements GUIMapElement {
     }
 
     /**
-     * @brief get highlighted color
+     * Get highlighted color
      * @return highlighted color
      */
     @Override

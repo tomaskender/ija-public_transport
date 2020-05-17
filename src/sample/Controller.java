@@ -70,7 +70,7 @@ public class Controller {
     final List<Street> selectedRouteStreets = new ArrayList<>();
 
     /**
-     * @brief initialize default scene with default values
+     * Initialize default scene with default values
      */
     @FXML
     public void initialize() {
@@ -81,7 +81,7 @@ public class Controller {
 
         simSpeedSlider.valueProperty().addListener(new ChangeListener<Number>() {
             /**
-             * @brief listener if speedslider was changed
+             * Listener if speedslider was changed
              * @param observableValue value to observe
              * @param oldValue old value of speed
              * @param newValue new speed value
@@ -100,7 +100,7 @@ public class Controller {
             streetBusinessSelector.getItems().add(s.toString());
         streetBusinessSelector.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             /**
-             * listener if street highlight was changed
+             * Listener if street highlight was changed
              * @param observableValue observer street
              * @param number street number
              * @param number2 street number
@@ -125,7 +125,7 @@ public class Controller {
 
         field.setOnMouseMoved(new EventHandler<MouseEvent>() {
             /**
-             * @brief handle click on stop marker
+             * Handle click on stop marker
              * @param mouseEvent mouse event
              */
             @Override
@@ -145,7 +145,7 @@ public class Controller {
         altRouteSelector.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ChangePath>() {
 
             /**
-             * listener if alternative route selector value was changed
+             * Listener if alternative route selector value was changed
              * @param observable observed alternative route value
              * @param oldValue old value
              * @param newValue new value
@@ -185,7 +185,7 @@ public class Controller {
     }
 
     /**
-     * @brief zoom implementation for scene
+     * Zoom implementation for scene
      * @param zoom zoom value
      */
     @FXML
@@ -198,7 +198,7 @@ public class Controller {
     }
 
     /**
-     * @brief load streets from input and draw them into scene
+     * Load streets from input and draw them into scene
      */
     @FXML
     public void LoadStreets(){
@@ -211,7 +211,7 @@ public class Controller {
 
             streetObj.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 /**
-                 * handle mouse events on streets
+                 * Handle mouse events on streets
                  * @param mouseEvent mouse event
                  */
                 @Override
@@ -250,7 +250,7 @@ public class Controller {
 
             streetObj.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 /**
-                 * @brief mouse hoover for placing stop marks
+                 * Mouse hoover for placing stop marks
                  * @param mouseEvent mouse event
                  */
                 @Override
@@ -264,7 +264,7 @@ public class Controller {
 
             streetObj.setOnMouseExited(new EventHandler<MouseEvent>() {
                 /**
-                 * mouse event for removing stop marks
+                 * Mouse event for removing stop marks
                  * @param mouseEvent mouse event
                  */
                 @Override
@@ -280,7 +280,7 @@ public class Controller {
     }
 
     /**
-     * @brief redraw selected route
+     * Redraw selected route
      */
     private void RedrawSelectedRoute() {
         Route r = new MyRoute();
@@ -320,7 +320,7 @@ public class Controller {
     }
 
     /**
-     * @brief load all stops from input file and draw them
+     * Load all stops from input file and draw them
      */
     @FXML
     public void LoadStops(){
@@ -337,7 +337,7 @@ public class Controller {
     }
 
     /**
-     * @brief draw vehicle into scene and set necessary properties
+     * Draw vehicle into scene and set necessary properties
      * @param v vehicle to be drawn
      * @param pos poistion of vehicle
      */
@@ -354,7 +354,7 @@ public class Controller {
             c.setFill(v.getLine().getMapColor());
             c.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 /**
-                 * handle mouse event click on vehicle
+                 * Handle mouse event click on vehicle
                  * @param mouseEvent mouse event
                  */
                 @Override
@@ -436,7 +436,7 @@ public class Controller {
     }
 
     /**
-     * remove vehicle from map
+     * Remove vehicle from map
      * @param v vehicle
      */
     @FXML
@@ -449,7 +449,7 @@ public class Controller {
     }
 
     /**
-     * draw vehicle in each tick
+     * Draw vehicle in each tick
      * @param deltaInMillis time for tick
      */
     @FXML
@@ -494,7 +494,7 @@ public class Controller {
     }
 
     /**
-     * @brief get points where was street closed
+     * Get points where was street closed
      * @param currHoveredStreet current street
      * @param mouseX x position of mouse
      * @param mouseY y position of mouse
@@ -517,7 +517,7 @@ public class Controller {
     }
 
     /**
-     * @brief street is closed, draw close sign
+     * Street is closed, draw close sign
      */
     private void onStreetClosed() {
         // create closure
@@ -530,7 +530,7 @@ public class Controller {
         c.setRadius(10);
         c.setOnMouseClicked(new EventHandler<MouseEvent>() {
             /**
-             * @brief handle mouse event on street
+             * Handle mouse event on street
              * @param mouseEvent mouse event
              */
             @Override
@@ -550,7 +550,7 @@ public class Controller {
     }
 
     /**
-     * @brief evaluate all streets that has been affected by placing close sign
+     * Evaluate all streets that has been affected by placing close sign
      */
     @FXML
     private void EvaluateStreetsAffectedByClosedPoint() {
@@ -639,7 +639,7 @@ public class Controller {
     }
 
     /**
-     * @brief update highlight of vehicle, set line and vehicle state
+     * Update highlight of vehicle, set line and vehicle state
      */
     private void UpdateHighlightedVehicle() {
         if(!highlightedObjects.isEmpty() && highlightedObjects.get(0).getValue() instanceof Vehicle) {
@@ -652,7 +652,7 @@ public class Controller {
     }
 
     /**
-     * @brief update simulation label for speed of simulation
+     * Update simulation label for speed of simulation
      */
     @FXML
     private void UpdateSimSpeedLabel() {
@@ -660,7 +660,7 @@ public class Controller {
     }
 
     /**
-     * @brief actions when user clicks on pause button, changing states
+     * Actions when user clicks on pause button, changing states
      * @param actionEvent action event
      */
     @FXML
@@ -694,7 +694,7 @@ public class Controller {
     }
 
     /**
-     * @brief action when user clicks on close street, change state
+     * Action when user clicks on close street, change state
      * @param actionEvent action event
      */
     @FXML
@@ -714,7 +714,7 @@ public class Controller {
     }
 
     /**
-     * @brief highlight clicked object
+     * Highlight clicked object
      * @param shape shape of object
      * @param element element in GUI map
      * @param exclusiveHighlightion if object is already highlighted
@@ -740,7 +740,7 @@ public class Controller {
     }
 
     /**
-     * @brief clear highlight of object
+     * Clear highlight of object
      */
     private void ClearHighlights() {
         for (Pair<Shape, GUIMapElement> pair : highlightedObjects) {
@@ -751,7 +751,7 @@ public class Controller {
     }
 
     /**
-     * clear highlight of pair of objects
+     * Clear highlight of pair of objects
      * @param pair pair of objects
      */
     private void ClearHighlight(Pair<Shape,GUIMapElement> pair) {

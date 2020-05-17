@@ -17,7 +17,7 @@ public class MyRoute implements Route {
     double deltaTime;
 
     /**
-     * @brief route constructor
+     * Route constructor
      * @param streets vector of given streets on route
      * @param firstStop first stop on route
      * @param secondStop second stop on route
@@ -107,8 +107,8 @@ public class MyRoute implements Route {
     }
 
     /**
-     * @brief get route
-     * @return route
+     * Get route points
+     * @return route points
      */
     @Override
     public List<PointInPath> getRoute() {
@@ -116,15 +116,15 @@ public class MyRoute implements Route {
     }
 
     /**
-     * @brief get time to get to stop
-     * @return double time
+     * Get time to get to to next stop
+     * @return time in double
      */
     @Override
     public double getExpectedDeltaTime() { return deltaTime; }
 
     /**
-     * @brief set route time
-     * @param delta give route time
+     * Set route time
+     * @param delta given route time
      */
     @Override
     public void SetExpectedDeltaTime(double delta) {

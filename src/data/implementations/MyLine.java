@@ -19,12 +19,16 @@ public class MyLine implements Line {
     private Color mapColor;
 
     /**
-     * @brief Create line instance with name and color
+     * Create line instance with name and color
      * @param id line identifier
      * @return line instance
      */
     public static Line CreateLine(String id) { return new MyLine(id); }
 
+    /**
+     * Initialize line instance
+     * @param id line identifier
+     */
     public MyLine(String id) {
         this.id = id;
         try {
@@ -35,14 +39,14 @@ public class MyLine implements Line {
     }
 
     /**
-     * @brief get line identifier
+     * Get line identifier
      * @return line identifier
      */
     @Override
     public String getId() { return id; }
 
     /**
-     * @brief add given stop with name and time to get there on line
+     * Add given stop with name and time to get there on line
      * @param stop given stop
      * @param delta time to get to sto
      */
@@ -56,8 +60,17 @@ public class MyLine implements Line {
         stops.add(new AbstractMap.SimpleImmutableEntry<>(stop,delta));
     }
 
+    /**
+     * Get all stops line vehicles have to cross
+     * @return List of stops and times it takes to get to them from previous stop
+     */
     public List<AbstractMap.SimpleImmutableEntry<Stop, Integer>> getStops() { return stops;}
 
+    /**
+     * Add a street that vehicles will have to traverse on their way
+     * @param street street to be added to line
+     * @return true if street was successfully added, otherwise false
+     */
     @Override
     public boolean AddTraversalStreet(Street street) {
         boolean follows = false;
@@ -80,8 +93,8 @@ public class MyLine implements Line {
     }
 
     /**
-     * @brief add vehicle instance to line
-     * @param v vehicle instance
+     * Add vehicle instance to line
+     * @param v vehicle instance to be added to line
      * @return true if could be added, otherwise false
      */
     @Override
@@ -110,7 +123,7 @@ public class MyLine implements Line {
     }
 
     /**
-     * @brief get color of this line
+     * Get color of this line
      * @return color value
      */
     @Override

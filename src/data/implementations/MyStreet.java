@@ -22,7 +22,7 @@ public class MyStreet implements Street, GUIMapElement {
     private final List<Coordinate> coords;
 
     /**
-     * @brief Street instance constructor
+     * Create street instance
      * @param id street name
      * @param coordinates coordinates of street beginning and ending
      * @return new street instance
@@ -30,7 +30,7 @@ public class MyStreet implements Street, GUIMapElement {
     public static Street CreateStreet(String id, Coordinate... coordinates) { return new MyStreet(id, coordinates); }
 
     /**
-     * @brief Street instance value initialized
+     * Street instance value initialized
      * @param id street name
      * @param coordinates coordinates of street beginning and ending
      */
@@ -40,42 +40,42 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief get street name
+     * Get street name
      * @return street name
      */
     @Override
     public String getId() { return id; }
 
     /**
-     * @brief get list of street coordinates
+     * Get list of street coordinates
      * @return list of street coordinates
      */
     @Override
     public List<Coordinate> getStreetPoints() { return coords; }
 
     /**
-     * @brief get street beginning
+     * Get street beginning
      * @return coordinates of street beginning
      */
     @Override
     public Coordinate getBegin() { return coords.get(0); }
 
     /**
-     * @brief get street ending
+     * Get street ending
      * @return coordinates of street ending
      */
     @Override
     public Coordinate getEnd() { return coords.get(coords.size()-1); }
 
     /**
-     * @brief get list of stops on street
+     * Get list of stops on street
      * @return list of stops on street
      */
     @Override
     public List<Stop> getStops() { return stops; }
 
     /**
-     * @brief add given stop instance to this street
+     * Add given stop instance to this street
      * @param stop stop instance
      * @return true if could be added, otherwise false
      */
@@ -106,7 +106,7 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief check if given street follows this street
+     * Check if given street follows this street
      * @param street given street instance
      * @return true if follows, otherwise false
      */
@@ -116,7 +116,7 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief check if given GUI object line follows this street
+     * Check if given GUI object line follows this street
      * @param line GUI object line
      * @return true if follows, otherwise false
      */
@@ -132,7 +132,7 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief set street density state
+     * Set street density state
      * @param state user-selected density
      */
     @Override
@@ -141,21 +141,21 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief get density of this street
+     * Get density of this street
      * @return density of this street
      */
     @Override
     public StreetState getStreetState() { return state; }
 
     /**
-     * @brief get coordinates where street was closed
+     * Get coordinates where street was closed
      * @return coordinates of street closure
      */
     @Override
     public List<Coordinate> getClosurePoints() { return closurePoints; }
 
     /**
-     * @brief add coordinates where street was closed
+     * Add coordinates where street was closed
      * @param point coordinates of street closure
      */
     @Override
@@ -164,7 +164,7 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief remove coordinates where street was close
+     * Remove coordinates where street was close
      * @param point coordinates of street closure
      */
     @Override
@@ -173,7 +173,7 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief get normal map color
+     * Get normal map color
      * @return return BLACK or GREY, depends on if closing street
      */
     @Override
@@ -182,7 +182,7 @@ public class MyStreet implements Street, GUIMapElement {
     }
 
     /**
-     * @brief get highlighted color
+     * Get highlighted color
      * @return ORANGE color for highlights
      */
     @Override
