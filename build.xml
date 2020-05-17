@@ -1,237 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="public-transport-tracker" default="run">
-  
-  
-  <property file="build.properties"/>
-  <!-- Uncomment the following property if no tests compilation is needed -->
-  <property name="skip.tests" value="true"/>
-  
-  <!-- Compiler options -->
-  
-  <target name="compile" depends="all">
-    <jar destfile="build/ija.jar"
-         basedir="build/production">
-      <zipgroupfileset dir="build/artifacts/JavaFXApp" includes="*.jar"/>
-      <manifest>
-        <attribute name="Main-Class" value="sample.Main"/>
-      </manifest>
-    </jar>
+<project name="ija-projekt" default="compile">
+  <!-- definice projektu default urcuje ktery target se spusti kdyz se antu nepreda nazev targetu-->
+  <property name="src.dir" location="src"/>
+  <!-- Definice promenne Hodi se aby byly vsechny modifikovatelne hodnoty na jednom miste -->
+  <property name="build.dir" location="build"/> <!-- slozka pro zkompilovane zdrojaky -->
+  <property name="dist.dir" location="dest"/> <!-- slozka pro vysledny jar -->
+  <property name="docs.dir" location="docs"/> <!-- slozka pro generaci dokumentace -->
+  <property name="lib.dir" location="libs"/> <!-- slozka s knihovnama -->
+  <property name="res.dir" location="${src.dir}/sample/media"/> <!-- napriklad fxml layout -->
+  <property name="jar.name" value="ija"/><!-- nazev vysledneho jar archivu -->
+
+  <path id="classpath">
+    <!-- definice elementu path se specifikovanym ID pro pozdejsi pouziti v classpath -->
+    <pathelement location="${lib.dir}/soubor-v-lib-adresari"/>
+    <!-- pomoci neceho takoveho muzete do do emelentu path pridat vice cest. Treba vice cest do vsechn knihoven.-->
+
+  </path>
+
+
+  <target name="clean">
+    <!-- Definice targetu (Spustitelne casti)-->
+    <delete dir="${build.dir}"/>
+    <!-- mazani slozky pro clean -->
   </target>
-  <target name="run" depends="compile">
-    <java jar="build/ija.jar"
-      fork="true">
-    </java>
+  <target name="createFileStructure">
+    <mkdir dir="${build.dir}"/>
+    <!-- vyvtareni souborove struktury-->
   </target>
 
-  <property name="compiler.debug" value="on"/>
-  <property name="compiler.generate.no.warnings" value="off"/>
-  <property name="compiler.args" value=""/>
-  <property name="compiler.max.memory" value="700m"/>
-  <patternset id="ignored.files">
-    <exclude name="**/*.hprof/**"/>
-    <exclude name="**/*.pyc/**"/>
-    <exclude name="**/*.pyo/**"/>
-    <exclude name="**/*.rbc/**"/>
-    <exclude name="**/*.yarb/**"/>
-    <exclude name="**/*~/**"/>
-    <exclude name="**/.DS_Store/**"/>
-    <exclude name="**/.git/**"/>
-    <exclude name="**/.hg/**"/>
-    <exclude name="**/.svn/**"/>
-    <exclude name="**/CVS/**"/>
-    <exclude name="**/__pycache__/**"/>
-    <exclude name="**/_svn/**"/>
-    <exclude name="**/vssver.scc/**"/>
-    <exclude name="**/vssver2.scc/**"/>
-  </patternset>
-  <patternset id="library.patterns">
-    <include name="*.egg"/>
-    <include name="*.jar"/>
-    <include name="*.ear"/>
-    <include name="*.klib"/>
-    <include name="*.swc"/>
-    <include name="*.war"/>
-    <include name="*.ane"/>
-    <include name="*.zip"/>
-  </patternset>
-  <patternset id="compiler.resources">
-    <exclude name="**/?*.java"/>
-    <exclude name="**/?*.form"/>
-    <exclude name="**/?*.class"/>
-    <exclude name="**/?*.groovy"/>
-    <exclude name="**/?*.scala"/>
-    <exclude name="**/?*.flex"/>
-    <exclude name="**/?*.kt"/>
-    <exclude name="**/?*.clj"/>
-  </patternset>
-  
-  <!-- JDK definitions -->
-  
-  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
-  <path id="jdk.classpath.1.8">
-    <fileset dir="${jdk.home.1.8}">
-      <include name="jre/lib/charsets.jar"/>
-      <include name="jre/lib/ext/cldrdata.jar"/>
-      <include name="jre/lib/ext/dnsns.jar"/>
-      <include name="jre/lib/ext/jaccess.jar"/>
-      <include name="jre/lib/ext/jfxrt.jar"/>
-      <include name="jre/lib/ext/localedata.jar"/>
-      <include name="jre/lib/ext/nashorn.jar"/>
-      <include name="jre/lib/ext/sunec.jar"/>
-      <include name="jre/lib/ext/sunjce_provider.jar"/>
-      <include name="jre/lib/ext/sunpkcs11.jar"/>
-      <include name="jre/lib/ext/zipfs.jar"/>
-      <include name="jre/lib/jce.jar"/>
-      <include name="jre/lib/jfxswt.jar"/>
-      <include name="jre/lib/jsse.jar"/>
-      <include name="jre/lib/management-agent.jar"/>
-      <include name="jre/lib/resources.jar"/>
-      <include name="jre/lib/rt.jar"/>
-    </fileset>
-  </path>
-  
-  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
-  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
-  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
-  
-  <!-- Modules -->
-  
-  
-  <!-- Module public-transport-tracker -->
-  
-  <dirname property="module.public-transport-tracker.basedir" file="${ant.file}"/>
-  
-  
-  <property name="module.jdk.home.public-transport-tracker" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.public-transport-tracker" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.public-transport-tracker" value="${project.jdk.classpath}"/>
-  
-  <property name="compiler.args.public-transport-tracker" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
-  
-  <property name="public-transport-tracker.output.dir" value="${module.public-transport-tracker.basedir}/build/production"/>
-  <property name="public-transport-tracker.testoutput.dir" value="${module.public-transport-tracker.basedir}/build/test"/>
-  
-  <path id="public-transport-tracker.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="public-transport-tracker.module.production.classpath">
-    <path refid="${module.jdk.classpath.public-transport-tracker}"/>
-  </path>
-  
-  <path id="public-transport-tracker.runtime.production.module.classpath">
-    <pathelement location="${public-transport-tracker.output.dir}"/>
-  </path>
-  
-  <path id="public-transport-tracker.module.classpath">
-    <path refid="${module.jdk.classpath.public-transport-tracker}"/>
-    <pathelement location="${public-transport-tracker.output.dir}"/>
-  </path>
-  
-  <path id="public-transport-tracker.runtime.module.classpath">
-    <pathelement location="${public-transport-tracker.testoutput.dir}"/>
-    <pathelement location="${public-transport-tracker.output.dir}"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.public-transport-tracker">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.public-transport-tracker">
-    <patternset refid="excluded.from.module.public-transport-tracker"/>
-  </patternset>
-  
-  <path id="public-transport-tracker.module.sourcepath">
-    <dirset dir="${module.public-transport-tracker.basedir}">
-      <include name="src"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.public-transport-tracker" depends="compile.module.public-transport-tracker.production,compile.module.public-transport-tracker.tests" description="Compile module public-transport-tracker"/>
-  
-  <target name="compile.module.public-transport-tracker.production" description="Compile module public-transport-tracker; production classes">
-    <mkdir dir="${public-transport-tracker.output.dir}"/>
-    <javac destdir="${public-transport-tracker.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.public-transport-tracker}/javac">
-      <compilerarg line="${compiler.args.public-transport-tracker}"/>
-      <bootclasspath refid="public-transport-tracker.module.bootclasspath"/>
-      <classpath refid="public-transport-tracker.module.production.classpath"/>
-      <src refid="public-transport-tracker.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.public-transport-tracker"/>
+  <target name="compile" depends="clean, createFileStructure">
+    <!-- depends zarucuje provedeni danych targetu pred provedenim targetu compile -->
+    <javac srcdir="${src.dir}" destdir="${build.dir}">
+      <!-- Samotna kompilace .java zdrojovych souboru ${src.dir} je odkaz na promennou a urcuje slozku se zdrojaky
+      destdir udava slozku pro zkompilovane .class soubory-->
+      <classpath>
+        <!-- classpath je neco jako promenna PATH. Udava ktere soubory jsou viditelne pro kompiler
+        je potreba tam mit vsechny pouzivane knihovny-->
+        <path refid="classpath" />
+        <!-- Reference na predem definovanou classpath -->
+      </classpath>
     </javac>
-    
-    <copy todir="${public-transport-tracker.output.dir}">
-      <fileset dir="${module.public-transport-tracker.basedir}/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
+    <jar destfile="${dist.dir}\${jar.name}.jar" basedir="${build.dir}">
+      <!-- Zabalovani zkompilovanych souboru do jar archivu destfile udava kde se bude jar nachazet
+      basedir udava ze kdere slozku se bude vytvaret jar-->
+      <fileset dir="${res.dir}"/>
+      <!-- pridani resources souboru ze slozky s resources do jaru napriklad fxml layout -->
+      <manifest>
+        <!-- manifest = soubor s informacemi o souborech ulozenych v jaru -->
+        <attribute name="Main-Class" value="sample.Main"/>
+        <!-- Main-Class udava hlavni tridu aplikace. Hodnota je package tridy + nazev tridy-->
+      </manifest>
+      <zipgroupfileset dir="${lib.dir}" includes="**/*.jar"/>
+      <!-- Zkopirovani obsahu knihoven ve slozce s knihovnami do jaru. Je mozne to vyresit i jinym zpusobem napriklad
+       pridanim classpath obsahujici vsechny potrebne knihovny pro spusteni do java elementu v run targetu-->
+    </jar>
   </target>
-  
-  <target name="compile.module.public-transport-tracker.tests" depends="compile.module.public-transport-tracker.production" description="compile module public-transport-tracker; test classes" unless="skip.tests"/>
-  
-  <target name="clean.module.public-transport-tracker" description="cleanup module">
-    <delete dir="${public-transport-tracker.output.dir}"/>
-    <delete dir="${public-transport-tracker.testoutput.dir}"/>
+
+  <target name="docs" depends="compile">
+    <!-- target pro generaci javadoc dokumentace -->
+    <javadoc sourcepath="${src.dir}" destdir="${docs.dir}">
+      <!-- sourcepath udava slozku se zdrojaky destdir je umisteni vygenerovane dokumentace -->
+      <classpath>
+        <!-- Generovani dokumentace potrebuje stejny classpath jako kompilace -->
+        <path refid="classpath"/>
+      </classpath>
+    </javadoc>
   </target>
-  
-  <target name="init" description="Build initialization">
-    <!-- Perform any build initialization in this target -->
+
+  <target name="run" depends="compile">
+    <!-- target pro spusteni aplikace -->
+    <java jar="${dist.dir}/${jar.name}.jar" fork="true"/>
+    <!-- jar udava umisteni jaru pro spusteni fork udava ze se aplikace spusti v JVM odlisnem od toho, ve kterem bezi ant -->
   </target>
-  
-  <target name="clean" depends="clean.module.public-transport-tracker, clean.artifact.javafxapp" description="cleanup all"/>
-  
-  <target name="build.modules" depends="init, clean, compile.module.public-transport-tracker" description="build all modules"/>
-  
-  <target name="init.artifacts">
-    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
-    <property name="artifact.output.javafxapp" value="${basedir}/build/artifacts/JavaFXApp"/>
-    <mkdir dir="${artifacts.temp.dir}"/>
-    <property name="artifact.temp.output.JavaFXApp" value="${artifacts.temp.dir}/JavaFXApp.jar"/>
-    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${jdk.home.1.8}/lib/ant-javafx.jar"/>
-  </target>
-  
-  <target name="clean.artifact.javafxapp" description="clean JavaFXApp artifact output">
-    <delete dir="${artifact.output.javafxapp}"/>
-  </target>
-  
-  <target name="artifact.javafxapp" depends="init.artifacts, compile.module.public-transport-tracker" description="Build &#39;JavaFXApp&#39; artifact" xmlns:fx="javafx:com.sun.javafx.tools.ant">
-    <mkdir dir="${artifact.output.javafxapp}"/>
-    <copy todir="${artifact.temp.output.JavaFXApp}">
-      <fileset dir="${public-transport-tracker.output.dir}"/>
-    </copy>
-    <fx:fileset id="all_but_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar">
-      <exclude name="JavaFXApp.jar"/>
-    </fx:fileset>
-    <fx:fileset id="all_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar"/>
-    <fx:application id="JavaFXApp_id" name="JavaFXApp" mainClass="sample.Main"/>
-    <fx:jar destfile="${artifact.temp.output.JavaFXApp}/JavaFXApp.jar">
-      <fx:application refid="JavaFXApp_id"/>
-      <fileset dir="${artifact.temp.output.JavaFXApp}" excludes="**/*.jar"/>
-      <fx:resources>
-        <fx:fileset refid="all_but_JavaFXApp"/>
-      </fx:resources>
-    </fx:jar>
-    <fx:deploy width="600" height="400" updatemode="background" outdir="${artifact.temp.output.JavaFXApp}/deploy" outfile="JavaFXApp">
-      <fx:application refid="JavaFXApp_id"/>
-      <fx:resources>
-        <fx:fileset refid="all_JavaFXApp"/>
-      </fx:resources>
-    </fx:deploy>
-    <copy todir="${artifact.output.javafxapp}">
-      <fileset dir="${artifact.temp.output.JavaFXApp}/deploy"/>
-    </copy>
-    <delete includeemptydirs="true">
-      <fileset dir="${artifact.temp.output.JavaFXApp}"/>
-    </delete>
-  </target>
-  
-  <target name="build.all.artifacts" depends="artifact.javafxapp" description="Build all artifacts">
-    
-    <!-- Delete temporary files -->
-    <delete dir="${artifacts.temp.dir}"/>
-  </target>
-  
-  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>
