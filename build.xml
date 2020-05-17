@@ -1,75 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ija-projekt" default="compile">
-  <!-- definice projektu default urcuje ktery target se spusti kdyz se antu nepreda nazev targetu-->
-  <property name="src.dir" location="src"/>
-  <!-- Definice promenne Hodi se aby byly vsechny modifikovatelne hodnoty na jednom miste -->
-  <property name="build.dir" location="build"/> <!-- slozka pro zkompilovane zdrojaky -->
-  <property name="dist.dir" location="dest"/> <!-- slozka pro vysledny jar -->
-  <property name="docs.dir" location="docs"/> <!-- slozka pro generaci dokumentace -->
-  <property name="lib.dir" location="libs"/> <!-- slozka s knihovnama -->
-  <property name="res.dir" location="${src.dir}/sample/media"/> <!-- napriklad fxml layout -->
-  <property name="jar.name" value="ija"/><!-- nazev vysledneho jar archivu -->
-
-  <path id="classpath">
-    <!-- definice elementu path se specifikovanym ID pro pozdejsi pouziti v classpath -->
-    <pathelement location="${lib.dir}/soubor-v-lib-adresari"/>
-    <!-- pomoci neceho takoveho muzete do do emelentu path pridat vice cest. Treba vice cest do vsechn knihoven.-->
-
-  </path>
+  <property name="source" location="src"/>
+  <property name="resources" location="${source}/sample/media"/>
+  <property name="destination" location="dest"/>
+  <property name="build" location="build"/>
+  <property name="output.jar" value="ija"/>
 
 
-  <target name="clean">
-    <!-- Definice targetu (Spustitelne casti)-->
-    <delete dir="${build.dir}"/>
-    <!-- mazani slozky pro clean -->
-  </target>
-  <target name="createFileStructure">
-    <mkdir dir="${build.dir}"/>
-    <!-- vyvtareni souborove struktury-->
+  <target name="run" depends="compile">
+    <java jar="${destination}/${output.jar}.jar" fork="true"/>
   </target>
 
-  <target name="compile" depends="clean, createFileStructure">
-    <!-- depends zarucuje provedeni danych targetu pred provedenim targetu compile -->
-    <javac srcdir="${src.dir}" destdir="${build.dir}">
-      <!-- Samotna kompilace .java zdrojovych souboru ${src.dir} je odkaz na promennou a urcuje slozku se zdrojaky
-      destdir udava slozku pro zkompilovane .class soubory-->
-      <classpath>
-        <!-- classpath je neco jako promenna PATH. Udava ktere soubory jsou viditelne pro kompiler
-        je potreba tam mit vsechny pouzivane knihovny-->
-        <path refid="classpath" />
-        <!-- Reference na predem definovanou classpath -->
-      </classpath>
-    </javac>
-    <jar destfile="${dist.dir}\${jar.name}.jar" basedir="${build.dir}">
-      <!-- Zabalovani zkompilovanych souboru do jar archivu destfile udava kde se bude jar nachazet
-      basedir udava ze kdere slozku se bude vytvaret jar-->
-      <fileset dir="${res.dir}"/>
-      <!-- pridani resources souboru ze slozky s resources do jaru napriklad fxml layout -->
+  <target name="compile" depends="clean">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${destination}"/>
+    <javac srcdir="${source}" destdir="${build}" />
+    <jar destfile="${destination}\${output.jar}.jar" basedir="${build}">
       <manifest>
-        <!-- manifest = soubor s informacemi o souborech ulozenych v jaru -->
         <attribute name="Main-Class" value="sample.Main"/>
-        <!-- Main-Class udava hlavni tridu aplikace. Hodnota je package tridy + nazev tridy-->
       </manifest>
-      <zipgroupfileset dir="${lib.dir}" includes="**/*.jar"/>
-      <!-- Zkopirovani obsahu knihoven ve slozce s knihovnami do jaru. Je mozne to vyresit i jinym zpusobem napriklad
-       pridanim classpath obsahujici vsechny potrebne knihovny pro spusteni do java elementu v run targetu-->
+      <fileset dir="${resources}"/>
     </jar>
   </target>
 
-  <target name="docs" depends="compile">
-    <!-- target pro generaci javadoc dokumentace -->
-    <javadoc sourcepath="${src.dir}" destdir="${docs.dir}">
-      <!-- sourcepath udava slozku se zdrojaky destdir je umisteni vygenerovane dokumentace -->
-      <classpath>
-        <!-- Generovani dokumentace potrebuje stejny classpath jako kompilace -->
-        <path refid="classpath"/>
-      </classpath>
-    </javadoc>
+  <target name="doc">
+    <delete dir="doc"/>
+    <mkdir dir="doc"/>
+    <javadoc sourcepath="${source}" destdir="doc" />
   </target>
 
-  <target name="run" depends="compile">
-    <!-- target pro spusteni aplikace -->
-    <java jar="${dist.dir}/${jar.name}.jar" fork="true"/>
-    <!-- jar udava umisteni jaru pro spusteni fork udava ze se aplikace spusti v JVM odlisnem od toho, ve kterem bezi ant -->
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${destination}"/>
   </target>
+
 </project>
