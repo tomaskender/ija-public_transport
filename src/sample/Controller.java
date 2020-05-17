@@ -117,7 +117,7 @@ public class Controller {
         //place stop marker
         mousePlaceStopMarker = new Circle();
         mousePlaceStopMarker.setVisible(false);
-        Image stop = new Image(getClass().getResourceAsStream("./media/close.png"));
+        Image stop = new Image(getClass().getResourceAsStream("/close.png"));
         mousePlaceStopMarker.setFill(new ImagePattern(stop));
         mousePlaceStopMarker.setRadius(10);
         mousePlaceStopMarker.setMouseTransparent(true);
@@ -525,7 +525,7 @@ public class Controller {
         Coordinate p = Coordinate.CreateCoordinate(mousePlaceStopMarker.getCenterX(), mousePlaceStopMarker.getCenterY());
         c.setCenterX(p.getX());
         c.setCenterY(p.getY());
-        Image stop = new Image(getClass().getResourceAsStream("./media/close.png"));
+        Image stop = new Image(getClass().getResourceAsStream("/close.png"));
         c.setFill(new ImagePattern(stop));
         c.setRadius(10);
         c.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -685,10 +685,10 @@ public class Controller {
 
         isPaused = !isPaused;
         if(isPaused) {
-            Image pause = new Image(getClass().getResourceAsStream("./media/play.png"));
+            Image pause = new Image(getClass().getResourceAsStream("/play.png"));
             pauseButton.setGraphic(new ImageView(pause));
         } else {
-            Image pause = new Image(getClass().getResourceAsStream("./media/pause.png"));
+            Image pause = new Image(getClass().getResourceAsStream("/pause.png"));
             pauseButton.setGraphic(new ImageView(pause));
         }
     }

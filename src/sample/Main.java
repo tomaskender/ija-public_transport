@@ -26,7 +26,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("Public Transport Tracker");
         Scene scene = new Scene(root, 1000, 700);
